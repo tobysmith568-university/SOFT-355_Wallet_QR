@@ -1,0 +1,1 @@
+SOFT-355_Wallet_QR
