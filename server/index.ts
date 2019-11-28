@@ -1,12 +1,16 @@
-import app from "./src/app";
-import config, { ENV } from "./src/config";
-import { join } from "path";
 import * as express from "express";
+import Server from "./src/server";
+import Config from "./src/config/config";
+import { Express } from "express";
+import * as dotenv from "dotenv";
 
-if (config.environment === ENV.prod) {
-  app.use(express.static(join(__dirname, "../../../../client/dist")));
-}
+dotenv.config();
 
-app.listen(config.port, () => {
-  console.log(`server started at port ${config.port}`);
-});
+const app: Express = express();
+const config: Config = new Config();
+
+const server = new Server(app, config);
+server.initializeMiddlewares();
+server.setUpDatabaseConnection();
+server.initializeControllers();
+server.listen();

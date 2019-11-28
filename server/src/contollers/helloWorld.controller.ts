@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import IHelloWorld from "../models/helloWorld";
+import IHelloWorld from "../api/models/helloWorld";
 
 export let controller = {
 
