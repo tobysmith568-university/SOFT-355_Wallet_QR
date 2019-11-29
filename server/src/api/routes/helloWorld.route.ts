@@ -1,12 +1,23 @@
 import { Router } from "express";
-import { controller } from "../../contollers/helloWorld.controller";
+import { HelloWorldController } from "../../contollers/helloWorld.controller";
+import { IRoute } from "./route.interface";
 
-const helloWorld = Router();
+export default class HelloWorldRoute implements IRoute {
+  private readonly expressRouter: Router;
 
-helloWorld.route("/")
-  .get(controller.get);
+  constructor(private controller: HelloWorldController) {
+    this.expressRouter = Router();
+  }
 
-  helloWorld.route("/:id")
-  .get(controller.getById);
+  setupRoutes(): void {
+    this.expressRouter.route("/")
+      .get(this.controller.get);
 
-export default helloWorld;
+    this.expressRouter.route("/:id")
+      .get(this.controller.getById);
+  }
+  
+  getRouter(): Router {
+    return this.expressRouter;
+  }
+}
