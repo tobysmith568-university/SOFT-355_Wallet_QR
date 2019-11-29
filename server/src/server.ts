@@ -1,5 +1,4 @@
 import * as express from "express";
-import helloWorld from "./api/routes/helloWorld.route";
 import Config from "./config/config";
 import { ENV } from "./config/config";
 import { join } from "path";
@@ -7,8 +6,9 @@ import { bodyParser } from "./middlewares/bodyParser";
 import { connect } from "mongoose";
 import { Express } from "express";
 import { MongoError } from "mongodb";
-import HelloWorldRoute from "./api/routes/helloWorld.route";
+import { HelloWorldRoute } from "./api/routes/helloWorld.route";
 import { HelloWorldController } from "./contollers/helloWorld.controller";
+import { HelloWorldRepository } from "./database/repositories/helloWorld.repository";
 
 export default class Server {
 
@@ -26,7 +26,8 @@ export default class Server {
   public setUpDatabaseConnection() {
     connect(this.config.getConnectionString(), {
       useNewUrlParser: true,
-      useUnifiedTopology: true
+      useUnifiedTopology: true,
+      useCreateIndex: true
     }, (err: MongoError) => {
       if (!err) {
         console.log("Connected to DB");
@@ -38,7 +39,12 @@ export default class Server {
   }
 
   public initializeControllers() {
-    const helloWorldRoute = new HelloWorldRoute(new HelloWorldController());
+    
+    const helloWorldRoute = new HelloWorldRoute(
+      new HelloWorldController(
+        new HelloWorldRepository()
+      )
+    );
 
     helloWorldRoute.setupRoutes();
 

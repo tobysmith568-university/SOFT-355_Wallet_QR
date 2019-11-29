@@ -2,7 +2,7 @@ import { Router } from "express";
 import { HelloWorldController } from "../../contollers/helloWorld.controller";
 import { IRoute } from "./route.interface";
 
-export default class HelloWorldRoute implements IRoute {
+export class HelloWorldRoute implements IRoute {
   private readonly expressRouter: Router;
 
   constructor(private controller: HelloWorldController) {

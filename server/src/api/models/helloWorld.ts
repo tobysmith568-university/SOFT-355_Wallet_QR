@@ -1,3 +1,3 @@
-export default interface IHelloWorld {
+export interface IHelloWorld {
   result: string;
 }

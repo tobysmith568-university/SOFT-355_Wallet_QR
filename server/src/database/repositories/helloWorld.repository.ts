@@ -1,9 +1,9 @@
 import { model } from "mongoose";
 import { Repository } from "./abstract.repository";
-import { IHelloWorld, HelloWorldSchema } from "../models/helloWorld";
+import { HelloWorldSchema, IHelloWorldDbo } from "../models/helloWorld";
 
-export class HelloWorldRepository extends Repository<IHelloWorld> {
+export class HelloWorldRepository extends Repository<IHelloWorldDbo> {
   constructor() {
-    super(model<IHelloWorld>("HelloWorld", HelloWorldSchema));
+    super(model<IHelloWorldDbo>("HelloWorld", HelloWorldSchema));
   }
 }

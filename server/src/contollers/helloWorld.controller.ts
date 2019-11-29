@@ -1,23 +1,32 @@
 import { Request, Response } from "express";
-import IHelloWorld from "../api/models/helloWorld";
+import { IHelloWorld } from "../api/models/helloWorld";
+import { HelloWorldRepository } from "../database/repositories/helloWorld.repository";
 
 export class HelloWorldController {
+
+  constructor(private helloWorldRepository: HelloWorldRepository) {
+
+  }
   
-  public get = (req: Request, res: Response) => {
+  public get = async (req: Request, res: Response) => {
     
-    const result: IHelloWorld = {
+    const model: IHelloWorld = {
       result: "This is a default result"
     };
+
+    await this.helloWorldRepository.save(model);
     
-    res.json(result);
+    res.json(model);
   }
 
-  public getById = (req: Request, res: Response) => {
+  public getById = async (req: Request, res: Response) => {
     
-    const result: IHelloWorld = {
+    const model: IHelloWorld = {
       result: `This is a result of : ${req.params.id}`
     };
+
+    await this.helloWorldRepository.save(model);
     
-    res.json(result);
+    res.json(model);
   }
 }
