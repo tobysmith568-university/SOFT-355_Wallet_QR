@@ -4,7 +4,7 @@ export abstract class Repository<T extends mongoose.Document> {
   constructor(protected schemaModel: mongoose.Model<T>) {
   }
 
-  async save(data: any): Promise<T> {
+  async create(data: any): Promise<T> {
     return await this.schemaModel.create(data, (err: any, res: any) => {
       if (err) {
         console.log(err);

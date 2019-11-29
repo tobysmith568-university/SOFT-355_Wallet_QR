@@ -4,11 +4,11 @@ import { ENV } from "./config/config";
 import { join } from "path";
 import { bodyParser } from "./middlewares/bodyParser";
 import { connect } from "mongoose";
-import { Express } from "express";
+import { Express, Router } from "express";
 import { MongoError } from "mongodb";
-import { HelloWorldRoute } from "./api/routes/helloWorld.route";
-import { HelloWorldController } from "./contollers/helloWorld.controller";
-import { HelloWorldRepository } from "./database/repositories/helloWorld.repository";
+import { UserRoute } from "./api/routes/user.route";
+import { UserController } from "./contollers/user.controller";
+import { UserRepository } from "./database/repositories/user.repository";
 
 export default class Server {
 
@@ -40,9 +40,10 @@ export default class Server {
 
   public initializeControllers() {
     
-    const helloWorldRoute = new HelloWorldRoute(
-      new HelloWorldController(
-        new HelloWorldRepository()
+    const helloWorldRoute = new UserRoute(
+      Router(),
+      new UserController(
+        new UserRepository()
       )
     );
 
