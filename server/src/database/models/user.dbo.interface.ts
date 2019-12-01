@@ -1,8 +1,11 @@
 import { Schema, Document } from "mongoose";
 import { IUser } from "../../api/models/user.interface";
 
-export interface IUserDbo extends IUser, Document {
-  
+export interface IUserDbo extends Document {
+  username: string;
+  email: string;
+  name: string;
+  passwordHash: string;
 }
 
 export const UserSchema: Schema = new Schema({

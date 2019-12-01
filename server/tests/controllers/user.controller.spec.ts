@@ -5,6 +5,7 @@ import { Request, Response } from "express";
 import { UserController } from "../../src/contollers/user.controller";
 import { UserRepository } from "../../src/database/repositories/user.repository";
 import { IUserDbo } from "../../src/database/models/user.dbo.interface";
+import { MongoError } from "mongodb";
 
 describe("In the user controller", () => {
   
@@ -77,6 +78,99 @@ describe("In the user controller", () => {
       }), Times.once());
     });
   });
+
+  describe("create", () => {
+
+    it("should not be null", () => {
+      assert.isNotNull(subject.create);
+    });
+
+    it("should create a valid user", async () => {
+
+      const body = {
+        username: "myUsername",
+        email: "myEmail",
+        name: "myName",
+        password: "myPassword"
+      };
+
+      const newUser: IUserDbo = {
+        username: body.username,
+        email: body.email,
+        name: body.name
+      } as IUserDbo;
+
+      given_req_body_equals(body);
+      given_userRepository_create_returns(newUser);
+
+      await subject.create(req.object, res.object);
+
+      userRepository.verify(u => u.create(It.isAny()), Times.once());
+    });
+
+    it("should return a valid user", async () => {
+
+      const body = {
+        username: "myUsername",
+        email: "myEmail",
+        name: "myName",
+        password: "myPassword"
+      };
+
+      const newUser: IUserDbo = {
+        username: body.username,
+        email: body.email,
+        name: body.name
+      } as IUserDbo;
+
+      given_req_body_equals(body);
+      given_userRepository_create_returns(newUser);
+
+      await subject.create(req.object, res.object);
+
+      res.verify(r => r.json(newUser), Times.once());
+    });
+
+    it("should return a specific error for duplicate usernames", async () => {
+
+      const ex = new MongoError("");
+      ex.code = 11000;
+
+      given_userRepository_create_throws(ex);
+
+      subject.create(req.object, res.object);
+
+      res.verify(r => r.json({error: "This username has already been used"}), Times.once());
+    });
+
+    it("should return generic errors exactly", async () => {
+      const errorMessage = "This is an error message";
+      const ex = new MongoError(errorMessage);
+
+      given_userRepository_create_throws(ex);
+
+      subject.create(req.object, res.object);
+
+      res.verify(r => r.json({error: `User could not be created: MongoError: ${errorMessage}`}), Times.once());
+    });
+  });
+
+  function given_req_body_equals(body: any) {
+    req
+      .setup(r => r.body = body);
+  }
+
+  function given_userRepository_create_returns(returns: IUserDbo) {
+    userRepository
+      .setup(u => u.create(It.isAny()))
+      .returns(async () => returns);
+  }
+
+  function given_userRepository_create_throws(ex: Error) {
+    userRepository
+      .setup(u => u.create(It.isAny()))
+      .throws(ex);
+  }
 
   function given_userRepository_find_returns(users: IUserDbo[]) {
     userRepository
