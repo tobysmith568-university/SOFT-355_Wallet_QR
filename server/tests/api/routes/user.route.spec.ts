@@ -19,12 +19,20 @@ describe("In the user route", () => {
   });
 
   describe("setupRoutes", () => {
-    it("should set up the route at /users/:username", async () => {
-      const path = "/users/:username";
+    it("should set up the get route at /user/:username", async () => {
+      const path = "/user/:username";
 
       subject.setupRoutes();
 
       router.verify(r => r.get(path, It.isAny()), Times.once());
+    });
+
+    it("should set up the post route at /user", async () => {
+      const path = "/user";
+
+      subject.setupRoutes();
+
+      router.verify(r => r.post(path, It.isAny()), Times.once());
     });
   });
 
