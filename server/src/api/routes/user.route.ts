@@ -8,7 +8,9 @@ export class UserRoute implements IRoute {
               private controller: UserController) {}
 
   public setupRoutes(): void {
-    this.expressRouter.get("/users/:username", this.controller.getById);
+    this.expressRouter.get("/user/:username", this.controller.getById);
+
+    this.expressRouter.post("/user", this.controller.create);
   }
   
   public getRouter(): Router {

@@ -25,4 +25,7 @@ export class UserController {
       email: result.email
     } as IUser);
   }
+
+  public create = async (req: Request, res: Response) => {
+  }
 }
