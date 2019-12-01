@@ -3,10 +3,12 @@ import { UserRepository } from "../database/repositories/user.repository";
 import { IUser } from "../api/models/user.interface";
 import { IUserDbo } from "../database/models/user.dbo.interface";
 import { MongoError } from "mongodb";
+import { IPasswordService } from "../services/password.service";
 
 export class UserController {
 
-  constructor(private userRepository: UserRepository) {}
+  constructor(private userRepository: UserRepository,
+              private passwordService: IPasswordService) {}
 
   public getById = async (req: Request, res: Response) => {
     
@@ -31,12 +33,12 @@ export class UserController {
   public create = async (req: Request, res: Response) => {
 
     const body: IUser = req.body;
-
+    
     const newDbo = {
       username: body.username,
       email: body.email,
       name: body.name,
-      passwordHash: this.hash(body.password)
+      passwordHash: this.passwordService.hash(body.password)
     } as IUserDbo;
 
     body.password = "";
@@ -63,9 +65,5 @@ export class UserController {
       username: createdDbo.username,
       email: createdDbo.email
     } as IUser);
-  }
-
-  private hash(password: string): string {
-    return password; // TODO Needs to hash password
   }
 }
