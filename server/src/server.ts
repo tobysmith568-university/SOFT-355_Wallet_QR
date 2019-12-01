@@ -20,7 +20,7 @@ export default class Server {
   }
 
   public initializeMiddlewares() {
-    this.app.use(bodyParser(this.app));
+    this.app.use(express.json());
   }
 
   public setUpDatabaseConnection() {

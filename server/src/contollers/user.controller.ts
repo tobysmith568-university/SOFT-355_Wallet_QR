@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { UserRepository } from "../database/repositories/user.repository";
 import { IUser } from "../api/models/user.interface";
+import { IUserDbo } from "../database/models/user.dbo.interface";
+import { MongoError } from "mongodb";
 
 export class UserController {
 
@@ -27,5 +29,43 @@ export class UserController {
   }
 
   public create = async (req: Request, res: Response) => {
+
+    const body: IUser = req.body;
+
+    const newDbo = {
+      username: body.username,
+      email: body.email,
+      name: body.name,
+      passwordHash: this.hash(body.password)
+    } as IUserDbo;
+
+    body.password = "";
+    req.body.password = "";
+
+    let createdDbo: IUserDbo; 
+    try {
+      createdDbo = await this.userRepository.create(newDbo);
+    } catch (e) {
+      if (e instanceof MongoError) {
+        switch (e.code) {
+          case 11000:
+            res.json({error: "This username has already been used"});
+            return;
+        }
+      }
+
+      res.json({error: `User could not be created: ${e}`});
+      return;
+    }
+
+    res.json({
+      name: createdDbo.name,
+      username: createdDbo.username,
+      email: createdDbo.email
+    } as IUser);
+  }
+
+  private hash(password: string): string {
+    return password; // TODO Needs to hash password
   }
 }
