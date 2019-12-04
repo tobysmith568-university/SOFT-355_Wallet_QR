@@ -42,8 +42,8 @@
     "no-redundant-jsdoc": true,
     "no-switch-case-fall-through": true,
     "no-use-before-declare": true,
-	"no-var-requires": false,
-	"object-literal-shorthand": false,
+    "no-var-requires": false,
+    "object-literal-shorthand": false,
     "object-literal-key-quotes": [
       true,
       "as-needed"
@@ -52,11 +52,11 @@
     "ordered-imports": false,
     "quotemark": [
       true,
-	  "double",
-	  "backtick"
+      "double",
+      "backtick"
     ],
-	"trailing-comma": false,
-	"no-trailing-whitespace": false,
+    "trailing-comma": false,
+    "no-trailing-whitespace": false,
     "no-output-on-prefix": true,
     "no-inputs-metadata-property": true,
     "no-host-metadata-property": true,
@@ -66,10 +66,10 @@
     "use-pipe-transform-interface": true,
     "one-variable-per-declaration": true,
     "component-class-suffix": [
-		true, 
-		"Page", 
-		"Component"
-	],
+      true,
+      "Page",
+      "Component"
+    ],
     "directive-class-suffix": true,
     "directive-selector": [
       true,
@@ -83,7 +83,7 @@
       "app",
       "page",
       "kebab-case"
-	],
-	"align": true
+    ],
+    "align": true
   }
 }

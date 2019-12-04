@@ -184,9 +184,6 @@ describe("In the user controller", () => {
   });
 
   function given_req_body_equals(body: any) {
-   /* req
-      .setup(r => r.body = body);*/
-
       req
         .setup(r => r.body)
         .returns(() => body);
