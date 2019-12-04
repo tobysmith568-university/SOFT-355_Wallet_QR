@@ -9,6 +9,7 @@ import { MongoError } from "mongodb";
 import { UserRoute } from "./api/routes/user.route";
 import { UserController } from "./contollers/user.controller";
 import { UserRepository } from "./database/repositories/user.repository";
+import { BcryptPasswordService } from "./services/implementations/bcrypt-password.service";
 
 export default class Server {
 
@@ -43,7 +44,8 @@ export default class Server {
     const helloWorldRoute = new UserRoute(
       Router(),
       new UserController(
-        new UserRepository()
+        new UserRepository(),
+        new BcryptPasswordService()
       )
     );
 

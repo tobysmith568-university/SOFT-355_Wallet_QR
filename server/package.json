@@ -7,7 +7,7 @@
     "start": "npm run build:live",
     "build": "node ./node_modules/typescript/lib/tsc",
     "build:live": "nodemon --exec ./node_modules/.bin/ts-node -- index.ts",
-    "test": "mocha -r ts-node/register tests/**/*.spec.ts"
+    "test": "cls && mocha -r ts-node/register tests/**/*.spec.ts"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +28,8 @@
     "typescript": "^3.7.2"
   },
   "dependencies": {
+    "@types/bcrypt": "^3.0.0",
+    "bcrypt": "^3.0.7",
     "body-parser": "^1.19.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
