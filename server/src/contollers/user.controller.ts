@@ -33,12 +33,12 @@ export class UserController {
   public create = async (req: Request, res: Response) => {
 
     const body: IUser = req.body;
-    
+
     const newDbo = {
       username: body.username,
       email: body.email,
       name: body.name,
-      passwordHash: this.passwordService.hash(body.password)
+      passwordHash: await this.passwordService.hash(body.password)
     } as IUserDbo;
 
     body.password = "";
