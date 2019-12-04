@@ -1,12 +1,12 @@
-import { describe, it } from "mocha";
 import { assert } from "chai";
-import { Mock, IMock, It, Times } from "typemoq";
+import { describe, it } from "mocha";
+import { MongoError } from "mongodb";
 import { Request, Response } from "express";
+import { Mock, IMock, It, Times } from "typemoq";
 import { UserController } from "../../src/contollers/user.controller";
 import { UserRepository } from "../../src/database/repositories/user.repository";
 import { IUserDbo } from "../../src/database/models/user.dbo.interface";
-import { MongoError } from "mongodb";
-import { IPasswordService } from "../../src/services/password.service";
+import { IPasswordService } from "../../src/services/password.service.interface";
 
 describe("In the user controller", () => {
   
@@ -184,9 +184,9 @@ describe("In the user controller", () => {
   });
 
   function given_req_body_equals(body: any) {
-      req
-        .setup(r => r.body)
-        .returns(() => body);
+    req
+      .setup(r => r.body)
+      .returns(() => body);
   }
 
   function given_userRepository_create_returns(returns: IUserDbo) {

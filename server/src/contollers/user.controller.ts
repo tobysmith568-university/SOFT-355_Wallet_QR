@@ -3,7 +3,7 @@ import { UserRepository } from "../database/repositories/user.repository";
 import { IUser } from "../api/models/user.interface";
 import { IUserDbo } from "../database/models/user.dbo.interface";
 import { MongoError } from "mongodb";
-import { IPasswordService } from "../services/password.service";
+import { IPasswordService } from "../services/password.service.interface";
 
 export class UserController {
 

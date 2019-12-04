@@ -8,9 +8,10 @@ export class SignInRoute implements IRoute {
               private controller: SignInController) {}
 
   public setupRoutes(): void {
+    this.expressRouter.post("/signin", this.controller.signIn);
   }
   
   public getRouter(): Router {
-    throw new Error();
+    return this.expressRouter;
   }
 }
