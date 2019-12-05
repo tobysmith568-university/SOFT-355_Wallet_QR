@@ -46,7 +46,7 @@ export default class Server {
 
     const userRepository = new UserRepository();
     const passwordService = new BcryptPasswordService();
-    const tokenService = new JWTTokenService();
+    const tokenService = new JWTTokenService(this.config);
     
     const userRoute = new UserRoute(
       Router(),

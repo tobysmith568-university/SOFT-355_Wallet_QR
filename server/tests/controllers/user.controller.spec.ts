@@ -25,7 +25,7 @@ describe("In the user controller", () => {
     subject = new UserController(userRepository.object, passwordService.object);
 
     req = Mock.ofType<Request>();
-    res = Mock.ofType<Response>();  
+    res = Mock.ofType<Response>();
   });
 
   describe("getById", () => {
