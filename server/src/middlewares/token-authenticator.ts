@@ -6,7 +6,7 @@ export class TokenAuthenticator {
   constructor(private readonly tokenService: ITokenService) {
   }
 
-  public middleware(app: Express) {
+  public middleware() {
     return async (req: Request, res: Response, next: NextFunction) => {
       
       const authToken = req.headers.authorization;

@@ -6,7 +6,6 @@ import { assert } from "chai";
 
 describe("In the token authenticator middleware", async () => {
 
-  let app: IMock<Express>;
   let tokenService: IMock<ITokenService>;
 
   let subject: TokenAuthenticator;
@@ -16,7 +15,6 @@ describe("In the token authenticator middleware", async () => {
   let next: IMock<NextFunction>;
 
   beforeEach(() => {
-    app = Mock.ofType<Express>();
     tokenService = Mock.ofType<ITokenService>();
 
     subject = new TokenAuthenticator(tokenService.object);
@@ -29,20 +27,20 @@ describe("In the token authenticator middleware", async () => {
   describe("middleware", async () => {
 
     it("should not be null", () => {
-      const middleware = subject.middleware(app.object);
+      const middleware = subject.middleware();
 
       assert.isNotNull(middleware);
     });
 
     it("should return an error message if there is no authorization header", async () => {
-      const middleware = subject.middleware(app.object);
+      const middleware = subject.middleware();
       await middleware(req.object, res.object, next.object);
 
       res.verify(r => r.json({ error: "You are not authenticated" }), Times.once());
     });
 
     it("should return a status of 401 if there is no authorization header", async () => {
-      const middleware = subject.middleware(app.object);
+      const middleware = subject.middleware();
       await middleware(req.object, res.object, next.object);
 
       assert.equal(res.target.statusCode, 401);
@@ -51,7 +49,7 @@ describe("In the token authenticator middleware", async () => {
     it("should return an error message if there the authorization header is not 2 words", async () => {
       given_req_headers_authorization_equals("ThisIsAllOneWord");
 
-      const middleware = subject.middleware(app.object);
+      const middleware = subject.middleware();
       await middleware(req.object, res.object, next.object);
 
       res.verify(r => r.json({ error: "Your authorization header is not a bearer token" }), Times.once());
@@ -60,7 +58,7 @@ describe("In the token authenticator middleware", async () => {
     it("should return a status of 401 if there the authorization header is not 2 words", async () => {
       given_req_headers_authorization_equals("ThisIsAllOneWord");
 
-      const middleware = subject.middleware(app.object);
+      const middleware = subject.middleware();
       await middleware(req.object, res.object, next.object);
 
       assert.equal(res.target.statusCode, 401);
@@ -69,7 +67,7 @@ describe("In the token authenticator middleware", async () => {
     it("should return an error message if there the authorization header is not a bearer token", async () => {
       given_req_headers_authorization_equals("ThisIsAllOneWord");
 
-      const middleware = subject.middleware(app.object);
+      const middleware = subject.middleware();
       await middleware(req.object, res.object, next.object);
 
       res.verify(r => r.json({ error: "Your authorization header is not a bearer token" }), Times.once());
@@ -78,7 +76,7 @@ describe("In the token authenticator middleware", async () => {
     it("should return a status of 401 if there the authorization header is not a bearer token", async () => {
       given_req_headers_authorization_equals("ThisIsAllOneWord");
 
-      const middleware = subject.middleware(app.object);
+      const middleware = subject.middleware();
       await middleware(req.object, res.object, next.object);
 
       assert.equal(res.target.statusCode, 401);
@@ -90,7 +88,7 @@ describe("In the token authenticator middleware", async () => {
       given_req_headers_authorization_equals("Bearer " + token);
       given_tokenService_verify_returns_whenGiven(null, token);
 
-      const middleware = subject.middleware(app.object);
+      const middleware = subject.middleware();
       await middleware(req.object, res.object, next.object);
 
       res.verify(r => r.json({ error: "Your token is invalid" }), Times.once());
@@ -102,7 +100,7 @@ describe("In the token authenticator middleware", async () => {
       given_req_headers_authorization_equals("Bearer " + token);
       given_tokenService_verify_returns_whenGiven(null, token);
 
-      const middleware = subject.middleware(app.object);
+      const middleware = subject.middleware();
       await middleware(req.object, res.object, next.object);
 
       assert.equal(res.target.statusCode, 401);
@@ -115,7 +113,7 @@ describe("In the token authenticator middleware", async () => {
       given_req_headers_authorization_equals("Bearer " + token);
       given_tokenService_verify_returns_whenGiven(username, token);
 
-      const middleware = subject.middleware(app.object);
+      const middleware = subject.middleware();
       await middleware(req.object, res.object, next.object);
 
       assert.equal(req.target.username, username);
