@@ -3,6 +3,6 @@
 
 declare module Express {
   export interface Request {
-    username?: string;
+    username: string | undefined;
   }
 }

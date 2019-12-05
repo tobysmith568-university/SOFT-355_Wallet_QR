@@ -7,8 +7,8 @@ import { IPasswordService } from "../services/password.service.interface";
 
 export class UserController {
 
-  constructor(private userRepository: UserRepository,
-              private passwordService: IPasswordService) {}
+  constructor(private readonly userRepository: UserRepository,
+              private readonly passwordService: IPasswordService) {}
 
   public getById = async (req: Request, res: Response) => {
     
@@ -65,5 +65,8 @@ export class UserController {
       username: createdDbo.username,
       email: createdDbo.email
     } as IUser);
+  }
+
+  public modify = async (req: Request, res: Response) => {
   }
 }

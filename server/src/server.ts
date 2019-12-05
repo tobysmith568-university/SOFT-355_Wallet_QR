@@ -13,6 +13,7 @@ import { BcryptPasswordService } from "./services/implementations/bcrypt-passwor
 import { SignInRoute } from "./api/routes/signin.route";
 import { SignInController } from "./contollers/signin.controller";
 import { JWTTokenService } from "./services/implementations/jwt-token.service";
+import { TokenAuthenticator } from "./middlewares/token-authenticator";
 
 export default class Server {
 
@@ -47,13 +48,16 @@ export default class Server {
     const userRepository = new UserRepository();
     const passwordService = new BcryptPasswordService();
     const tokenService = new JWTTokenService(this.config);
+
+    const tokenMiddleware = new TokenAuthenticator(tokenService);
     
     const userRoute = new UserRoute(
       Router(),
       new UserController(
         userRepository,
         passwordService
-      )
+      ),
+      tokenMiddleware
     );
 
     const signinRoute = new SignInRoute(
