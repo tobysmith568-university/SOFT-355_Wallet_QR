@@ -10,6 +10,9 @@ import { UserRoute } from "./api/routes/user.route";
 import { UserController } from "./contollers/user.controller";
 import { UserRepository } from "./database/repositories/user.repository";
 import { BcryptPasswordService } from "./services/implementations/bcrypt-password.service";
+import { SignInRoute } from "./api/routes/signin.route";
+import { SignInController } from "./contollers/signin.controller";
+import { JWTTokenService } from "./services/implementations/jwt-token.service";
 
 export default class Server {
 
@@ -40,18 +43,35 @@ export default class Server {
   }
 
   public initializeControllers() {
+
+    const userRepository = new UserRepository();
+    const passwordService = new BcryptPasswordService();
+    const tokenService = new JWTTokenService();
     
-    const helloWorldRoute = new UserRoute(
+    const userRoute = new UserRoute(
       Router(),
       new UserController(
-        new UserRepository(),
-        new BcryptPasswordService()
+        userRepository,
+        passwordService
       )
     );
 
-    helloWorldRoute.setupRoutes();
+    const signinRoute = new SignInRoute(
+      Router(),
+      new SignInController(
+        userRepository,
+        passwordService,
+        tokenService
+      )
+    );
 
-    this.app.use("/api", helloWorldRoute.getRouter());
+    userRoute.setupRoutes();
+    signinRoute.setupRoutes();
+
+    this.app.use("/api", [
+      userRoute.getRouter(),
+      signinRoute.getRouter()  
+    ]);
   }
 
   public listen(): void {

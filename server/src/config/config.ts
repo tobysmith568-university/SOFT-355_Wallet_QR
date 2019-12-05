@@ -20,14 +20,16 @@ export default class Config {
   private environment: string;
   private port: number;
   private connectionString: string;
+  private tokenSecret: string;
 
   constructor() {
     this.environment = process.env.NODE_ENV || ENV.dev;
     
     const env = this.configs[this.environment];
     
-    this.port = env.port || 3000;
-    this.connectionString = env.connectionString || "mongodb://localhost/devDB";
+    this.port = this.getOrThrow(env.port);
+    this.connectionString = this.getOrThrow(env.connectionString);
+    this.tokenSecret = this.getOrThrow(env.tokenSecret);
   }
 
   public getEnvironment(): string {
@@ -40,5 +42,18 @@ export default class Config {
 
   public getConnectionString(): string {
     return this.connectionString;
+  }
+
+  public getTokenSecret(): string {
+    return this.tokenSecret;
+  }
+
+  private getOrThrow<T>(data: T | null | undefined): T {
+    
+    if (data === null || data === undefined) {
+      throw new Error("Required config is null or undefined");
+    }
+
+    return data;
   }
 }
