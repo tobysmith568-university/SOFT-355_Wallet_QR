@@ -68,5 +68,38 @@ export class UserController {
   }
 
   public modify = async (req: Request, res: Response) => {
+
+    if (req.username === undefined || req.username.length === 0) {
+      res.json({ error: "You are not logged in" });
+      res.statusCode = 401;
+      return;
+    }
+
+    const username = req.params.username;
+
+    if (username !== req.username) {
+      res.json({ error: "You do not have permission to edit this user" });
+      res.statusCode = 401;
+      return;
+    }
+
+    const users = await this.userRepository.find({ username: username });
+
+    if (users.length !== 1) {
+      res.json({ error: "This account no longer exists" });
+      res.statusCode = 401;
+      return;
+    }
+
+    const user = users[0];
+    const changes: Partial<IUserDbo> = req.body;
+
+    user.email = changes.email || user.email;
+    user.name = changes.name || user.name;
+
+    await user.save();
+
+    res.statusCode = 201;
+    res.send();
   }
 }
