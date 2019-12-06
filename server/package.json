@@ -7,7 +7,25 @@
     "start": "cls && npm run build:live",
     "build": "node ./node_modules/typescript/lib/tsc",
     "build:live": "nodemon --exec ./node_modules/.bin/ts-node -- index.ts",
-    "test": "mocha -r ts-node/register tests/**/*.spec.ts"
+    "test": "mocha -r ts-node/register tests/**/*.spec.ts",
+    "coverage": "nyc mocha --report cobertura"
+  },
+  "nyc": {
+    "include": [
+      "tests/**/*.spec.ts"
+    ],
+    "extension": [
+      ".ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "reporter": [
+      "text-summary",
+      "html"
+    ],
+    "sourceMap": true,
+    "instrument": true
   },
   "keywords": [],
   "author": "",
@@ -25,6 +43,8 @@
     "mocha": "^6.2.2",
     "mockdate": "^2.0.5",
     "nodemon": "^2.0.1",
+    "nyc": "^14.1.1",
+    "source-map-support": "^0.5.16",
     "ts-node": "^8.5.3",
     "tslint": "^5.20.1",
     "typemoq": "^2.1.0",
