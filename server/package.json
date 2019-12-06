@@ -7,7 +7,7 @@
     "start": "cls && npm run build:live",
     "build": "node ./node_modules/typescript/lib/tsc",
     "build:live": "nodemon --exec ./node_modules/.bin/ts-node -- index.ts",
-    "test": "cls && mocha -r ts-node/register tests/**/*.spec.ts"
+    "test": "mocha -r ts-node/register tests/**/*.spec.ts"
   },
   "keywords": [],
   "author": "",
