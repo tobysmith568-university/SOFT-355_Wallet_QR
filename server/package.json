@@ -8,11 +8,11 @@
     "build": "node ./node_modules/typescript/lib/tsc",
     "build:live": "nodemon --exec ./node_modules/.bin/ts-node -- index.ts",
     "test": "mocha -r ts-node/register tests/**/*.spec.ts",
-    "coverage": "nyc mocha --report cobertura"
+    "coverage": "nyc --reporter=cobertura --reporter=html mocha --opts mocha.opts"
   },
   "nyc": {
     "include": [
-      "tests/**/*.spec.ts"
+      "src/**/*.ts"
     ],
     "extension": [
       ".ts"
