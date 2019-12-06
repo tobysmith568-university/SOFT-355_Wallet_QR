@@ -15,17 +15,17 @@ steps:
   inputs:
     version: '10.16.3'
 
-- task: Npm@1
-  inputs:
-    command: 'install'
-    workingDir: 'client'
-
-- task: CmdLine@2
-  inputs:
-    script: |
-      npm run build
-      npm run test
-    workingDirectory: 'client'
+#- task: Npm@1
+#  inputs:
+#    command: 'install'
+#    workingDir: 'client'
+#
+#- task: CmdLine@2
+#  inputs:
+#    script: |
+#      npm run build
+#      npm run test
+#    workingDirectory: 'client'
 
 - task: Npm@1
   inputs:
