@@ -4,6 +4,7 @@ import { IUser } from "../api/models/user.interface";
 import { IUserDbo } from "../database/models/user.dbo.interface";
 import { MongoError } from "mongodb";
 import { IPasswordService } from "../services/password.service.interface";
+import { IWallet } from "../api/models/wallet.interface";
 
 export class UserController {
 
@@ -12,22 +13,31 @@ export class UserController {
 
   public getById = async (req: Request, res: Response) => {
     
-    const results = await this.userRepository.find({
+    const searchResults = await this.userRepository.find({
       username: req.params.username
     });
 
-    if (results.length === 0) {
+    if (searchResults.length === 0) {
       res.json({error: "User could not be found"});
       return;
     }
 
-    const result = results[0];
+    const searchResult = searchResults[0];
 
-    res.json({
-      name: result.name,
-      username: result.username,
-      email: result.email
-    } as IUser);
+    const result = {
+      name: searchResult.name,
+      username: searchResult.username,
+      email: searchResult.email,
+      wallets: new Array<IWallet>()
+    } as IUser;
+
+    searchResult.wallets.forEach(wallet => result.wallets.push({
+      address: wallet.address,
+      currency: wallet.currency,
+      name: wallet.name
+    }));
+
+    res.json(result);
   }
 
   public create = async (req: Request, res: Response) => {
@@ -38,7 +48,8 @@ export class UserController {
       username: body.username,
       email: body.email,
       name: body.name,
-      passwordHash: await this.passwordService.hash(body.password)
+      passwordHash: await this.passwordService.hash(body.password),
+      wallets: body.wallets
     } as IUserDbo;
 
     body.password = "";
@@ -59,12 +70,23 @@ export class UserController {
       res.json({error: `User could not be created: ${e}`});
       return;
     }
-
-    res.json({
+    
+    const result = {
       name: createdDbo.name,
       username: createdDbo.username,
-      email: createdDbo.email
-    } as IUser);
+      email: createdDbo.email,
+      wallets: new Array<IWallet>()
+    } as IUser;
+    
+    createdDbo.wallets.forEach(wallet => {
+      result.wallets.push({
+        name: wallet.name,
+        address: wallet.address,
+        currency: wallet.currency
+      } as IWallet);
+    });
+
+    res.json(result);
   }
 
   public modify = async (req: Request, res: Response) => {
@@ -96,10 +118,11 @@ export class UserController {
 
     user.email = changes.email || user.email;
     user.name = changes.name || user.name;
+    user.wallets = changes.wallets || user.wallets;
 
     await user.save();
 
-    res.statusCode = 201;
+    res.statusCode = 204;
     res.send();
   }
 }
