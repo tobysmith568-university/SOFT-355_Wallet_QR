@@ -8,38 +8,53 @@ trigger:
 - develop
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: "ubuntu-latest"
 
 steps:
 - task: UseNode@1
   inputs:
-    version: '10.16.3'
+    version: "10.16.3"
 
 #- task: Npm@1
 #  inputs:
-#    command: 'install'
-#    workingDir: 'client'
+#    command: "install"
+#    workingDir: "client"
+#  displayName: "npm install client"
 #
 #- task: CmdLine@2
 #  inputs:
 #    script: |
 #      npm run build
+#    workingDirectory: "client"
+#  displayName: "Building client"
+
+#- task: CmdLine@2
+#  inputs:
+#    script: |
 #      npm run test
-#    workingDirectory: 'client'
+#    workingDirectory: "client"
+#  displayName: "Testing client"
 
 - task: Npm@1
   inputs:
-    command: 'install'
-    workingDir: 'server'
+    command: "install"
+    workingDir: "server"
+  displayName: "npm install server"
 
 - task: CmdLine@2
   inputs:
     script: |
       npm run build
+    workingDirectory: "server"
+  displayName: "Building server"
+- task: CmdLine@2
+  inputs:
+    script: |
       npm run coverage
-    workingDirectory: 'server'
+    workingDirectory: "server"
+  displayName: "Running coverage on server"
 
 - task: PublishCodeCoverageResults@1
   inputs:
-    codeCoverageTool: 'Cobertura'
-    summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/*coverage.xml'
+    codeCoverageTool: "Cobertura"
+    summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/*coverage.xml"
