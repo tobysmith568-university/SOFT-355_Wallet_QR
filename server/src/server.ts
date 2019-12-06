@@ -1,8 +1,8 @@
 import * as express from "express";
+import * as cors from "cors";
 import Config from "./config/config";
 import { ENV } from "./config/config";
 import { join } from "path";
-import { bodyParser } from "./middlewares/bodyParser";
 import { connect } from "mongoose";
 import { Express, Router } from "express";
 import { MongoError } from "mongodb";
@@ -26,6 +26,10 @@ export default class Server {
 
   public initializeMiddlewares() {
     this.app.use(express.json());
+
+    if (this.config.getEnvironment() !== ENV.prod) {
+      this.app.use(cors());
+    }
   }
 
   public setUpDatabaseConnection() {
