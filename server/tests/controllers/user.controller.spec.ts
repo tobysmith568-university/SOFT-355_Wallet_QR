@@ -7,6 +7,7 @@ import { UserController } from "../../src/contollers/user.controller";
 import { UserRepository } from "../../src/database/repositories/user.repository";
 import { IUserDbo } from "../../src/database/models/user.dbo.interface";
 import { IPasswordService } from "../../src/services/password.service.interface";
+import { IWallet } from "../../src/api/models/wallet.interface";
 
 describe("In the user controller", () => {
   
@@ -47,7 +48,8 @@ describe("In the user controller", () => {
       const username = "myUsername";
 
       given_userRepository_find_returns([{
-        username: username
+        username: username,
+        wallets: new Array<IWallet>()
       } as IUserDbo]);
 
       await subject.getById(req.object, res.object);
@@ -55,7 +57,8 @@ describe("In the user controller", () => {
       res.verify(r => r.json({
         name: undefined,
         username: username,
-        email: undefined
+        email: undefined,
+        wallets: new Array<IWallet>()
       }), Times.once());
     });
 
@@ -66,10 +69,12 @@ describe("In the user controller", () => {
 
       given_userRepository_find_returns([{
         username: username,
-        name: wantedName
+        name: wantedName,
+        wallets: new Array<IWallet>()
       } as IUserDbo, {
         username: username,
-        name: unwantedName
+        name: unwantedName,
+        wallets: new Array<IWallet>()
       } as IUserDbo]);
 
       await subject.getById(req.object, res.object);
@@ -77,7 +82,8 @@ describe("In the user controller", () => {
       res.verify(r => r.json({
         name: wantedName,
         username: username,
-        email: undefined
+        email: undefined,
+        wallets: new Array<IWallet>()
       }), Times.once());
     });
   });
@@ -100,7 +106,8 @@ describe("In the user controller", () => {
       const newUser: IUserDbo = {
         username: body.username,
         email: body.email,
-        name: body.name
+        name: body.name,
+        wallets: new Array<IWallet>()
       } as IUserDbo;
 
       given_req_body_equals(body);
@@ -123,7 +130,8 @@ describe("In the user controller", () => {
       const newUser: IUserDbo = {
         username: body.username,
         email: body.email,
-        name: body.name
+        name: body.name,
+        wallets: new Array<IWallet>()
       } as IUserDbo;
 
       given_req_body_equals(body);
@@ -171,7 +179,8 @@ describe("In the user controller", () => {
       const newUser: IUserDbo = {
         username: body.username,
         email: body.email,
-        name: body.name
+        name: body.name,
+        wallets: new Array<IWallet>()
       } as IUserDbo;
 
       given_req_body_equals(body);
