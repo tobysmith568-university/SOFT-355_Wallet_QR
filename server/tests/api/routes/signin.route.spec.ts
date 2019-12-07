@@ -2,6 +2,7 @@ import { IMock, Mock, It, Times } from "typemoq";
 import { IRouter, Router } from "express";
 import { SignInController } from "../../../src/contollers/signin.controller";
 import { SignInRoute } from "../../../src/api/routes/signin.route";
+import { assert } from "chai";
 
 describe("In the signin route", async () => {
   let router: IMock<IRouter>;
@@ -21,6 +22,12 @@ describe("In the signin route", async () => {
     it("should set up the post route at /signin", async () => {
       subject.setupRoutes();
       router.verify(r => r.post("/signin", It.isAny()), Times.once());
+    });
+  });
+
+  describe("getRouter", () => {
+    it("should return the router", () => {
+      assert.deepStrictEqual(subject.getRouter(), router.object);
     });
   });
 });
