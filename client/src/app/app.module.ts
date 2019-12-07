@@ -8,6 +8,7 @@ import { ProfileComponent } from "./components/profile/profile.component";
 import { RouterModule, Routes } from "@angular/router";
 import { HeaderComponent } from "./components/header/header.component";
 import { FooterComponent } from "./components/footer/footer.component";
+import { WalletComponent } from "./components/wallet/wallet.component";
 
 const routes: Routes = [
   {path:  "", pathMatch: "full", component: HomeComponent},
@@ -20,7 +21,8 @@ const routes: Routes = [
     HomeComponent,
     ProfileComponent,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    WalletComponent
   ],
   imports: [
     RouterModule.forRoot(routes),

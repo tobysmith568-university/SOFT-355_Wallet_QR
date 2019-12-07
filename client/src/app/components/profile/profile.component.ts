@@ -10,6 +10,7 @@ import { ActivatedRoute } from "@angular/router";
 })
 export class ProfileComponent implements OnInit {
 
+  private name = "";
   private wallets: IWallet[] = new Array<IWallet>();
 
   constructor(private readonly userService: UserApiService,
@@ -17,7 +18,9 @@ export class ProfileComponent implements OnInit {
 
   async ngOnInit() {
     this.route.paramMap.subscribe(async params => {
-      this.wallets = (await this.userService.getUser(params.get("username"))).wallets;
+      const user = await this.userService.getUser(params.get("username"));
+      this.name = user.name;
+      this.wallets = user.wallets;
     });
   }
 }
