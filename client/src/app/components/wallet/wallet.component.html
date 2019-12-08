@@ -1,5 +1,10 @@
-<div>
-	<p class="name">{{ wallet.name }}</p>
-	<p class="qr">{{ wallet.address }}</p>
-	<p class="currency">{{ wallet.currency }}</p>
+<div class="card mb-4 box-shaddow">
+  <div class="card-body">
+		<div class="card-img-top qr-wrapper">
+				<img class="qrcode" src="{{ qrData }}" />
+		</div>
+		<p class="name">{{ wallet.name }}</p>
+		<p class="address">{{ wallet.address }}</p>
+		<p class="currency">{{ wallet.currency }}</p>
+		</div>
 </div>

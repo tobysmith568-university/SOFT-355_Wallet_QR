@@ -1,10 +1,12 @@
-<div class="container" style="margin-top: 70px;">
-  <div class="row">
-    <div class="col title">
-      {{ name }}
-    </div>
-  </div>
-  <div class="row">
-    <app-wallet class="col-md-3" *ngFor="let wallet of wallets" [wallet]=wallet></app-wallet>
-  </div>
-</div>
+<div>
+	<div class="jumbotron text-center">
+		<div class="container">
+			<h1 class="jumbotron-heading">{{ name }}</h1>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row">
+			<app-wallet class="col-md-4" *ngFor="let wallet of wallets" [wallet]=wallet></app-wallet>
+		</div>
+	</div>
+</div>	
