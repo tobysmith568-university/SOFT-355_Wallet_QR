@@ -1,12 +1,10 @@
-<div>
-	<div class="jumbotron text-center">
-		<div class="container">
-			<h1 class="jumbotron-heading">{{ name }}</h1>
-		</div>
-	</div>
+<div class="jumbotron text-center full-width">
 	<div class="container">
-		<div class="row">
-			<app-wallet class="col-md-4" *ngFor="let wallet of wallets" [wallet]=wallet></app-wallet>
-		</div>
+		<h1 class="jumbotron-heading">{{ name }}</h1>
 	</div>
-</div>	
+</div>
+<div class="container">
+	<div class="row">
+		<app-wallet class="col-md-4" *ngFor="let wallet of wallets" [wallet]=wallet></app-wallet>
+	</div>
+</div>

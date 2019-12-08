@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
+import { IError } from "./error.interface";
 
 @Injectable({
   providedIn: "root"
@@ -10,7 +11,7 @@ export class ApiService {
 
   constructor(private readonly httpClient: HttpClient) { }
 
-  public async get<T>(path: string): Promise<T> {
-    return await this.httpClient.get<T>(this.server + path).toPromise();
+  public async get<T>(path: string): Promise<T | IError> {
+    return await this.httpClient.get<T | IError>(this.server + path).toPromise();
   }
 }
