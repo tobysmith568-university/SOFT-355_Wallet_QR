@@ -9,9 +9,12 @@ import { RouterModule, Routes } from "@angular/router";
 import { HeaderComponent } from "./components/header/header.component";
 import { FooterComponent } from "./components/footer/footer.component";
 import { WalletComponent } from "./components/wallet/wallet.component";
+import { LoginComponent } from "./components/login/login.component";
+import { FormsModule } from "@angular/forms";
 
 const routes: Routes = [
-  {path:  "", pathMatch: "full", component: HomeComponent},
+  {path: "", pathMatch: "full", component: HomeComponent},
+  {path: "login", component: LoginComponent},
   {path: ":username", component: ProfileComponent}
 ];
 
@@ -22,13 +25,15 @@ const routes: Routes = [
     ProfileComponent,
     HeaderComponent,
     FooterComponent,
-    WalletComponent
+    WalletComponent,
+    LoginComponent
   ],
   imports: [
     RouterModule.forRoot(routes),
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    FormsModule
   ],
   exports: [
     RouterModule

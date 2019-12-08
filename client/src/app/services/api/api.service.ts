@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { IError } from "./error.interface";
 
 @Injectable({
@@ -12,6 +12,18 @@ export class ApiService {
   constructor(private readonly httpClient: HttpClient) { }
 
   public async get<T>(path: string): Promise<T | IError> {
-    return await this.httpClient.get<T | IError>(this.server + path).toPromise();
+    let headers = new HttpHeaders();
+
+    if (localStorage.getItem("token")) {
+      headers = headers.set("Authorization", localStorage.getItem("token"));
+    }
+
+    return await this.httpClient.get<T | IError>(this.server + path, {
+      headers
+    }).toPromise();
+  }
+
+  public async post<T>(path: string, body: any): Promise<T | IError> {
+    return await this.httpClient.post<T | IError>(this.server + path, body).toPromise();
   }
 }

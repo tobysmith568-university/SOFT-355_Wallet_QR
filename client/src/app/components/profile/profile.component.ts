@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { UserApiService } from "src/app/services/api/user-api.service";
 import { IWallet } from "src/app/models/wallet.interface";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { IError } from "src/app/services/api/error.interface";
 import { IUser } from "src/app/models/user.interface";
 
@@ -16,11 +16,19 @@ export class ProfileComponent implements OnInit {
   private wallets: IWallet[] = new Array();
 
   constructor(private readonly userService: UserApiService,
-              private readonly route: ActivatedRoute) { }
+              private readonly route: ActivatedRoute,
+              private readonly router: Router) { }
 
   async ngOnInit() {
     this.route.paramMap.subscribe(async params => {
-      const result = await this.userService.getUser(params.get("username"));
+      const username = params.get("username");
+
+      if (username.length < 2 || username[0] !== "@") {
+        this.router.navigate([""]);
+        return;
+      }
+
+      const result = await this.userService.getUser(username.substring(1));
 
       if (this.isError(result)) {
         this.name = result.error;
