@@ -28,7 +28,11 @@ export default class Server {
     this.app.use(express.json());
 
     if (this.config.getEnvironment() !== ENV.prod) {
-      this.app.use(cors());
+      this.app.use(cors({
+        allowedHeaders: [
+          "Authorization"
+        ]
+      }));
     }
   }
 
