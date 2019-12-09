@@ -21,7 +21,12 @@ export class LoginComponent implements OnInit {
               private readonly router: Router) { }
 
   ngOnInit() {
-    if (localStorage.getItem("token")) {
+    const token = localStorage.getItem("token");
+    const username = localStorage.getItem("username");
+
+    if (token && username) {
+      this.router.navigate(["@" + username]);
+    } else if (token) {
       this.router.navigate([""]);
     }
   }
@@ -40,6 +45,9 @@ export class LoginComponent implements OnInit {
     }
 
     localStorage.setItem("token", result.token);
+    localStorage.setItem("username", result.username);
+
+    this.router.navigate(["@" + result.username]);
   }
 
   private isError(result: IToken | IError): result is IError {

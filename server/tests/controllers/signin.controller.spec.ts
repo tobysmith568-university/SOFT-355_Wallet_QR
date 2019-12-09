@@ -85,7 +85,10 @@ describe("In the signin controller", () => {
 
       await subject.signIn(req.object, res.object);
 
-      res.verify(r => r.json({token: token}), Times.once());
+      res.verify(r => r.json({
+        token: token,
+        username: username
+      }), Times.once());
     });
   });
 

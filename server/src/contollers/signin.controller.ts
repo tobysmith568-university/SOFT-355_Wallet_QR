@@ -32,6 +32,9 @@ export class SignInController {
       return;
     }
     
-    res.json({token: await this.tokenService.create(user.username)});
+    res.json({
+      token: await this.tokenService.create(user.username),
+      username: user.username
+    });
   }
 }
