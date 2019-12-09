@@ -22,4 +22,8 @@ export class HeaderComponent implements OnInit {
     return this.currentRoute === route;
   }
 
+  private isLoggedIn() {
+    const token = localStorage.getItem("token");
+    return token !== null && token.length > 0;
+  }
 }

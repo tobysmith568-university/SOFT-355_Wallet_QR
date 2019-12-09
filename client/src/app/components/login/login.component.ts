@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from "@angular/core";
 import { SignInApiService } from "src/app/services/api/signin-api.service";
 import { IToken } from "src/app/models/token.interface";
 import { IError } from "src/app/services/api/error.interface";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-login",
@@ -16,9 +17,13 @@ export class LoginComponent implements OnInit {
 
   formEnabled = true;
 
-  constructor(private readonly signInService: SignInApiService) { }
+  constructor(private readonly signInService: SignInApiService,
+              private readonly router: Router) { }
 
   ngOnInit() {
+    if (localStorage.getItem("token")) {
+      this.router.navigate([""]);
+    }
   }
 
   async login() {
