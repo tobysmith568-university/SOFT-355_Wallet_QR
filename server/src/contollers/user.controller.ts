@@ -18,7 +18,7 @@ export class UserController {
     });
 
     if (searchResults.length === 0) {
-      res.json({error: "User could not be found"});
+      res.json({error: `${req.params.username} does not exist :(`});
       return;
     }
 

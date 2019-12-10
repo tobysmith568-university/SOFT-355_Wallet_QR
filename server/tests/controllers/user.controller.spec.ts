@@ -8,6 +8,7 @@ import { UserRepository } from "../../src/database/repositories/user.repository"
 import { IUserDbo } from "../../src/database/models/user.dbo.interface";
 import { IPasswordService } from "../../src/services/password.service.interface";
 import { IWallet } from "../../src/api/models/wallet.interface";
+import { ParamsDictionary } from "express-serve-static-core";
 
 describe("In the user controller", () => {
   
@@ -36,12 +37,15 @@ describe("In the user controller", () => {
     });
 
     it("should return an error message when a user does not exist", async () => {
+      const username = "thisIsMyUsername";
+
+      given_req_params_has("username", username);
 
       given_userRepository_find_returns([]);
 
       await subject.getById(req.object, res.object);
 
-      res.verify(r => r.json({error: "User could not be found"}), Times.once());
+      res.verify(r => r.json({error: username + " does not exist :("}), Times.once());
     });
 
     it("should return a user when they do exist", async () => {
@@ -196,6 +200,17 @@ describe("In the user controller", () => {
     req
       .setup(r => r.body)
       .returns(() => body);
+  }
+
+  function given_req_params_has(key: string, value: string) {
+    const params = Mock.ofType<ParamsDictionary>();
+    params
+      .setup(t => t[key])
+      .returns(() => value);
+
+    req
+      .setup(r => r.params)
+      .returns(() => params.object);
   }
 
   function given_userRepository_create_returns(returns: IUserDbo) {
