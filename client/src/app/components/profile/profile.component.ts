@@ -24,7 +24,12 @@ export class ProfileComponent implements OnInit {
       const username = params.get("username");
 
       if (username.length < 2 || username[0] !== "@") {
-        this.router.navigate([""]);
+        this.router.navigate(["/404"], {
+          skipLocationChange: true,
+          state: {
+            username
+          }
+        });
         return;
       }
 

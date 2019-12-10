@@ -12,12 +12,15 @@ import { WalletComponent } from "./components/wallet/wallet.component";
 import { LoginComponent } from "./components/login/login.component";
 import { FormsModule } from "@angular/forms";
 import { LogoutComponent } from "./components/logout/logout.component";
+import { NotFoundComponent } from "./components/not-found/not-found.component";
 
 const routes: Routes = [
-  {path: "", pathMatch: "full", component: HomeComponent},
-  {path: "login", component: LoginComponent},
-  {path: "logout", component: LogoutComponent},
-  {path: ":username", component: ProfileComponent}
+  { path: "", pathMatch: "full", component: HomeComponent },
+  { path: "login", component: LoginComponent },
+  { path: "logout", component: LogoutComponent },
+  { path: "404", component: NotFoundComponent },
+  { path: ":username", component: ProfileComponent },
+  { path: "**", redirectTo: "/404" }
 ];
 
 @NgModule({
@@ -29,7 +32,8 @@ const routes: Routes = [
     FooterComponent,
     WalletComponent,
     LoginComponent,
-    LogoutComponent
+    LogoutComponent,
+    NotFoundComponent
   ],
   imports: [
     RouterModule.forRoot(routes),
