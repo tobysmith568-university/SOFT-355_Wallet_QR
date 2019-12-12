@@ -15,5 +15,5 @@
 			{{ message }}
 		</div>
 	</div>
+	<button (click)="login()" [disabled]="!formEnabled" class="btn btn-primary">Login</button>
 </form>
-<button (click)="login()" [disabled]="!formEnabled" class="btn btn-primary">Login</button>

@@ -2,6 +2,9 @@ import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { AppRoutingModule } from "./app-routing.module";
 import { HttpClientModule } from "@angular/common/http";
+import { PerfectScrollbarModule } from "ngx-perfect-scrollbar";
+import { PERFECT_SCROLLBAR_CONFIG } from "ngx-perfect-scrollbar";
+import { PerfectScrollbarConfigInterface } from "ngx-perfect-scrollbar";
 import { AppComponent } from "./app.component";
 import { HomeComponent } from "./components/home/home.component";
 import { ProfileComponent } from "./components/profile/profile.component";
@@ -14,6 +17,10 @@ import { FormsModule } from "@angular/forms";
 import { LogoutComponent } from "./components/logout/logout.component";
 import { NotFoundComponent } from "./components/not-found/not-found.component";
 import { SignupComponent } from "./components/signup/signup.component";
+
+const scrollConfig: PerfectScrollbarConfigInterface = {
+  suppressScrollX: true
+};
 
 const routes: Routes = [
   { path: "", pathMatch: "full", component: HomeComponent },
@@ -43,12 +50,18 @@ const routes: Routes = [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    PerfectScrollbarModule
   ],
   exports: [
     RouterModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: PERFECT_SCROLLBAR_CONFIG,
+      useValue: scrollConfig
+    }
+  ],
   bootstrap: [
     AppComponent
   ]

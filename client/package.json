@@ -26,6 +26,7 @@
     "chai": "^4.2.0",
     "jquery": "^3.4.1",
     "mocha": "^6.2.2",
+    "ngx-perfect-scrollbar": "^8.0.0",
     "qrcode": "1.4.2",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",
