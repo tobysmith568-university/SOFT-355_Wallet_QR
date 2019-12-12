@@ -46,6 +46,14 @@ describe("In the user route", () => {
 
       router.verify(r => r.patch(path, tokenMiddleware.object.middleware(), It.isAny()), Times.once());
     });
+    
+    it("should set up the head route at /user/:username", async () => {
+      const path = "/user/:username";
+
+      subject.setupRoutes();
+
+      router.verify(r => r.head(path, It.isAny()), Times.once());
+    });
   });
 
   describe("getRouter", () => {
@@ -53,5 +61,4 @@ describe("In the user route", () => {
       assert.deepStrictEqual(subject.getRouter(), router.object);
     });
   });
-
 });
