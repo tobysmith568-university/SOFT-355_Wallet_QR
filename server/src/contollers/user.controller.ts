@@ -127,5 +127,12 @@ export class UserController {
   }
 
   public exists = async (req: Request, res: Response) => {
+
+    const searchResults = await this.userRepository.find({
+      username: req.params.username
+    });
+
+    res.status(searchResults.length === 0 ? 404 : 200);
+    res.send();
   }
 }
