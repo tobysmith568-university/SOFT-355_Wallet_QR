@@ -45,7 +45,7 @@ describe("In the user controller", () => {
 
       await subject.getById(req.object, res.object);
 
-      res.verify(r => r.json({error: username + " does not exist :("}), Times.once());
+      res.verify(r => r.json({error: "@" + username + " does not exist :("}), Times.once());
     });
 
     it("should return a user when they do exist", async () => {
