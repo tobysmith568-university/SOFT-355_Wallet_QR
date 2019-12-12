@@ -11,9 +11,9 @@ export class UserRoute implements IRoute {
 
   public setupRoutes(): void {
     this.expressRouter.post("/user", this.controller.create);
+    this.expressRouter.head("/user/:username", this.controller.exists);
     this.expressRouter.get("/user/:username", this.controller.getById);
     this.expressRouter.patch("/user/:username", this.tokenMiddleware.middleware(), this.controller.modify);
-    this.expressRouter.head("/user/:username", this.controller.exists);
   }
   
   public getRouter(): Router {
