@@ -125,4 +125,7 @@ export class UserController {
     res.statusCode = 204;
     res.send();
   }
+
+  public exists = async (req: Request, res: Response) => {
+  }
 }

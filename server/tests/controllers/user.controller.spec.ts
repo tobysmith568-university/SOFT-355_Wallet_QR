@@ -57,7 +57,6 @@ describe("In the user controller", () => {
       } as IUserDbo]);
 
       await subject.getById(req.object, res.object);
-
       res.verify(r => r.json({
         name: undefined,
         username: username,
@@ -196,6 +195,67 @@ describe("In the user controller", () => {
     });
   });
 
+  describe("exists", () => {
+
+    it("should not be null", () => {
+      assert.isNotNull(subject.exists);
+    });
+
+    it("should return a 404 when a user does not exist", async () => {
+      const username = "thisIsMyUsername";
+
+      given_req_params_has("username", username);
+
+      given_userRepository_find_returns([]);
+
+      await subject.exists(req.object, res.object);
+
+      res.verify(r => r.status(404), Times.once());
+    });
+
+    it ("should return no body when a user does not exist", async () => {
+      const username = "thisIsMyUsername";
+
+      given_req_params_has("username", username);
+
+      given_userRepository_find_returns([]);
+
+      await subject.exists(req.object, res.object);
+
+      then_response_body_wasNeverSet();
+    });
+
+    it("should return a 200 when a user does exist", async () => {
+      const username = "thisIsMyUsername";
+
+      given_req_params_has("username", username);
+
+      given_userRepository_find_returns([{
+        username: username,
+        wallets: new Array<IWallet>()
+      } as IUserDbo]);
+
+      await subject.exists(req.object, res.object);
+
+      res.verify(r => r.status(200), Times.once());
+    });
+
+    it("should return a 200 when a user does exist", async () => {
+      const username = "thisIsMyUsername";
+
+      given_req_params_has("username", username);
+
+      given_userRepository_find_returns([{
+        username: username,
+        wallets: new Array<IWallet>()
+      } as IUserDbo]);
+
+      await subject.exists(req.object, res.object);
+
+      then_response_body_wasNeverSet();
+    });
+  });
+
   function given_req_body_equals(body: any) {
     req
       .setup(r => r.body)
@@ -229,5 +289,13 @@ describe("In the user controller", () => {
     userRepository
       .setup(u => u.find(It.isAny()))
       .returns(async () => users);
+  }
+
+  function then_response_body_wasNeverSet() {
+    res.verify(r => r.json(It.isAny()), Times.never());
+    res.verify(r => r.jsonp(It.isAny()), Times.never());
+    res.verify(r => r.end(It.isAny()), Times.never());
+    res.verify(r => r.send(It.isAny()), Times.once());
+    res.verify(r => r.send(), Times.once());
   }
 });
