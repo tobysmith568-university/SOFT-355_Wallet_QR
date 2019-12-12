@@ -1,6 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { isNullOrUndefined } from "util";
 import { UserApiService } from "src/app/services/api/user-api.service";
+import { ICreateUser } from "src/app/models/createuser.interface";
+import { IError } from "src/app/services/api/error.interface";
+import { Router } from "@angular/router";
+import { SignInApiService } from "src/app/services/api/signin-api.service";
+import { IToken } from "src/app/models/token.interface";
 
 @Component({
   selector: "app-signup",
@@ -23,7 +28,9 @@ export class SignupComponent implements OnInit {
   private password: string;
   private confirmPassword: string;
 
-  constructor(private readonly userApiService: UserApiService) { }
+  constructor(private readonly userApiService: UserApiService,
+              private readonly signInApiService: SignInApiService,
+              private readonly router: Router) { }
 
   ngOnInit() {
   }
@@ -108,8 +115,8 @@ export class SignupComponent implements OnInit {
     return this.password === this.confirmPassword;
   }
 
-  private signup() {
-    this.usernameFocusOut();
+  private async signup() {
+    await this.usernameFocusOut();
     this.nameFocusOut();
     this.emailFocusOut();
     this.passwordFocusOut();
@@ -122,6 +129,27 @@ export class SignupComponent implements OnInit {
        return;
      }
 
-    console.log("SUBMITTING");
+    const createResult = await this.userApiService.createUser(this.username, this.name, this.email, this.password);
+
+    if (this.isError(createResult)) {
+      // Show form error
+      return;
+    }
+
+    const signInResult = await this.signInApiService.signIn({
+      username: this.username,
+      password: this.password
+    });
+
+    if (this.isError(signInResult)) {
+      // Show account error
+      return;
+    }
+
+    this.router.navigate(["@" + createResult.username]);
+  }
+
+  private isError(result: IToken | ICreateUser | IError): result is IError {
+    return (result as IError).error !== undefined;
   }
 }

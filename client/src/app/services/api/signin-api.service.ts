@@ -12,6 +12,17 @@ export class SignInApiService {
   constructor(private readonly apiService: ApiService) { }
 
   public async signIn(request: ISignInRequest): Promise<IToken | IError> {
-    return await this.apiService.post<IToken>("/signin", request);
+    const result = await this.apiService.post<IToken>("/signin", request);
+
+    if (!this.isError(result)) {
+      localStorage.setItem("token", result.token);
+      localStorage.setItem("username", result.username);
+    }
+
+    return result;
+  }
+
+  private isError(result: IToken | IError): result is IError {
+    return (result as IError).error !== undefined;
   }
 }
