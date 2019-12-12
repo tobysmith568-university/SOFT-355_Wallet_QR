@@ -13,4 +13,8 @@ export class UserApiService {
   public async getUser(username: string): Promise<IUser | IError> {
     return await this.apiService.get("/user/" + username);
   }
+
+  public async userExists(username: string): Promise<boolean> {
+    return await this.apiService.head("/user/" + username);
+  }
 }

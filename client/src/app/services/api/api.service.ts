@@ -26,4 +26,24 @@ export class ApiService {
   public async post<T>(path: string, body: any): Promise<T | IError> {
     return await this.httpClient.post<T | IError>(this.server + path, body).toPromise();
   }
+
+  public async head(path: string): Promise<boolean> {
+    try {
+      const result = await this.httpClient.head(this.server + path, {
+        observe: "response"
+      }).toPromise();
+
+      if (result.status === 200) {
+        return true;
+      }
+
+      return false;
+    } catch (e) {
+      if (e.name === "HttpErrorResponse" && e.status === 404) {
+        return false;
+      }
+
+      throw e;
+    }
+  }
 }

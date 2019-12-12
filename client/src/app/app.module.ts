@@ -13,11 +13,13 @@ import { LoginComponent } from "./components/login/login.component";
 import { FormsModule } from "@angular/forms";
 import { LogoutComponent } from "./components/logout/logout.component";
 import { NotFoundComponent } from "./components/not-found/not-found.component";
+import { SignupComponent } from "./components/signup/signup.component";
 
 const routes: Routes = [
   { path: "", pathMatch: "full", component: HomeComponent },
   { path: "login", component: LoginComponent },
   { path: "logout", component: LogoutComponent },
+  { path: "signup", component: SignupComponent },
   { path: "404", component: NotFoundComponent },
   { path: ":username", component: ProfileComponent },
   { path: "**", redirectTo: "/404" }
@@ -33,7 +35,8 @@ const routes: Routes = [
     WalletComponent,
     LoginComponent,
     LogoutComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    SignupComponent
   ],
   imports: [
     RouterModule.forRoot(routes),
