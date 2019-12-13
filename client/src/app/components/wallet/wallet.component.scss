@@ -1,9 +1,16 @@
-.name {
+p {
 	text-align: center;
 }
 
+.subtitle {
+	min-height: 35px;
+}
+
 .qr-wrapper {
-	padding: 20px;
+	padding-top: 0px;
+	padding-left: 20px;
+	padding-bottom: 20px;
+	padding-right: 20px;
 }
 
 .qrcode {
@@ -11,11 +18,6 @@
 	height: 100%;
 }
 
-.address {
-	text-align: center;
+.name {
+	margin: auto;
 }
-
-.currency {
-	text-align: center;
-}
-
