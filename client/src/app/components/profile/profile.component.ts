@@ -51,4 +51,8 @@ export class ProfileComponent implements OnInit {
   private isError(pet: IUser | IError): pet is IError {
     return (pet as IError).error !== undefined;
   }
+
+  private deleteWallet(index: number) {
+    this.wallets.splice(index, 1);
+  }
 }

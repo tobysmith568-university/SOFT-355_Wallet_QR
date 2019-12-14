@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { IWallet } from "src/app/models/wallet.interface";
 import { toDataURL } from "qrcode";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "app-wallet",
@@ -13,11 +13,17 @@ export class WalletComponent implements OnInit {
   @Input()
   private wallet: IWallet;
 
+  @Input()
+  private index: number;
+
   @Output()
   private moveDownEvent = new EventEmitter<number>();
 
   @Output()
   private moveUpEvent = new EventEmitter<number>();
+
+  @Output()
+  private deleteEvent = new EventEmitter<number>();
 
   private qrData = "";
 
@@ -37,11 +43,15 @@ export class WalletComponent implements OnInit {
     return "@" + localStorage.getItem("username") === this.route.snapshot.paramMap.get("username");
   }
 
-  moveUp(index: number) {
-    this.moveUpEvent.emit(index);
+  private moveUp() {
+    this.moveUpEvent.emit(this.index);
   }
 
-  moveDown(index: number) {
-    this.moveDownEvent.emit(index);
+  private moveDown() {
+    this.moveDownEvent.emit(this.index);
+  }
+
+  private delete() {
+    this.deleteEvent.emit(this.index);
   }
 }
