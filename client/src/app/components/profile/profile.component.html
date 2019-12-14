@@ -3,8 +3,10 @@
 		<h1 class="jumbotron-heading">{{ name }}</h1>
 	</div>
 </div>
-<div class="container">
-	<div class="row">
-		<app-wallet class="col-md-4" *ngFor="let wallet of wallets" [wallet]=wallet></app-wallet>
+<div class="wallet-container">
+	<div class="wallet" *ngFor="let wallet of wallets">
+		<div class="example-box">
+			<app-wallet [wallet]=wallet></app-wallet>
+		</div>
 	</div>
 </div>

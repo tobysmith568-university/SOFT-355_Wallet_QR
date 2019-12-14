@@ -4,6 +4,7 @@ import { IWallet } from "src/app/models/wallet.interface";
 import { ActivatedRoute, Router } from "@angular/router";
 import { IError } from "src/app/services/api/error.interface";
 import { IUser } from "src/app/models/user.interface";
+import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 
 @Component({
   selector: "app-profile",
@@ -17,7 +18,8 @@ export class ProfileComponent implements OnInit {
 
   constructor(private readonly userService: UserApiService,
               private readonly route: ActivatedRoute,
-              private readonly router: Router) { }
+              private readonly router: Router) {
+  }
 
   async ngOnInit() {
     this.route.paramMap.subscribe(async params => {

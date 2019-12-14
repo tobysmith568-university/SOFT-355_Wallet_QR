@@ -17,6 +17,9 @@ import { FormsModule } from "@angular/forms";
 import { LogoutComponent } from "./components/logout/logout.component";
 import { NotFoundComponent } from "./components/not-found/not-found.component";
 import { SignupComponent } from "./components/signup/signup.component";
+import { MatIconRegistry, MatIconModule } from "@angular/material";
+import { DomSanitizer } from "@angular/platform-browser";
+import { DragDropModule } from "@angular/cdk/drag-drop";
 
 const scrollConfig: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -51,7 +54,9 @@ const routes: Routes = [
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    PerfectScrollbarModule
+    PerfectScrollbarModule,
+    MatIconModule,
+    DragDropModule
   ],
   exports: [
     RouterModule
@@ -66,4 +71,8 @@ const routes: Routes = [
     AppComponent
   ]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) {
+    matIconRegistry.addSvgIconSet(domSanitizer.bypassSecurityTrustResourceUrl("./assets/mdi.svg"));
+  }
+}
