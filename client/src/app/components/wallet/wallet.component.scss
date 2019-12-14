@@ -21,3 +21,16 @@ p {
 .name {
 	margin: auto;
 }
+
+.card .wallet-buttons {
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.card:hover .wallet-buttons {
+  opacity: 1;
+}
+
+.del-btn:hover {
+	background: #CF4647;
+}
