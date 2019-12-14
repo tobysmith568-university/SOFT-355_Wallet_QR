@@ -55,4 +55,12 @@ export class ProfileComponent implements OnInit {
   private deleteWallet(index: number) {
     this.wallets.splice(index, 1);
   }
+
+  private moveWalletUp(index: number) {
+    moveItemInArray(this.wallets, index, index + 1);
+  }
+
+  private moveWalletDown(index: number) {
+    moveItemInArray(this.wallets, index, index - 1);
+  }
 }

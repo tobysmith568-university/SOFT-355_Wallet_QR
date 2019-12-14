@@ -11,10 +11,12 @@
 		<div *ngIf="onOwnProfile()" class="wallet-buttons">
 			<div class="d-flex justify-content-between align-items-center">
 				<div class="btn-group">
-					<button type="button" class="btn btn-sm btn-outline-secondary">
+					<button type="button" class="btn btn-sm btn-outline-secondary"
+										(click)="moveDown()">
 						<mat-icon svgIcon="arrow-left-bold"></mat-icon>
 					</button>
-					<button type="button" class="btn btn-sm btn-outline-secondary">
+					<button type="button" class="btn btn-sm btn-outline-secondary"
+										(click)="moveUp()">
 						<mat-icon svgIcon="arrow-right-bold"></mat-icon>
 					</button>
 				</div>

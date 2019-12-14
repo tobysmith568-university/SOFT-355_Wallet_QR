@@ -7,7 +7,9 @@
 	<div class="wallet" *ngFor="let wallet of wallets; let i = index">
 		<div class="example-box">
 			<app-wallet [wallet]=wallet [index]=i
-								(deleteEvent)="deleteWallet($event)"></app-wallet>
+								(deleteEvent)="deleteWallet($event)"
+								(moveUpEvent)="moveWalletUp($event)"
+								(moveDownEvent)="moveWalletDown($event)"></app-wallet>
 		</div>
 	</div>
 </div>
