@@ -4,6 +4,9 @@
 	</div>
 </div>
 <div class="wallet-container">
+	<div *ngIf="!loaded" class="spinner">
+		<app-loading-spinner></app-loading-spinner>
+	</div>
 	<div class="wallet" *ngFor="let wallet of wallets; let i = index">
 		<div class="example-box">
 			<app-wallet [wallet]=wallet [index]=i

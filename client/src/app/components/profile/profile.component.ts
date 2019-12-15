@@ -13,6 +13,7 @@ import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 })
 export class ProfileComponent implements OnInit {
 
+  private loaded = false;
   private name = "";
   private wallets: IWallet[] = new Array();
 
@@ -43,6 +44,7 @@ export class ProfileComponent implements OnInit {
         return;
       }
 
+      this.loaded = true;
       this.name = result.name;
       this.wallets = result.wallets;
     });

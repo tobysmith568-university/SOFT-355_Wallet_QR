@@ -20,6 +20,7 @@ import { SignupComponent } from "./components/signup/signup.component";
 import { MatIconRegistry, MatIconModule } from "@angular/material";
 import { DomSanitizer } from "@angular/platform-browser";
 import { DragDropModule } from "@angular/cdk/drag-drop";
+import { LoadingSpinnerComponent } from "./components/loading-spinner/loading-spinner.component";
 
 const scrollConfig: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -46,7 +47,8 @@ const routes: Routes = [
     LoginComponent,
     LogoutComponent,
     NotFoundComponent,
-    SignupComponent
+    SignupComponent,
+    LoadingSpinnerComponent
   ],
   imports: [
     RouterModule.forRoot(routes),
