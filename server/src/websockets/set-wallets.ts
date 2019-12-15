@@ -4,6 +4,8 @@ import { ITokenService } from "../services/token.service.interface";
 import { ISetWallets } from "./models/set-wallets.interface";
 import { UserRepository } from "../database/repositories/user.repository";
 import { IWalletDbo } from "../database/models/wallet.dbo.interface";
+import { IWallet } from "./models/wallet.interface";
+import { IUpdatedWallets } from "./models/updated-wallets.interface";
 
 export class SetWallets implements IWebsocket {
 
@@ -43,10 +45,26 @@ export class SetWallets implements IWebsocket {
 
     const user = users[0];
 
-    user.wallets = data.wallets as IWalletDbo[];
+    user.wallets = this.mapWallets(data.wallets);
 
     await user.save();
     
-    this.server.to(username).emit(JSON.stringify(user));
+    socket.to(username).emit("wallets", JSON.stringify({
+      wallets: data.wallets
+    } as IUpdatedWallets));
+  }
+
+  private mapWallets(wallets: IWallet[]): IWalletDbo[] {
+    const result = new Array<IWalletDbo>();
+
+    wallets.forEach((wallet) => {
+      result.push({
+        name: wallet.name,
+        currency: wallet.currency,
+        address: wallet.address
+      } as IWalletDbo);
+    });
+
+    return result;
   }
 }

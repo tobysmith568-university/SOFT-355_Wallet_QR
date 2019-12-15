@@ -7,7 +7,7 @@ export interface IWalletDbo extends Document {
 }
 
 export const WalletSchema: Schema = new Schema({
-  name: { type: String, required: true, unique: false },
+  name: { type: String, required: false, unique: false },
   currency: { type: String, required: true, unique: false },
   address: { type: String, required: true, unique: false }
 });
