@@ -1,7 +1,7 @@
 import { assert } from "chai";
 import { set } from "mockdate";
 import { JWTTokenService } from "../../src/services/implementations/jwt-token.service";
-import Config from "../../src/config/config";
+import { Config } from "../../src/config/config";
 import { IMock, Mock } from "typemoq";
 
 describe("In the JWT token service", async () => {

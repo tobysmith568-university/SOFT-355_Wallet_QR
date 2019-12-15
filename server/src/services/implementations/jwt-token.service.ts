@@ -1,6 +1,6 @@
-import { ITokenService } from "../token.service.interface";
 import { sign, verify } from "jsonwebtoken";
-import Config from "../../config/config";
+import { ITokenService } from "../token.service.interface";
+import { Config } from "../../config/config";
 
 export class JWTTokenService implements ITokenService {
 

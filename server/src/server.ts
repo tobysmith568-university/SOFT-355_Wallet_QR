@@ -1,10 +1,12 @@
 import * as express from "express";
 import * as cors from "cors";
-import Config from "./config/config";
+import * as socketio from "socket.io";
+import { Config } from "./config/config";
 import { ENV } from "./config/config";
 import { join } from "path";
 import { connect } from "mongoose";
 import { Express, Router } from "express";
+import { Server as HTTPServer } from "http";
 import { MongoError } from "mongodb";
 import { UserRoute } from "./api/routes/user.route";
 import { UserController } from "./contollers/user.controller";
@@ -14,12 +16,37 @@ import { SignInRoute } from "./api/routes/signin.route";
 import { SignInController } from "./contollers/signin.controller";
 import { JWTTokenService } from "./services/implementations/jwt-token.service";
 import { TokenAuthenticator } from "./middlewares/token-authenticator";
+import { IPasswordService } from "./services/password.service.interface";
+import { ITokenService } from "./services/token.service.interface";
+import { SetWallets } from "./websockets/set-wallets";
 
-export default class Server {
+export class Server {
 
-  constructor(private app: Express, private config: Config) {
-    
-    if (config.getEnvironment() === ENV.prod) {
+  private config: Config;
+  private app: Express;
+  private httpServer: HTTPServer;
+  private io: socketio.Server;
+
+  private userRepository: UserRepository;
+  private passwordService: IPasswordService;
+  private tokenService: ITokenService;
+
+  private tokenMiddleware: TokenAuthenticator;
+
+  constructor() {
+
+    this.config = new Config();
+    this.app = express();
+    this.httpServer = new HTTPServer(this.app);
+    this.io = socketio(this.httpServer);
+
+    this.userRepository = new UserRepository();
+    this.passwordService = new BcryptPasswordService();
+    this.tokenService = new JWTTokenService(this.config);
+
+    this.tokenMiddleware = new TokenAuthenticator(this.tokenService);
+
+    if (this.config.getEnvironment() === ENV.prod) {
       this.app.use(express.static(join(__dirname, "../../../../client/dist")));
     }
   }
@@ -54,27 +81,21 @@ export default class Server {
 
   public initializeControllers() {
 
-    const userRepository = new UserRepository();
-    const passwordService = new BcryptPasswordService();
-    const tokenService = new JWTTokenService(this.config);
-
-    const tokenMiddleware = new TokenAuthenticator(tokenService);
-    
     const userRoute = new UserRoute(
       Router(),
       new UserController(
-        userRepository,
-        passwordService
+        this.userRepository,
+        this.passwordService
       ),
-      tokenMiddleware
+      this.tokenMiddleware
     );
 
     const signinRoute = new SignInRoute(
       Router(),
       new SignInController(
-        userRepository,
-        passwordService,
-        tokenService
+        this.userRepository,
+        this.passwordService,
+        this.tokenService
       )
     );
 
@@ -83,12 +104,16 @@ export default class Server {
 
     this.app.use("/api", [
       userRoute.getRouter(),
-      signinRoute.getRouter()  
+      signinRoute.getRouter()
     ]);
   }
 
+  public initializeWebsockets() {
+    new SetWallets(this.io, this.tokenService, this.userRepository).setup();
+  }
+
   public listen(): void {
-    this.app.listen(this.config.getPort(), () => {
+    this.httpServer.listen(this.config.getPort(), () => {
       console.log(`server started at port ${this.config.getPort()}`);
     });
   }

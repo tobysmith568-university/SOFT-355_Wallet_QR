@@ -9,7 +9,7 @@ export const ENV = {
   test: "test"
 };
 
-export default class Config {
+export class Config {
 
   private configs: { [id: string]: AbstractConfig; } = {
     dev: new dev(),
