@@ -21,7 +21,6 @@ export class HeaderComponent implements OnInit {
     this.userSearchWebsocket.on("connect", () => {
       this.userSearchWebsocket.on("results", (data: ISearchResult[]) => {
         this.searchResults = data;
-        console.log(data);
       });
     });
   }
