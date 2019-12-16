@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-header",
@@ -8,7 +8,9 @@ import { ActivatedRoute, Router } from "@angular/router";
 })
 export class HeaderComponent implements OnInit {
 
-  currentRoute: string;
+  private currentRoute: string;
+  private searchTerm = "";
+  private searchResults = [ ];
 
   constructor(private readonly router: Router) { }
 
@@ -25,5 +27,21 @@ export class HeaderComponent implements OnInit {
   private isLoggedIn() {
     const token = localStorage.getItem("token");
     return token !== null && token.length > 0;
+  }
+
+  private search() {
+    if (this.searchTerm.length > 0) {
+      this.searchResults = [ this.searchTerm ];
+    } else {
+      this.searchResults = [];
+    }
+  }
+
+  private goToProfile(username: string) {
+    if (username.length > 0) {
+      this.router.navigate(["@" + username]);
+      this.searchTerm = "";
+      this.searchResults = [];
+    }
   }
 }

@@ -1,5 +1,33 @@
-
 .nav-item{
 	padding:2px;
 	margin-left: 7px;
+}
+
+.search-form {
+	margin-right: 45px;
+}
+
+.search-results {
+	position: absolute;
+	display: block;
+	top: 38px;
+	left: 42px;
+	right: 60px;
+	border-style: solid;
+	border-top-style: none;
+	border-width: thin;
+	border-color: grey;
+	background-color: white;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+
+.search-result {
+	padding-left: 12px;
+}
+
+.search-result:not(:last-of-type) {
+	border-bottom: 1px solid transparent;
+	border-image: linear-gradient(to left, #FFFFFF 0%, #DDDDDD 50%, #FFFFFF 100%);
+	border-image-slice: 1;
 }
