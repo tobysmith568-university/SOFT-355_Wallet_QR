@@ -19,6 +19,7 @@ import { TokenAuthenticator } from "./middlewares/token-authenticator";
 import { IPasswordService } from "./services/password.service.interface";
 import { ITokenService } from "./services/token.service.interface";
 import { SetWallets } from "./websockets/set-wallets";
+import { SearchUsers } from "./websockets/search-users";
 
 export class Server {
 
@@ -110,6 +111,7 @@ export class Server {
 
   public initializeWebsockets() {
     new SetWallets(this.io, this.tokenService, this.userRepository).setup();
+    new SearchUsers(this.io, this.userRepository).setup();
   }
 
   public listen(): void {
