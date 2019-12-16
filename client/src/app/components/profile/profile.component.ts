@@ -47,6 +47,10 @@ export class ProfileComponent implements OnInit {
         return;
       }
 
+      this.loaded = false;
+      this.name = "";
+      this.wallets = [];
+
       const usernameWithNoAt = username.substring(1);
 
       const result = await this.userService.getUser(usernameWithNoAt);
@@ -54,6 +58,7 @@ export class ProfileComponent implements OnInit {
       if (this.isError(result)) {
         this.name = result.error;
         this.wallets = new Array();
+        this.loaded = true;
         return;
       }
 
