@@ -23,7 +23,7 @@ export class ProfileComponent implements OnInit {
   constructor(private readonly userService: UserApiService,
               private readonly route: ActivatedRoute,
               private readonly router: Router) {
-    this.editWalletsWebsocket = connect(`ws://localhost:8000/editwallets`);
+    this.editWalletsWebsocket = connect("ws://localhost:8000/editwallets");
 
     this.editWalletsWebsocket.on("connect", () => {
       this.editWalletsWebsocket.on("wallets", (data: string) => {
