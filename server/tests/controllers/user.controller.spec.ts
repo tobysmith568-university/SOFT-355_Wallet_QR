@@ -60,7 +60,6 @@ describe("In the user controller", () => {
       res.verify(r => r.json({
         name: undefined,
         username: username,
-        email: undefined,
         wallets: new Array<IWallet>()
       }), Times.once());
     });
@@ -85,7 +84,6 @@ describe("In the user controller", () => {
       res.verify(r => r.json({
         name: wantedName,
         username: username,
-        email: undefined,
         wallets: new Array<IWallet>()
       }), Times.once());
     });

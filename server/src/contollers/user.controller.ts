@@ -27,7 +27,6 @@ export class UserController {
     const result = {
       name: searchResult.name,
       username: searchResult.username,
-      email: searchResult.email,
       wallets: new Array<IWallet>()
     } as IUser;
 
