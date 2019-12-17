@@ -16,6 +16,8 @@ export class HeaderComponent implements OnInit {
   private userSearchWebsocket: SocketIOClient.Socket;
   private focusedResult = -1;
 
+  private username: string;
+
   constructor(private readonly router: Router) {
     this.userSearchWebsocket = connect("ws://localhost:8000/searchusers");
 
@@ -24,6 +26,8 @@ export class HeaderComponent implements OnInit {
         this.searchResults = data;
       });
     });
+
+    this.username = localStorage.getItem("username");
   }
 
   async ngOnInit() {

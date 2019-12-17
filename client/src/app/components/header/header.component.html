@@ -9,6 +9,10 @@
 				<a class="nav-link" routerLink="">Home</a>
 			</li>
 			<li class="nav-item" *ngIf="isLoggedIn()">
+				<a class="nav-link" routerLink="{{'/@' + username }}" data-toggle="collapse"
+					[class.active]="isCurrent('/@' + username)">{{ username }}</a>
+			</li>
+			<li class="nav-item" *ngIf="isLoggedIn()">
 				<a class="nav-link" routerLink="/new" data-toggle="collapse"
 					[class.active]="isCurrent('/new')">New Wallet</a>
 			</li>
