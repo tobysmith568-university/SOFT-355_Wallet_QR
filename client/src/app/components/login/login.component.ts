@@ -41,6 +41,7 @@ export class LoginComponent implements OnInit {
 
     if (this.isError(result)) {
       this.message = result.error;
+      this.formEnabled = true;
       return;
     }
 
