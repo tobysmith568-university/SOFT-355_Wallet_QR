@@ -23,6 +23,13 @@ export class ApiService {
     }).toPromise();
   }
 
+  public async getExternal(path: string): Promise<string> {
+    return await this.httpClient.get(path, {
+      observe: "body",
+      responseType: "text"
+    }).toPromise();
+  }
+
   public async post<T>(path: string, body: any): Promise<T | IError> {
     return await this.httpClient.post<T | IError>(this.server + path, body).toPromise();
   }

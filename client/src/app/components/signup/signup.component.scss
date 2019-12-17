@@ -2,3 +2,27 @@ form {
 	padding-top: 75px;
 	width: 300px;
 }
+
+.password-spinner {
+	position: absolute;
+	right: 0px;
+	left: 1400px;
+	bottom: 0px;
+	top: 0px;
+	zoom: 0.22;
+}
+
+.password-warning{
+	border-style: solid;
+	border-color: #dc3545;
+	border-radius: 5px;
+	border-width: 1px;
+	padding: 10px;
+}
+
+.password-warning-text {
+	width: 100%;
+	margin-top: .25rem;
+	font-size: 80%;
+	color: #dc3545;
+}

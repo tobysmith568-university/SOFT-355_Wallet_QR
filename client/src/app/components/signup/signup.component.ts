@@ -6,6 +6,7 @@ import { IError } from "src/app/services/api/error.interface";
 import { Router } from "@angular/router";
 import { SignInApiService } from "src/app/services/api/signin-api.service";
 import { IToken } from "src/app/models/token.interface";
+import { PasswordAPIService } from "src/app/services/api/password-api.service";
 
 @Component({
   selector: "app-signup",
@@ -16,11 +17,14 @@ export class SignupComponent implements OnInit {
 
   private formEnabled = true;
   private matchNames = false;
+  private checkingPassword = false;
+  private knowTheRisks = false;
 
   private usernameError = "";
   private nameError = "";
   private emailError = "";
   private passwordError = "";
+  private timesBreached = 0;
 
   private username: string;
   private name: string;
@@ -30,6 +34,7 @@ export class SignupComponent implements OnInit {
 
   constructor(private readonly userApiService: UserApiService,
               private readonly signInApiService: SignInApiService,
+              private readonly passwordAPIService: PasswordAPIService,
               private readonly router: Router) { }
 
   ngOnInit() {
@@ -77,7 +82,7 @@ export class SignupComponent implements OnInit {
     this.emailError = "";
   }
 
-  private passwordFocusOut() {
+  private async passwordFocusOut() {
     if (isNullOrUndefined(this.password) || this.password.length === 0) {
       this.passwordError = "You need to enter a password";
       return;
@@ -108,6 +113,11 @@ export class SignupComponent implements OnInit {
       return;
     }
 
+    this.checkingPassword = true;
+
+    this.timesBreached = await this.passwordAPIService.checkPassword(this.password);
+
+    this.checkingPassword = false;
     this.passwordError = "";
   }
 
@@ -119,13 +129,15 @@ export class SignupComponent implements OnInit {
     await this.usernameFocusOut();
     this.nameFocusOut();
     this.emailFocusOut();
-    this.passwordFocusOut();
+    await this.passwordFocusOut();
 
     if (this.usernameError
      || this.nameError
      || this.emailError
      || this.passwordError
-     || !this.matchingPasswords()) {
+     || !this.matchingPasswords()
+     || this.checkingPassword
+     || (this.timesBreached && !this.knowTheRisks)) {
        return;
      }
 

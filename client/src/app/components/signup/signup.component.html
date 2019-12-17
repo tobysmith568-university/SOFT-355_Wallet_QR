@@ -40,15 +40,21 @@
 							(focusout)="emailFocusOut()">
 		<small class="invalid-feedback">{{ emailError }}</small>
 	</div>
-
+	
 	<div class="form-group">
 		<label for="password">Password</label>
-		<input name="password" id="password" type="password" class="form-control" placeholder="Password"
-							[class.is-invalid]="passwordError"
-							[disabled]="!formEnabled"
-							[(ngModel)]="password"
-							(focusout)="passwordFocusOut()">
-		<small class="invalid-feedback">{{ passwordError }}</small>
+		
+		<div class="input-group">
+			<input name="password" id="password" type="password" class="form-control" placeholder="Password"
+								[class.is-invalid]="passwordError"
+								[disabled]="!formEnabled"
+								[(ngModel)]="password"
+								(focusout)="passwordFocusOut()">
+			<div class="password-spinner" *ngIf="checkingPassword">
+				<app-loading-spinner></app-loading-spinner>
+			</div>
+			<small class="invalid-feedback">{{ passwordError }}</small>
+		</div>
 	</div>
 
 	<div class="form-group">
@@ -58,6 +64,17 @@
 							[disabled]="!formEnabled"
 							[(ngModel)]="confirmPassword">
 		<div class="invalid-feedback">Passwords do not match</div>
+	</div>
+
+	<div class="form-group password-warning" *ngIf="timesBreached">
+			<label class="password-warning-text" for="knowTheRisks">This password has appeared in well-known password breaches {{ timesBreached }} times!</label>
+			<label class="password-warning-text" for="knowTheRisks">This makes it a poor password because hackers know to use it as a guess.</label>
+			<div class="form-check">
+				<input name="knowTheRisks" id="knowTheRisks" type="checkbox" class="form-check-input"
+									[class.is-invalid]="!knowTheRisks"
+									[(ngModel)]="knowTheRisks">
+				<label class="form-check-label" for="knowTheRisks">I understand the risks</label>
+			</div>
 	</div>
 
 	<button class="btn btn-primary"
