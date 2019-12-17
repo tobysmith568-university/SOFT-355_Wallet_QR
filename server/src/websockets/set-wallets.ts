@@ -11,7 +11,7 @@ export class SetWallets implements IWebsocket {
 
   private namespace: Namespace;
 
-  constructor(private readonly server: Server,
+  constructor(server: Server,
               private readonly tokenService: ITokenService,
               private readonly userRepository: UserRepository) {
     this.namespace = server.of("/editwallets");
@@ -21,6 +21,7 @@ export class SetWallets implements IWebsocket {
     this.namespace.on("connection", (socket: Socket) => {
       socket.on("profile", async (msg) => this.onProfile(socket, msg));
       socket.on("set", async (msg) => this.set(socket, msg));
+      socket.on("add", async (msg) => this.add(socket, msg));
     });
   }
 
@@ -52,6 +53,33 @@ export class SetWallets implements IWebsocket {
     socket.to(username).emit("wallets", JSON.stringify({
       wallets: data.wallets
     } as IUpdatedWallets));
+  }
+
+  private async add(socket: Socket, msg: any): Promise<void> {
+    const data = msg as ISetWallets;
+    const username = await this.tokenService.verify(data.token);
+
+    if (!username) {
+      return;
+    }
+
+    const users = await this.userRepository.find({ username: username });
+
+    if (users.length !== 1) {
+      return;
+    }
+
+    const user = users[0];
+
+    data.wallets.forEach((wallet) => {
+      user.wallets.push({
+        name: wallet.name,
+        currency: wallet.currency,
+        address: wallet.address
+      } as IWalletDbo);
+    });
+
+    await user.save();
   }
 
   private mapWallets(wallets: IWallet[]): IWalletDbo[] {

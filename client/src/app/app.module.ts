@@ -1,26 +1,27 @@
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
-import { AppRoutingModule } from "./app-routing.module";
 import { HttpClientModule } from "@angular/common/http";
+import { RouterModule, Routes } from "@angular/router";
+import { FormsModule } from "@angular/forms";
+import { DomSanitizer } from "@angular/platform-browser";
+import { DragDropModule } from "@angular/cdk/drag-drop";
+import { MatIconRegistry, MatIconModule } from "@angular/material";
 import { PerfectScrollbarModule } from "ngx-perfect-scrollbar";
 import { PERFECT_SCROLLBAR_CONFIG } from "ngx-perfect-scrollbar";
 import { PerfectScrollbarConfigInterface } from "ngx-perfect-scrollbar";
+import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { HomeComponent } from "./components/home/home.component";
 import { ProfileComponent } from "./components/profile/profile.component";
-import { RouterModule, Routes } from "@angular/router";
 import { HeaderComponent } from "./components/header/header.component";
 import { FooterComponent } from "./components/footer/footer.component";
 import { WalletComponent } from "./components/wallet/wallet.component";
 import { LoginComponent } from "./components/login/login.component";
-import { FormsModule } from "@angular/forms";
 import { LogoutComponent } from "./components/logout/logout.component";
 import { NotFoundComponent } from "./components/not-found/not-found.component";
 import { SignupComponent } from "./components/signup/signup.component";
-import { MatIconRegistry, MatIconModule } from "@angular/material";
-import { DomSanitizer } from "@angular/platform-browser";
-import { DragDropModule } from "@angular/cdk/drag-drop";
 import { LoadingSpinnerComponent } from "./components/loading-spinner/loading-spinner.component";
+import { NewWalletComponent } from "./components/new-wallet/new-wallet.component";
 
 const scrollConfig: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -31,6 +32,7 @@ const routes: Routes = [
   { path: "login", component: LoginComponent },
   { path: "logout", component: LogoutComponent },
   { path: "signup", component: SignupComponent },
+  { path: "new", component: NewWalletComponent },
   { path: "404", component: NotFoundComponent },
   { path: ":username", component: ProfileComponent },
   { path: "**", redirectTo: "/404" }
@@ -48,7 +50,8 @@ const routes: Routes = [
     LogoutComponent,
     NotFoundComponent,
     SignupComponent,
-    LoadingSpinnerComponent
+    LoadingSpinnerComponent,
+    NewWalletComponent
   ],
   imports: [
     RouterModule.forRoot(routes),

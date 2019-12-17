@@ -8,9 +8,9 @@
 			<li class="nav-item" [class.active]="isCurrent('/')">
 				<a class="nav-link" routerLink="">Home</a>
 			</li>
-			<li class="nav-item">
-				<a class="nav-link" routerLink="/@tobysmith568" data-toggle="collapse"
-					[class.active]="isCurrent('/@tobysmith568')">tobysmith568</a>
+			<li class="nav-item" *ngIf="isLoggedIn()">
+				<a class="nav-link" routerLink="/new" data-toggle="collapse"
+					[class.active]="isCurrent('/new')">New Wallet</a>
 			</li>
 		</ul>
 		<ul class="navbar-nav ml-auto">
