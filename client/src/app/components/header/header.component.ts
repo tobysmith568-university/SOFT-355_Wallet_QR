@@ -14,6 +14,7 @@ export class HeaderComponent implements OnInit {
   private searchTerm = "";
   private searchResults: ISearchResult[] = [ ];
   private userSearchWebsocket: SocketIOClient.Socket;
+  private focusedResult = -1;
 
   constructor(private readonly router: Router) {
     this.userSearchWebsocket = connect("ws://localhost:8000/searchusers");
@@ -48,11 +49,41 @@ export class HeaderComponent implements OnInit {
     }
   }
 
+  private searchBlur() {
+    setTimeout(() => {
+      this.searchResults = [];
+    }, 100);
+  }
+
+  private keypress(event: KeyboardEvent) {
+    if (event.code === "ArrowDown" && this.focusedResult < this.searchResults.length - 1) {
+      this.focusedResult++;
+      return;
+    }
+
+    if (event.code === "ArrowUp" && this.focusedResult > 0) {
+      this.focusedResult--;
+    }
+  }
+
   private goToProfile(username: string) {
+
+    if (username === undefined) {
+      const result = this.searchResults[this.focusedResult];
+
+      if (result !== undefined) {
+        username = result.username;
+      } else {
+        username = this.searchTerm;
+      }
+    }
+
     if (username.length > 0) {
       this.router.navigate(["@" + username]);
       this.searchTerm = "";
       this.searchResults = [];
     }
+
+    this.focusedResult = -1;
   }
 }

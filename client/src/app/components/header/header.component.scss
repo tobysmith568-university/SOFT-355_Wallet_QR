@@ -24,10 +24,15 @@
 
 .search-result {
 	padding-left: 12px;
+	overflow: hidden;
 }
 
 .search-result:not(:last-of-type) {
 	border-bottom: 1px solid transparent;
 	border-image: linear-gradient(to left, #FFFFFF 0%, #DDDDDD 50%, #FFFFFF 100%);
 	border-image-slice: 1;
+}
+
+form input#userSearch:focus {
+	width: 300px;
 }

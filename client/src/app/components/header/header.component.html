@@ -23,15 +23,19 @@
 						<input name="username" type="text" class="form-control" id="userSearch" placeholder="Username"
 											[(ngModel)]="searchTerm"
 											(input)="search()"
-											(keyup.enter)="goToProfile(searchTerm)">
+											(focus)="search()"
+											(blur)="searchBlur()"
+											(keyup.enter)="goToProfile()"
+											(keyup)="keypress($event)">
 						<div class="search-results" *ngIf="searchResults.length > 0">
-							<a class="dropdown-item search-result" routerLink="/@{{ result.userame }}" *ngFor="let result of searchResults"
-												(click)="goToProfile(result.username)">{{ result.name }} ({{ result.username}})</a>
+							<a class="dropdown-item search-result" routerLink="/@{{ result.userame }}" *ngFor="let result of searchResults; let i = index"
+												[class.active]="i === focusedResult"
+												(click)="goToProfile(result.username)">{{ result.name }} (@{{ result.username }})</a>
 						</div>
 						<div class="input-group-append">
 							<button class="btn btn-secondary" type="button"
 												[disabled]="searchTerm.length === 0"
-												(click)="goToProfile(searchTerm)">Goto</button>
+												(click)="goToProfile()">Goto</button>
 						</div>
 					</div>
 				</form>
