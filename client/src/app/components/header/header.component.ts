@@ -33,6 +33,7 @@ export class HeaderComponent implements OnInit {
   async ngOnInit() {
     this.router.events.subscribe(() => {
       this.currentRoute = this.router.url;
+      this.username = localStorage.getItem("username");
     });
   }
 
