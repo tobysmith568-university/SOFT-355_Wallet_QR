@@ -32,11 +32,7 @@ export class JWTTokenService implements ITokenService {
     try {
       const payload = verify(token, this.config.getTokenSecret());
 
-      if (typeof payload === "string") {
-        return payload;
-      }
-
-      return (payload as any).usr;
+      return payload;
     } catch {
       return null;
     }
