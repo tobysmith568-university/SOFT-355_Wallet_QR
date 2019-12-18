@@ -8,10 +8,19 @@ export class JWTTokenService implements ITokenService {
 
   constructor(private readonly config: Config) {}
 
-  async create(username: string, expiresIn: string | number): Promise<string> {
-    const result = sign({
+  async create(username: string, expiresIn: string | number, extraFields?: Map<string, string>): Promise<string> {
+
+    const payload = {
       usr: username
-    }, this.config.getTokenSecret(), {
+    } as any;
+
+    if (extraFields) {
+      for (const key of extraFields.keys()) {
+        payload[key] = extraFields.get(key);
+      }
+    }
+
+    const result = sign(payload, this.config.getTokenSecret(), {
       algorithm: JWTTokenService.hashFunction,
       expiresIn: expiresIn,
     });

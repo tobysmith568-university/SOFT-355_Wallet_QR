@@ -86,6 +86,26 @@ describe("In the JWT token service", async () => {
     }));
 
     [
+      { key: "dtr", value: "This is some data" },
+      { key: "vld", value: "This is some validation data" },
+      { key: "dmy", value: "This is some dummy data" }
+    ].forEach((pair) => it(`should create a token with the additional payload key ${pair.key}`, async () => {
+
+      given_config_getTokenSecret_returns("anything");
+      given_theCurrentUnixTimestamp_is(1575541800);
+
+      const map = new Map<string, string>();
+      map.set(pair.key, pair.value);
+
+      const result = await subject.create("myUsername", "1 hour", map);
+      
+      const parts = result.split(/[\.]+/);
+      const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("ascii"));
+
+      assert.equal(payload[pair.key], pair.value);
+    }));
+
+    [
       { username: "myUsername", signature: "8VBMqfWLUto27goIE93kf-it_3eEPSZ5qFNLBLKSe3M" },
       { username: "aDifferentUsername", signature: "lYUspv9Jpw1PnEzHMXItH3ducnWLTCVPdBENncb9XAg" },
       { username: "aThirdUsername", signature: "t1B9Wr9U2sViaMtfvS7-wddkIddOIU0obWhxbGJhVAs" }
