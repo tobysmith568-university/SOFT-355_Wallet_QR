@@ -53,14 +53,17 @@ describe("In the user controller", () => {
 
       given_userRepository_find_returns([{
         username: username,
-        wallets: new Array<IWallet>()
+        wallets: new Array<IWallet>(),
+        emailVerified: false
       } as IUserDbo]);
 
       await subject.getById(req.object, res.object);
+
       res.verify(r => r.json({
         name: undefined,
         username: username,
-        wallets: new Array<IWallet>()
+        wallets: new Array<IWallet>(),
+        emailVerified: false
       }), Times.once());
     });
 
@@ -72,11 +75,13 @@ describe("In the user controller", () => {
       given_userRepository_find_returns([{
         username: username,
         name: wantedName,
-        wallets: new Array<IWallet>()
+        wallets: new Array<IWallet>(),
+        emailVerified: true
       } as IUserDbo, {
         username: username,
         name: unwantedName,
-        wallets: new Array<IWallet>()
+        wallets: new Array<IWallet>(),
+        emailVerified: false
       } as IUserDbo]);
 
       await subject.getById(req.object, res.object);
@@ -84,7 +89,8 @@ describe("In the user controller", () => {
       res.verify(r => r.json({
         name: wantedName,
         username: username,
-        wallets: new Array<IWallet>()
+        wallets: new Array<IWallet>(),
+        emailVerified: true
       }), Times.once());
     });
   });

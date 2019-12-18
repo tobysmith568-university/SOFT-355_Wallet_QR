@@ -27,7 +27,8 @@ export class UserController {
     const result = {
       name: searchResult.name,
       username: searchResult.username,
-      wallets: new Array<IWallet>()
+      wallets: new Array<IWallet>(),
+      emailVerified: searchResult.emailVerified
     } as IUser;
 
     searchResult.wallets.forEach(wallet => result.wallets.push({
@@ -48,7 +49,8 @@ export class UserController {
       email: body.email,
       name: body.name,
       passwordHash: await this.passwordService.hash(body.password),
-      wallets: body.wallets
+      wallets: body.wallets,
+      emailVerified: false
     } as IUserDbo;
 
     body.password = "";
