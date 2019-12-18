@@ -46,6 +46,10 @@ export class SetWallets implements IWebsocket {
 
     const user = users[0];
 
+    if (!user.emailVerified) {
+      return;
+    }
+
     user.wallets = this.mapWallets(data.wallets);
 
     await user.save();
@@ -70,6 +74,10 @@ export class SetWallets implements IWebsocket {
     }
 
     const user = users[0];
+
+    if (!user.emailVerified) {
+      return;
+    }
 
     data.wallets.forEach((wallet) => {
       user.wallets.push({

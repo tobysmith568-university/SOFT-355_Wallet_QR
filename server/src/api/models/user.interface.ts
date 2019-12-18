@@ -3,7 +3,8 @@ import { IWallet } from "./wallet.interface";
 export interface IUser {
   username: string;
   email: string;
-  name: string;
+  displayName: string;
   password: string;
   wallets: IWallet[];
+  emailVerified: boolean;
 }

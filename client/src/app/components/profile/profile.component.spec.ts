@@ -15,7 +15,7 @@ describe("ProfileComponent", () => {
   beforeEach(async(() => {
     const user: IUser = {
       email: "thisIsMyEmail",
-      name: "thisIsMyName",
+      displayName: "thisIsMyName",
       username: "thisIsMyUsername",
       wallets: [
         {

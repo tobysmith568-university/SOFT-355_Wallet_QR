@@ -25,7 +25,7 @@ export class UserController {
     const searchResult = searchResults[0];
 
     const result = {
-      name: searchResult.name,
+      displayName: searchResult.displayName,
       username: searchResult.username,
       wallets: new Array<IWallet>(),
       emailVerified: searchResult.emailVerified
@@ -47,7 +47,7 @@ export class UserController {
     const newDbo = {
       username: body.username,
       email: body.email,
-      name: body.name,
+      displayName: body.displayName,
       passwordHash: await this.passwordService.hash(body.password),
       wallets: body.wallets,
       emailVerified: false
@@ -73,7 +73,7 @@ export class UserController {
     }
     
     const result = {
-      name: createdDbo.name,
+      displayName: createdDbo.displayName,
       username: createdDbo.username,
       email: createdDbo.email,
       wallets: new Array<IWallet>()
@@ -118,8 +118,11 @@ export class UserController {
     const changes: Partial<IUserDbo> = req.body;
 
     user.email = changes.email || user.email;
-    user.name = changes.name || user.name;
-    user.wallets = changes.wallets || user.wallets;
+    user.displayName = changes.displayName || user.displayName;
+
+    if (user.emailVerified) {
+      user.wallets = changes.wallets || user.wallets;
+    }
 
     await user.save();
 

@@ -11,10 +11,10 @@ export class UserApiService {
 
   constructor(private readonly apiService: ApiService) { }
 
-  public async createUser(username: string, name: string, email: string, password: string): Promise<ICreateUser | IError> {
+  public async createUser(username: string, displayName: string, email: string, password: string): Promise<ICreateUser | IError> {
     return await this.apiService.post<ICreateUser>("/user", {
       username,
-      name,
+      displayName,
       email,
       password
     } as ICreateUser);

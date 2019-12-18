@@ -26,7 +26,7 @@ export class SearchUsers implements IWebsocket {
     const results: ISearchResult[] = new Array();
 
     searchResults.forEach((result) => results.push({
-      name: result.name,
+      name: result.displayName,
       username: result.username
     }));
 

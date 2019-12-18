@@ -5,7 +5,7 @@ import { UserSchema, IUserDbo } from "../models/user.dbo.interface";
 
 export class UserRepository extends Repository<IUserDbo> {
   constructor() {
-    UserSchema.plugin(mongooseFuzzySearching, {fields: ["username", "name"]});
+    UserSchema.plugin(mongooseFuzzySearching, {fields: ["username", "displayName"]});
 
     super(model<IUserDbo>("User", UserSchema));
   }

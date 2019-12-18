@@ -9,6 +9,7 @@ import { IUserDbo } from "../../src/database/models/user.dbo.interface";
 import { IPasswordService } from "../../src/services/password.service.interface";
 import { IWallet } from "../../src/api/models/wallet.interface";
 import { ParamsDictionary } from "express-serve-static-core";
+import { IWalletDbo } from "../../src/database/models/wallet.dbo.interface";
 
 describe("In the user controller", () => {
   
@@ -60,7 +61,7 @@ describe("In the user controller", () => {
       await subject.getById(req.object, res.object);
 
       res.verify(r => r.json({
-        name: undefined,
+        displayName: undefined,
         username: username,
         wallets: new Array<IWallet>(),
         emailVerified: false
@@ -74,12 +75,12 @@ describe("In the user controller", () => {
 
       given_userRepository_find_returns([{
         username: username,
-        name: wantedName,
+        displayName: wantedName,
         wallets: new Array<IWallet>(),
         emailVerified: true
       } as IUserDbo, {
         username: username,
-        name: unwantedName,
+        displayName: unwantedName,
         wallets: new Array<IWallet>(),
         emailVerified: false
       } as IUserDbo]);
@@ -87,7 +88,7 @@ describe("In the user controller", () => {
       await subject.getById(req.object, res.object);
 
       res.verify(r => r.json({
-        name: wantedName,
+        displayName: wantedName,
         username: username,
         wallets: new Array<IWallet>(),
         emailVerified: true
@@ -113,7 +114,7 @@ describe("In the user controller", () => {
       const newUser: IUserDbo = {
         username: body.username,
         email: body.email,
-        name: body.name,
+        displayName: body.name,
         wallets: new Array<IWallet>()
       } as IUserDbo;
 
@@ -130,14 +131,14 @@ describe("In the user controller", () => {
       const body = {
         username: "myUsername",
         email: "myEmail",
-        name: "myName",
+        displayName: "myName",
         password: "myPassword"
       };
 
       const newUser: IUserDbo = {
         username: body.username,
         email: body.email,
-        name: body.name,
+        displayName: body.displayName,
         wallets: new Array<IWallet>()
       } as IUserDbo;
 
@@ -186,7 +187,7 @@ describe("In the user controller", () => {
       const newUser: IUserDbo = {
         username: body.username,
         email: body.email,
-        name: body.name,
+        displayName: body.name,
         wallets: new Array<IWallet>()
       } as IUserDbo;
 
@@ -196,6 +197,247 @@ describe("In the user controller", () => {
       await subject.create(req.object, res.object);
       
       passwordService.verify(p => p.hash(password), Times.once());
+    });
+  });
+
+  describe("modify", () => {
+
+    it("should not be null", () => {
+      assert.isNotNull(subject.modify);
+    });
+
+    it("should return an error message if a user is not logged in", async () => {
+      given_req_username_equals(undefined);
+
+      await subject.modify(req.object, res.object);
+
+      res.verify(r => r.json({
+        error: "You are not logged in"
+      }), Times.once());
+    });
+
+    it("should return a 401 if a user is not logged in", async () => {
+      given_req_username_equals(undefined);
+
+      await subject.modify(req.object, res.object);
+
+      assert.deepStrictEqual(res.target.statusCode, 401);
+    });
+
+    it("should return an error message if a user has an empty username", async () => {
+      given_req_username_equals("");
+
+      await subject.modify(req.object, res.object);
+
+      res.verify(r => r.json({
+        error: "You are not logged in"
+      }), Times.once());
+    });
+
+    it("should return a 401 if a user has an empty username", async () => {
+      given_req_username_equals("");
+
+      await subject.modify(req.object, res.object);
+
+      assert.deepStrictEqual(res.target.statusCode, 401);
+    });
+
+    it("should return an error message if a user tries to modify a different user", async () => {
+      const usernameOfUser = "MyUsername";
+      const usernameOfSomeoneElse = "NotMyUsername";
+
+      given_req_username_equals(usernameOfUser);
+      given_req_params_has("username", usernameOfSomeoneElse);
+
+      await subject.modify(req.object, res.object);
+
+      res.verify(r => r.json({
+        error: "You do not have permission to edit this user"
+      }), Times.once());
+    });
+
+    it("should return a 401 if a user tries to modify a different user", async () => {
+      const usernameOfUser = "MyUsername";
+      const usernameOfSomeoneElse = "NotMyUsername";
+
+      given_req_username_equals(usernameOfUser);
+      given_req_params_has("username", usernameOfSomeoneElse);
+
+      await subject.modify(req.object, res.object);
+
+      assert.deepStrictEqual(res.target.statusCode, 401);
+    });
+
+    it("should return an error message if a token is vaild but the account can no longer be found", async () => {
+      const username = "MyUsername";
+
+      given_req_username_equals(username);
+      given_req_params_has("username", username);
+      given_userRepository_find_returns([]);
+
+      await subject.modify(req.object, res.object);
+
+      res.verify(r => r.json({
+        error: "This account no longer exists"
+      }), Times.once());
+    });
+
+    it("should return a 401 if a token is vaild but the account can no longer be found", async () => {
+      const username = "MyUsername";
+
+      given_req_username_equals(username);
+      given_req_params_has("username", username);
+      given_userRepository_find_returns([]);
+
+      await subject.modify(req.object, res.object);
+
+      assert.deepStrictEqual(res.target.statusCode, 401);
+    });
+
+    it("should overwrite the user's email address", async () => {
+      const username = "MyUsername";
+      const oldEmail = "oldEmail";
+      const newEmail = "newEmail";
+
+      const userDbo: IMock<IUserDbo> = Mock.ofType<IUserDbo>();
+      userDbo.target.email = oldEmail;
+      userDbo.setup(u => u.save()).returns(async () => ({ } as IUserDbo));
+
+      given_req_username_equals(username);
+      given_req_params_has("username", username);
+      given_req_body_equals({
+        email: newEmail
+      } as Partial<IUserDbo>);
+      given_userRepository_find_returns([ userDbo.object ]);
+
+      await subject.modify(req.object, res.object);
+
+      assert.deepStrictEqual(userDbo.target.email, newEmail);
+    });
+
+    it("should overwrite the user's display name", async () => {
+      const username = "MyUsername";
+      const oldDisplayName = "oldDisplayName";
+      const newDisplayName = "newDisplayName";
+
+      const userDbo: IMock<IUserDbo> = Mock.ofType<IUserDbo>();
+      userDbo.target.displayName = oldDisplayName;
+      userDbo.setup(u => u.save()).returns(async () => ({ } as IUserDbo));
+
+      given_req_username_equals(username);
+      given_req_params_has("username", username);
+      given_req_body_equals({
+        displayName: newDisplayName
+      } as Partial<IUserDbo>);
+      given_userRepository_find_returns([ userDbo.object ]);
+
+      await subject.modify(req.object, res.object);
+
+      assert.deepStrictEqual(userDbo.target.displayName, newDisplayName);
+    });
+
+    it("should not overwrite the user's wallets if they have not verified their email", async () => {
+      const username = "MyUsername";
+
+      const oldWallets: IWalletDbo[] = [
+        {
+          name: "oldName",
+          currency: "oldCurrency",
+          address: "oldAddress"
+        } as IWalletDbo
+      ];
+
+      const newWallets: IWalletDbo[] = [
+        {
+          name: "newName",
+          currency: "newCurrency",
+          address: "newAddress"
+        } as IWalletDbo
+      ];
+
+      const userDbo: IMock<IUserDbo> = Mock.ofType<IUserDbo>();
+      userDbo.setup(u => u.emailVerified). returns(() => false);
+      userDbo.target.wallets = oldWallets;
+      userDbo.setup(u => u.save()).returns(async () => ({ } as IUserDbo));
+
+      given_req_username_equals(username);
+      given_req_params_has("username", username);
+      given_req_body_equals({
+        wallets: newWallets
+      } as Partial<IUserDbo>);
+      given_userRepository_find_returns([ userDbo.object ]);
+
+      await subject.modify(req.object, res.object);
+
+      assert.deepStrictEqual(userDbo.target.wallets, oldWallets);
+    });
+
+    it("should overwrite the user's wallets if they have verified their email", async () => {
+      const username = "MyUsername";
+
+      const oldWallets: IWalletDbo[] = [
+        {
+          name: "oldName",
+          currency: "oldCurrency",
+          address: "oldAddress"
+        } as IWalletDbo
+      ];
+
+      const newWallets: IWalletDbo[] = [
+        {
+          name: "newName",
+          currency: "newCurrency",
+          address: "newAddress"
+        } as IWalletDbo
+      ];
+
+      const userDbo: IMock<IUserDbo> = Mock.ofType<IUserDbo>();
+      userDbo.setup(u => u.emailVerified). returns(() => true);
+      userDbo.target.wallets = oldWallets;
+      userDbo.setup(u => u.save()).returns(async () => ({ } as IUserDbo));
+
+      given_req_username_equals(username);
+      given_req_params_has("username", username);
+      given_req_body_equals({
+        wallets: newWallets
+      } as Partial<IUserDbo>);
+      given_userRepository_find_returns([ userDbo.object ]);
+
+      await subject.modify(req.object, res.object);
+
+      assert.deepStrictEqual(userDbo.target.wallets, newWallets);
+    });
+
+    it("should call save on the user", async () => {
+      const username = "MyUsername";
+
+      const userDbo: IMock<IUserDbo> = Mock.ofType<IUserDbo>();
+      userDbo.setup(u => u.save()).returns(async () => ({ } as IUserDbo));
+
+      given_req_username_equals(username);
+      given_req_params_has("username", username);
+      given_req_body_equals({ } as Partial<IUserDbo>);
+      given_userRepository_find_returns([ userDbo.object ]);
+
+      await subject.modify(req.object, res.object);
+
+      userDbo.verify(u => u.save(), Times.once());
+    });
+
+    it("should return a 204", async () => {
+      const username = "MyUsername";
+
+      const userDbo: IMock<IUserDbo> = Mock.ofType<IUserDbo>();
+      userDbo.setup(u => u.save()).returns(async () => ({ } as IUserDbo));
+
+      given_req_username_equals(username);
+      given_req_params_has("username", username);
+      given_req_body_equals({ } as Partial<IUserDbo>);
+      given_userRepository_find_returns([ userDbo.object ]);
+
+      await subject.modify(req.object, res.object);
+
+      assert.deepStrictEqual(res.target.statusCode, 204);
     });
   });
 
@@ -275,6 +517,12 @@ describe("In the user controller", () => {
     req
       .setup(r => r.params)
       .returns(() => params.object);
+  }
+
+  function given_req_username_equals(username: string | undefined) {
+    req
+      .setup(r => r.username)
+      .returns(() => username);
   }
 
   function given_userRepository_create_returns(returns: IUserDbo) {

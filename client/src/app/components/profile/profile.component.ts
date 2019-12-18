@@ -65,7 +65,7 @@ export class ProfileComponent implements OnInit {
       this.editWalletsWebsocket.emit("profile", usernameWithNoAt);
 
       this.loaded = true;
-      this.name = result.name;
+      this.name = result.displayName;
       this.wallets = result.wallets;
     });
   }
