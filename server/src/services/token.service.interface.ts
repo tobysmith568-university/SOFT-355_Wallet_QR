@@ -1,4 +1,4 @@
 export interface ITokenService {
-  create(username: string): Promise<string>;
+  create(username: string, expiresIn: string | number): Promise<string>;
   verify(token: string): Promise<string | null>;
 }

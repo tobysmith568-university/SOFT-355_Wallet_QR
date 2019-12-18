@@ -6,6 +6,8 @@ import { ITokenService } from "../services/token.service.interface";
 
 export class SignInController {
 
+  private static readonly JWTTOKEN_EXPIRY = "14 days";
+
   constructor(private userRepository: UserRepository,
               private passwordService: IPasswordService,
               private tokenService: ITokenService) { }
@@ -33,7 +35,7 @@ export class SignInController {
     }
     
     res.json({
-      token: await this.tokenService.create(user.username),
+      token: await this.tokenService.create(user.username, SignInController.JWTTOKEN_EXPIRY),
       username: user.username
     });
   }

@@ -21,7 +21,7 @@ describe("In the JWT token service", async () => {
     it("should create tokens using the JWT type", async () => {
       given_config_getTokenSecret_returns("anything");
 
-      const result = await subject.create("myUsername");
+      const result = await subject.create("myUsername", "14 days");
       
       const parts = result.split(/[\.]+/);
       const header = JSON.parse(Buffer.from(parts[0], "base64").toString("ascii"));
@@ -32,7 +32,7 @@ describe("In the JWT token service", async () => {
     it("should create tokens using the HS256 algorithm", async () => {
       given_config_getTokenSecret_returns("anything");
 
-      const result = await subject.create("myUsername");
+      const result = await subject.create("myUsername", "14 days");
       
       const parts = result.split(/[\.]+/);
       const header = JSON.parse(Buffer.from(parts[0], "base64").toString("ascii"));
@@ -47,7 +47,7 @@ describe("In the JWT token service", async () => {
     ].forEach((username) => it(`should create a token using ${username} for usr`, async () => {
       given_config_getTokenSecret_returns("anything");
 
-      const result = await subject.create(username);
+      const result = await subject.create(username, "14 days");
       
       const parts = result.split(/[\.]+/);
       const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("ascii"));
@@ -61,7 +61,7 @@ describe("In the JWT token service", async () => {
       given_config_getTokenSecret_returns("anything");
       given_theCurrentUnixTimestamp_is(unixTimestamp);
 
-      const result = await subject.create("myUsername");
+      const result = await subject.create("myUsername", "14 days");
       
       const parts = result.split(/[\.]+/);
       const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("ascii"));
@@ -69,20 +69,21 @@ describe("In the JWT token service", async () => {
       assert.equal(payload.iat, unixTimestamp);
     });
 
-    it("should create tokens with a 2 week expiry", async () => {
-      const unixTimestamp = 1575541800;
-      const twoWeeksFromUnixTimestamp = 1576751400;
-
+    [
+      { currentTime: 1575541800, timeDuration: "14 days", thenTime: 1576751400 },
+      { currentTime: 1575541800, timeDuration: "1 hour", thenTime: 1575545400 },
+      { currentTime: 1575541800, timeDuration: "30 minutes", thenTime: 1575543600 },
+    ].forEach((data) => it(`should create tokens with a correct expiry for ${data.timeDuration}`, async () => {
       given_config_getTokenSecret_returns("anything");
-      given_theCurrentUnixTimestamp_is(unixTimestamp);
+      given_theCurrentUnixTimestamp_is(data.currentTime);
 
-      const result = await subject.create("myUsername");
+      const result = await subject.create("myUsername", data.timeDuration);
       
       const parts = result.split(/[\.]+/);
       const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("ascii"));
 
-      assert.equal(payload.exp, twoWeeksFromUnixTimestamp);
-    });
+      assert.equal(payload.exp, data.thenTime);
+    }));
 
     [
       { username: "myUsername", signature: "8VBMqfWLUto27goIE93kf-it_3eEPSZ5qFNLBLKSe3M" },
@@ -93,7 +94,7 @@ describe("In the JWT token service", async () => {
       given_config_getTokenSecret_returns("anything");
       given_theCurrentUnixTimestamp_is(1575541800);
 
-      const result = await subject.create(pair.username);
+      const result = await subject.create(pair.username, "14 days");
 
       const parts = result.split(/[\.]+/);
       const signature = parts[2];

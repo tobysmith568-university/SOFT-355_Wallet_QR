@@ -81,7 +81,7 @@ describe("In the signin controller", () => {
       } as IUserDbo]);
 
       given_passwordService_validate_returns_whenGiven(true, password, passwordHash);
-      given_tokenService_create_returns_whenGiven(token, username);
+      given_tokenService_create_returns_whenGiven(token, username, "14 days");
 
       await subject.signIn(req.object, res.object);
 
@@ -110,9 +110,9 @@ describe("In the signin controller", () => {
       .returns(async () => returns);
   }
 
-  function given_tokenService_create_returns_whenGiven(returns: string, username: string) {
+  function given_tokenService_create_returns_whenGiven(returns: string, username: string, expiryTime: string) {
     tokenService
-      .setup(t => t.create(username))
+      .setup(t => t.create(username, expiryTime))
       .returns(async () => returns);
   }
 });
