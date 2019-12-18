@@ -5,11 +5,18 @@ import { IUserDbo } from "../database/models/user.dbo.interface";
 import { MongoError } from "mongodb";
 import { IPasswordService } from "../services/password.service.interface";
 import { IWallet } from "../api/models/wallet.interface";
+import { IEmailService } from "../services/email.service";
+import { ITokenService } from "../services/token.service.interface";
+import { IFileService } from "../services/file.service.interface";
 
 export class UserController {
 
   constructor(private readonly userRepository: UserRepository,
-              private readonly passwordService: IPasswordService) {}
+              private readonly passwordService: IPasswordService,
+              private readonly emailService: IEmailService,
+              private readonly tokenService: ITokenService,
+              fileService: IFileService) {
+
 
   public getById = async (req: Request, res: Response) => {
     

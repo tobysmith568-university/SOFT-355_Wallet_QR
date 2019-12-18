@@ -10,11 +10,17 @@ import { IPasswordService } from "../../src/services/password.service.interface"
 import { IWallet } from "../../src/api/models/wallet.interface";
 import { ParamsDictionary } from "express-serve-static-core";
 import { IWalletDbo } from "../../src/database/models/wallet.dbo.interface";
+import { IEmailService } from "../../src/services/email.service";
+import { IFileService } from "../../src/services/file.service.interface";
+import { ITokenService } from "../../src/services/token.service.interface";
 
 describe("In the user controller", () => {
   
   let userRepository: IMock<UserRepository>;
   let passwordService: IMock<IPasswordService>;
+  let emailService: IMock<IEmailService>;
+  let tokenService: IMock<ITokenService>;
+  let fileService: IMock<IFileService>;
 
   let subject: UserController;
 
@@ -24,8 +30,11 @@ describe("In the user controller", () => {
   beforeEach(() => {
     userRepository = Mock.ofType<UserRepository>();
     passwordService = Mock.ofType<IPasswordService>();
+    emailService = Mock.ofType<IEmailService>();
+    tokenService = Mock.ofType<ITokenService>();
+    fileService = Mock.ofType<IFileService>();
 
-    subject = new UserController(userRepository.object, passwordService.object);
+    subject = new UserController(userRepository.object, passwordService.object, emailService.object, tokenService.object, fileService.object);
 
     req = Mock.ofType<Request>();
     res = Mock.ofType<Response>();
@@ -120,6 +129,7 @@ describe("In the user controller", () => {
 
       given_req_body_equals(body);
       given_userRepository_create_returns(newUser);
+      given_tokenService_create_returns("token");
 
       await subject.create(req.object, res.object);
 
@@ -144,6 +154,7 @@ describe("In the user controller", () => {
 
       given_req_body_equals(body);
       given_userRepository_create_returns(newUser);
+      given_tokenService_create_returns("token");
 
       await subject.create(req.object, res.object);
 
@@ -193,10 +204,250 @@ describe("In the user controller", () => {
 
       given_req_body_equals(body);
       given_userRepository_create_returns(newUser);
+      given_tokenService_create_returns("token");
 
       await subject.create(req.object, res.object);
       
       passwordService.verify(p => p.hash(password), Times.once());
+    });
+
+    it("should generate a token", async () => {
+
+      const body = {
+        username: "myUsername",
+        email: "myEmail",
+        displayName: "myName",
+        password: "myPassword"
+      };
+
+      const newUser: IUserDbo = {
+        username: body.username,
+        email: body.email,
+        displayName: body.displayName,
+        wallets: new Array<IWallet>()
+      } as IUserDbo;
+
+      given_req_body_equals(body);
+      given_userRepository_create_returns(newUser);
+      given_tokenService_create_returns("token");
+
+      await subject.create(req.object, res.object);
+
+      tokenService.verify(t => t.create(It.isAny(), It.isAny(), It.isAny()), Times.once());
+    });
+
+    it("should generate a token with the correct username", async () => {
+
+      const body = {
+        username: "myUsername",
+        email: "myEmail",
+        displayName: "myName",
+        password: "myPassword"
+      };
+
+      const newUser: IUserDbo = {
+        username: body.username,
+        email: body.email,
+        displayName: body.displayName,
+        wallets: new Array<IWallet>()
+      } as IUserDbo;
+
+      given_req_body_equals(body);
+      given_userRepository_create_returns(newUser);
+      given_tokenService_create_returns("token");
+
+      await subject.create(req.object, res.object);
+
+      tokenService.verify(t => t.create(body.username, It.isAny(), It.isAny()), Times.once());
+    });
+
+    it("should generate a token with a lifespan of 24 hours", async () => {
+
+      const body = {
+        username: "myUsername",
+        email: "myEmail",
+        displayName: "myName",
+        password: "myPassword"
+      };
+
+      const newUser: IUserDbo = {
+        username: body.username,
+        email: body.email,
+        displayName: body.displayName,
+        wallets: new Array<IWallet>()
+      } as IUserDbo;
+
+      given_req_body_equals(body);
+      given_userRepository_create_returns(newUser);
+      given_tokenService_create_returns("token");
+
+      await subject.create(req.object, res.object);
+
+      tokenService.verify(t => t.create(It.isAny(), "24 hours", It.isAny()), Times.once());
+    });
+
+    it("should generate a token with a 'use' of 'activation'", async () => {
+
+      const body = {
+        username: "myUsername",
+        email: "myEmail",
+        displayName: "myName",
+        password: "myPassword"
+      };
+
+      const newUser: IUserDbo = {
+        username: body.username,
+        email: body.email,
+        displayName: body.displayName,
+        wallets: new Array<IWallet>()
+      } as IUserDbo;
+
+      given_req_body_equals(body);
+      given_userRepository_create_returns(newUser);
+      given_tokenService_create_returns("token");
+
+      await subject.create(req.object, res.object);
+
+      const map = new Map<string, string>([
+        [ "use", "activation" ]
+      ]);
+
+      tokenService.verify(t => t.create(It.isAny(), It.isAny(), map), Times.once());
+    });
+
+    it("should send an email", async () => {
+
+      const body = {
+        username: "myUsername",
+        email: "myEmail",
+        displayName: "myName",
+        password: "myPassword"
+      };
+
+      const newUser: IUserDbo = {
+        username: body.username,
+        email: body.email,
+        displayName: body.displayName,
+        wallets: new Array<IWallet>()
+      } as IUserDbo;
+
+      given_req_body_equals(body);
+      given_userRepository_create_returns(newUser);
+      given_tokenService_create_returns("token");
+
+      await subject.create(req.object, res.object);
+
+      emailService.verify(e => e.sendHTMLEmail(It.isAny(), It.isAny(), It.isAny()), Times.once());
+    });
+
+    it("should send an email to the user's email address", async () => {
+
+      const body = {
+        username: "myUsername",
+        email: "myEmail",
+        displayName: "myName",
+        password: "myPassword"
+      };
+
+      const newUser: IUserDbo = {
+        username: body.username,
+        email: body.email,
+        displayName: body.displayName,
+        wallets: new Array<IWallet>()
+      } as IUserDbo;
+
+      given_req_body_equals(body);
+      given_userRepository_create_returns(newUser);
+      given_tokenService_create_returns("token");
+
+      await subject.create(req.object, res.object);
+
+      emailService.verify(e => e.sendHTMLEmail(body.email, It.isAny(), It.isAny()), Times.once());
+    });
+
+    it("should send an email with the correct subject", async () => {
+
+      const body = {
+        username: "myUsername",
+        email: "myEmail",
+        displayName: "myName",
+        password: "myPassword"
+      };
+
+      const newUser: IUserDbo = {
+        username: body.username,
+        email: body.email,
+        displayName: body.displayName,
+        wallets: new Array<IWallet>()
+      } as IUserDbo;
+
+      given_req_body_equals(body);
+      given_userRepository_create_returns(newUser);
+      given_tokenService_create_returns("token");
+
+      await subject.create(req.object, res.object);
+
+      emailService.verify(e => e.sendHTMLEmail(It.isAny(), "Welcome to WalletQR!", It.isAny()), Times.once());
+    });
+
+    it("should send an email with the correct body", async () => {
+
+      const fileContent = "This is some content from a file";
+
+      const body = {
+        username: "myUsername",
+        email: "myEmail",
+        displayName: "myName",
+        password: "myPassword"
+      };
+
+      const newUser: IUserDbo = {
+        username: body.username,
+        email: body.email,
+        displayName: body.displayName,
+        wallets: new Array<IWallet>()
+      } as IUserDbo;
+
+      given_req_body_equals(body);
+      given_userRepository_create_returns(newUser);
+      given_tokenService_create_returns("token");
+      given_fileService_readFile_returns(fileContent);
+
+      subject = new UserController(userRepository.object, passwordService.object, emailService.object, tokenService.object, fileService.object);
+
+      await subject.create(req.object, res.object);
+
+      emailService.verify(e => e.sendHTMLEmail(It.isAny(), It.isAny(), fileContent), Times.once());
+    });
+
+    it("should send an email with the correct string-interpolated body", async () => {
+
+      const fileContent = "My name should appear here --> ${name} <--";
+
+      const body = {
+        username: "myUsername",
+        email: "myEmail",
+        displayName: "myName",
+        password: "myPassword"
+      };
+
+      const newUser: IUserDbo = {
+        username: body.username,
+        email: body.email,
+        displayName: body.displayName,
+        wallets: new Array<IWallet>()
+      } as IUserDbo;
+
+      given_req_body_equals(body);
+      given_userRepository_create_returns(newUser);
+      given_tokenService_create_returns("token");
+      given_fileService_readFile_returns(fileContent);
+
+      subject = new UserController(userRepository.object, passwordService.object, emailService.object, tokenService.object, fileService.object);
+
+      await subject.create(req.object, res.object);
+
+      emailService.verify(e => e.sendHTMLEmail(It.isAny(), It.isAny(), `My name should appear here --> ${body.displayName} <--`), Times.once());
     });
   });
 
@@ -486,7 +737,7 @@ describe("In the user controller", () => {
       res.verify(r => r.status(200), Times.once());
     });
 
-    it("should return a 200 when a user does exist", async () => {
+    it("should return no body when a user does exist", async () => {
       const username = "thisIsMyUsername";
 
       given_req_params_has("username", username);
@@ -541,6 +792,18 @@ describe("In the user controller", () => {
     userRepository
       .setup(u => u.find(It.isAny()))
       .returns(async () => users);
+  }
+
+  function given_tokenService_create_returns(token: string) {
+    tokenService
+      .setup(t => t.create(It.isAny(), It.isAny(), It.isAny()))
+      .returns(async () => token);
+  }
+
+  function given_fileService_readFile_returns(fileContent: string) {
+    fileService
+      .setup(f => f.readFile(It.isAny()))
+      .returns(() => fileContent);
   }
 
   function then_response_body_wasNeverSet() {
