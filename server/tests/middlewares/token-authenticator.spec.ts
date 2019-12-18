@@ -46,7 +46,7 @@ describe("In the token authenticator middleware", async () => {
       assert.equal(res.target.statusCode, 401);
     });
 
-    it("should return an error message if there the authorization header is not 2 words", async () => {
+    it("should return an error message if the authorization header is not 2 words", async () => {
       given_req_headers_authorization_equals("ThisIsAllOneWord");
 
       const middleware = subject.middleware();
@@ -55,7 +55,7 @@ describe("In the token authenticator middleware", async () => {
       res.verify(r => r.json({ error: "Your authorization header is not a bearer token" }), Times.once());
     });
 
-    it("should return a status of 401 if there the authorization header is not 2 words", async () => {
+    it("should return a status of 401 if the authorization header is not 2 words", async () => {
       given_req_headers_authorization_equals("ThisIsAllOneWord");
 
       const middleware = subject.middleware();
@@ -64,8 +64,8 @@ describe("In the token authenticator middleware", async () => {
       assert.equal(res.target.statusCode, 401);
     });
 
-    it("should return an error message if there the authorization header is not a bearer token", async () => {
-      given_req_headers_authorization_equals("ThisIsAllOneWord");
+    it("should return an error message if the authorization header is not a bearer token", async () => {
+      given_req_headers_authorization_equals("NotBearer 123");
 
       const middleware = subject.middleware();
       await middleware(req.object, res.object, next.object);
@@ -73,8 +73,8 @@ describe("In the token authenticator middleware", async () => {
       res.verify(r => r.json({ error: "Your authorization header is not a bearer token" }), Times.once());
     });
 
-    it("should return a status of 401 if there the authorization header is not a bearer token", async () => {
-      given_req_headers_authorization_equals("ThisIsAllOneWord");
+    it("should return a status of 401 if the authorization header is not a bearer token", async () => {
+      given_req_headers_authorization_equals("NotBearer 123");
 
       const middleware = subject.middleware();
       await middleware(req.object, res.object, next.object);
