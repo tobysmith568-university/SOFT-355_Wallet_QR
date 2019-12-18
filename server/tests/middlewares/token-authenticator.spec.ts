@@ -105,7 +105,33 @@ describe("In the token authenticator middleware", async () => {
 
       assert.equal(res.target.statusCode, 401);
     });
-    
+
+    it("should return an error message if the token is a string", async () => {
+      const token = "ThisIsMyToken";
+      const payload = "Some kind of string";
+
+      given_req_headers_authorization_equals("Bearer " + token);
+      given_tokenService_verify_returns_whenGiven(payload, token);
+
+      const middleware = subject.middleware();
+      await middleware(req.object, res.object, next.object);
+
+      res.verify(r => r.json({ error: "Your token is invalid" }), Times.once());
+    });
+
+    it("should return a status of 401 if the token is a string", async () => {
+      const token = "ThisIsMyToken";
+      const payload = "Some kind of string";
+
+      given_req_headers_authorization_equals("Bearer " + token);
+      given_tokenService_verify_returns_whenGiven(payload, token);
+
+      const middleware = subject.middleware();
+      await middleware(req.object, res.object, next.object);
+
+      assert.equal(res.target.statusCode, 401);
+    });
+
     it("should return an error message if the token has a 'use' payload key", async () => {
       const token = "ThisIsMyToken";
 
