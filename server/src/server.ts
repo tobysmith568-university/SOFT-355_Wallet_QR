@@ -20,6 +20,10 @@ import { IPasswordService } from "./services/password.service.interface";
 import { ITokenService } from "./services/token.service.interface";
 import { SetWallets } from "./websockets/set-wallets";
 import { SearchUsers } from "./websockets/search-users";
+import { IEmailService } from "./services/email.service";
+import { NodemailerEmailService } from "./services/implementations/nodemailer-email.service";
+import { IFileService } from "./services/file.service.interface";
+import { FSFileService } from "./services/implementations/fs-file.service";
 
 export class Server {
 
@@ -31,6 +35,8 @@ export class Server {
   private userRepository: UserRepository;
   private passwordService: IPasswordService;
   private tokenService: ITokenService;
+  private emailService: IEmailService;
+  private fileService: IFileService;
 
   private tokenMiddleware: TokenAuthenticator;
 
@@ -44,6 +50,8 @@ export class Server {
     this.userRepository = new UserRepository();
     this.passwordService = new BcryptPasswordService();
     this.tokenService = new JWTTokenService(this.config);
+    this.emailService = new NodemailerEmailService(this.config);
+    this.fileService = new FSFileService();
 
     this.tokenMiddleware = new TokenAuthenticator(this.tokenService);
 
@@ -86,7 +94,10 @@ export class Server {
       Router(),
       new UserController(
         this.userRepository,
-        this.passwordService
+        this.passwordService,
+        this.emailService,
+        this.tokenService,
+        this.fileService
       ),
       this.tokenMiddleware
     );

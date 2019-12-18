@@ -22,6 +22,11 @@ export class Config {
   private connectionString: string;
   private tokenSecret: string;
 
+  private emailHost: string;
+  private emailPort: number;
+  private emailUser: string;
+  private emailPass: string;
+
   constructor() {
     this.environment = process.env.NODE_ENV || ENV.dev;
     
@@ -30,6 +35,11 @@ export class Config {
     this.port = this.getOrThrow(env.port);
     this.connectionString = this.getOrThrow(env.connectionString);
     this.tokenSecret = this.getOrThrow(env.tokenSecret);
+
+    this.emailHost = this.getOrThrow(env.emailHost);
+    this.emailPort = this.getOrThrow(env.emailPort);
+    this.emailUser = this.getOrThrow(env.emailUser);
+    this.emailPass = this.getOrThrow(env.emailPass);
   }
 
   public getEnvironment(): string {
@@ -46,6 +56,22 @@ export class Config {
 
   public getTokenSecret(): string {
     return this.tokenSecret;
+  }
+
+  public getEmailHost(): string {
+    return this.emailHost;
+  }
+
+  public getEmailPort(): number {
+    return this.emailPort;
+  }
+
+  public getEmailUser(): string {
+    return this.emailUser;
+  }
+
+  public getEmailPass(): string {
+    return this.emailPass;
   }
 
   private getOrThrow<T>(data: T | null | undefined): T {

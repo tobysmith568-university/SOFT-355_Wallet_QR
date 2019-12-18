@@ -1,3 +1,8 @@
+/* istanbul ignore file */
+/*
+  This file cannot be unit tested because it interacts with the file system
+*/
+
 import { IFileService } from "../file.service.interface";
 import { readFileSync } from "fs";
 
