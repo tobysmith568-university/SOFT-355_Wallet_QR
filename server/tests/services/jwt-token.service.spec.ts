@@ -129,12 +129,26 @@ describe("In the JWT token service", async () => {
       { username: "myUsername", token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJteVVzZXJuYW1lIiwiaWF0IjoxNTc1NTQxODAwLCJleHAiOjE1NzY3NTE0MDB9.8VBMqfWLUto27goIE93kf-it_3eEPSZ5qFNLBLKSe3M" },
       { username: "aDifferentUsername", token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhRGlmZmVyZW50VXNlcm5hbWUiLCJpYXQiOjE1NzU1NDE4MDAsImV4cCI6MTU3Njc1MTQwMH0.lYUspv9Jpw1PnEzHMXItH3ducnWLTCVPdBENncb9XAg" },
       { username: "aThirdUsername", token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhVGhpcmRVc2VybmFtZSIsImlhdCI6MTU3NTU0MTgwMCwiZXhwIjoxNTc2NzUxNDAwfQ.t1B9Wr9U2sViaMtfvS7-wddkIddOIU0obWhxbGJhVAs" }
-    ].forEach((pair) => it(`should return the username ${pair.username} from a valid JWT`, async () => {
+    ].forEach((pair) => it("should return an object from a valid JWT", async () => {
       given_config_getTokenSecret_returns("anything");
 
       const result = await subject.verify(pair.token);
 
-      assert.equal(result, pair.username);
+      assert.equal(typeof result, "object");
+    }));
+
+    [
+      { username: "myUsername", token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJteVVzZXJuYW1lIiwiaWF0IjoxNTc1NTQxODAwLCJleHAiOjE1NzY3NTE0MDB9.8VBMqfWLUto27goIE93kf-it_3eEPSZ5qFNLBLKSe3M" },
+      { username: "aDifferentUsername", token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhRGlmZmVyZW50VXNlcm5hbWUiLCJpYXQiOjE1NzU1NDE4MDAsImV4cCI6MTU3Njc1MTQwMH0.lYUspv9Jpw1PnEzHMXItH3ducnWLTCVPdBENncb9XAg" },
+      { username: "aThirdUsername", token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhVGhpcmRVc2VybmFtZSIsImlhdCI6MTU3NTU0MTgwMCwiZXhwIjoxNTc2NzUxNDAwfQ.t1B9Wr9U2sViaMtfvS7-wddkIddOIU0obWhxbGJhVAs" }
+    ].forEach((pair) => it("should return an object containing the username from a valid JWT", async () => {
+      given_config_getTokenSecret_returns("anything");
+
+      const result = await subject.verify(pair.token);
+
+      const objectResult = result as any;
+
+      assert.equal(typeof objectResult.usr, pair.username);
     }));
     
     [

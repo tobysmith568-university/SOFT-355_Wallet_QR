@@ -28,7 +28,7 @@ export class JWTTokenService implements ITokenService {
     return result;
   }
   
-  async verify(token: string): Promise<string | null> {
+  async verify(token: string): Promise<string | object | null> {
     try {
       const payload = verify(token, this.config.getTokenSecret());
 
