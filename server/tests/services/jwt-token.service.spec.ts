@@ -148,7 +148,7 @@ describe("In the JWT token service", async () => {
 
       const objectResult = result as any;
 
-      assert.equal(typeof objectResult.usr, pair.username);
+      assert.equal(objectResult.usr, pair.username);
     }));
     
     [

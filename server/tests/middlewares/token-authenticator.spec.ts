@@ -169,7 +169,7 @@ describe("In the token authenticator middleware", async () => {
       const token = "ThisIsMyToken";
 
       given_req_headers_authorization_equals("Bearer " + token);
-      given_tokenService_verify_returns_whenGiven(username, token);
+      given_tokenService_verify_returns_whenGiven({ usr: username }, token);
 
       const middleware = subject.middleware();
       await middleware(req.object, res.object, next.object);

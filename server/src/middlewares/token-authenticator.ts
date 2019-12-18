@@ -25,16 +25,30 @@ export class TokenAuthenticator {
         return;
       }
 
-      const username = await this.tokenService.verify(parts[1]);
+      const tokenPayload = await this.tokenService.verify(parts[1]);
 
-      if (username === null) {
+      if (tokenPayload === null) {
         res.json({ error: "Your token is invalid" });
         res.statusCode = 401;
         return;
       }
 
-      req.username = username;
+      if (typeof tokenPayload === "string") {
+        res.json({ error: "Your token is invalid" });
+        res.statusCode = 401;
+        return;
+      }
+      
+      const username = (tokenPayload as any).usr;
+
+      if (username === undefined || username === null) {
+        res.json({ error: "Your token is invalid" });
+        res.statusCode = 401;
+        return;
+      }
   
+      req.username = username;
+
       next();
     };
   }

@@ -32,7 +32,13 @@ export class SetWallets implements IWebsocket {
 
   private async set(socket: Socket, msg: any): Promise<void> {
     const data = msg as ISetWallets;
-    const username = await this.tokenService.verify(data.token);
+    const payload = await this.tokenService.verify(data.token);
+
+    if (!payload || typeof payload === "string") {
+      return;
+    }
+
+    const username = (payload as any).usr;
 
     if (!username) {
       return;
@@ -61,7 +67,13 @@ export class SetWallets implements IWebsocket {
 
   private async add(socket: Socket, msg: any): Promise<void> {
     const data = msg as ISetWallets;
-    const username = await this.tokenService.verify(data.token);
+    const payload = await this.tokenService.verify(data.token);
+
+    if (!payload || typeof payload === "string") {
+      return;
+    }
+
+    const username = (payload as any).usr;
 
     if (!username) {
       return;
