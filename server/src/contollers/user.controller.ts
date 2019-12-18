@@ -7,9 +7,15 @@ import { IPasswordService } from "../services/password.service.interface";
 import { IWallet } from "../api/models/wallet.interface";
 import { IEmailService } from "../services/email.service";
 import { ITokenService } from "../services/token.service.interface";
+import template = require("es6-template-strings");
 import { IFileService } from "../services/file.service.interface";
 
 export class UserController {
+
+  private static readonly _24HOURS = "24 hours";
+  private static readonly BASE64 = "base64";
+
+  private welcomeEmail: string;
 
   constructor(private readonly userRepository: UserRepository,
               private readonly passwordService: IPasswordService,
@@ -17,6 +23,8 @@ export class UserController {
               private readonly tokenService: ITokenService,
               fileService: IFileService) {
 
+    this.welcomeEmail = fileService.readFile("./src/assets/emails/welcome-email.html");
+  }
 
   public getById = async (req: Request, res: Response) => {
     
@@ -93,6 +101,19 @@ export class UserController {
         currency: wallet.currency
       } as IWallet);
     });
+    
+    const token = await this.tokenService.create(result.username, UserController._24HOURS, new Map([
+      ["use", "activation"]
+    ]));
+
+    const tokenBase64 = Buffer.from(token).toString(UserController.BASE64);
+
+    const completeEmail = template(this.welcomeEmail, {
+      name: result.displayName,
+      verifyURL: "http://localhost:4200/verify/" + tokenBase64
+    });
+
+    await this.emailService.sendHTMLEmail(result.email, "Welcome to WalletQR!", completeEmail);
 
     res.json(result);
   }
