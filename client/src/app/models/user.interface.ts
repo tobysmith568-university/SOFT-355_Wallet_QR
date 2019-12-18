@@ -5,4 +5,5 @@ export interface IUser {
   email: string;
   displayName: string;
   wallets: IWallet[];
+  emailVerified: boolean;
 }

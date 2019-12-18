@@ -3,6 +3,9 @@ import { Router } from "@angular/router";
 import { isNullOrUndefined } from "util";
 import { connect } from "socket.io-client";
 import { ISetWallets } from "src/app/models/websocket-models/set-wallets.interface";
+import { UserApiService } from "src/app/services/api/user-api.service";
+import { IUser } from "src/app/models/user.interface";
+import { IError } from "src/app/services/api/error.interface";
 
 @Component({
   selector: "app-new-wallet",
@@ -11,7 +14,8 @@ import { ISetWallets } from "src/app/models/websocket-models/set-wallets.interfa
 })
 export class NewWalletComponent implements OnInit {
 
-  private formEnabled = true;
+  private formEnabled = false;
+  private emailUnverified = false;
 
   private currency: string;
   private name: string;
@@ -25,13 +29,27 @@ export class NewWalletComponent implements OnInit {
 
   private editWalletsWebsocket: SocketIOClient.Socket;
 
-  constructor(private readonly router: Router) {
+  constructor(private readonly router: Router,
+              private readonly userApiService: UserApiService) {
     this.editWalletsWebsocket = connect("ws://localhost:8000/editwallets");
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     if (!this.isLoggedIn()) {
       this.router.navigate(["/"]);
+    }
+
+    const user = await this.userApiService.getUser(localStorage.getItem("username"));
+
+    if (this.isError(user)) {
+      return;
+    }
+
+    if (user.emailVerified) {
+      this.formEnabled = true;
+      this.emailUnverified = false;
+    } else {
+      this.emailUnverified = true;
     }
   }
 
@@ -86,5 +104,9 @@ export class NewWalletComponent implements OnInit {
     }
 
     this.router.navigate(["@" + localStorage.getItem("username")]);
+  }
+
+  private isError(result: IUser | IError): result is IError {
+    return (result as IError).error !== undefined;
   }
 }

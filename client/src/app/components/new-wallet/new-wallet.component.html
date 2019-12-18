@@ -1,4 +1,10 @@
-<form class="needs-validation" autocomplete="off" novalidate>
+<div class="alert-container" *ngIf="emailUnverified">
+	<div class="alert alert-danger" role="alert">
+		You cannot add a new wallet to your account until you verify your email!
+	</div>
+</div>
+
+<form class="needs-validation" autocomplete="off" novalidate *ngIf="!emailUnverified">
 		<div class="form-group">
 			<label for="currency">Currency</label>
 			<div class="input-group">
