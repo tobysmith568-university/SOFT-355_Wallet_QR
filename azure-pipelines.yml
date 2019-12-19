@@ -35,6 +35,7 @@ steps:
     workingDirectory: "client"
   displayName: "Testing client"
 
+
 - task: Npm@1
   inputs:
     command: "install"
@@ -47,6 +48,7 @@ steps:
       npm run build
     workingDirectory: "server"
   displayName: "Building server"
+
 - task: CmdLine@2
   inputs:
     script: |
@@ -54,7 +56,13 @@ steps:
     workingDirectory: "server"
   displayName: "Testing server"
 
+- task: reportgenerator@4
+  inputs:
+    reports: '$(System.DefaultWorkingDirectory)/**/cobertura-coverage.xml'
+    targetdir: 'coveragereport'
+    reporttypes: 'HTML;HTMLSummary;Cobertura;Badges'
+
 - task: PublishCodeCoverageResults@1
   inputs:
     codeCoverageTool: "Cobertura"
-    summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/cobertura-coverage.xml"
+    summaryFileLocation: "$(System.DefaultWorkingDirectory)/coveragereport/Cobertura.xml"
