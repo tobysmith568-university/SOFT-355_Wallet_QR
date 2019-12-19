@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { IError } from "./error.interface";
+import { StorageService } from "../storage.service";
 
 @Injectable({
   providedIn: "root"
@@ -9,13 +10,16 @@ export class ApiService {
 
   private readonly server = "http://localhost:8000/api";
 
-  constructor(private readonly httpClient: HttpClient) { }
+  constructor(private readonly httpClient: HttpClient,
+              private readonly storageService: StorageService) { }
 
   public async get<T>(path: string): Promise<T | IError> {
     let headers = new HttpHeaders();
 
-    if (localStorage.getItem("token")) {
-      headers = headers.set("Authorization", localStorage.getItem("token"));
+    const token = this.storageService.get("token");
+
+    if (token) {
+      headers = headers.set("Authorization", token);
     }
 
     return await this.httpClient.get<T | IError>(this.server + path, {

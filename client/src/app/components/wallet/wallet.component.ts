@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { IWallet } from "src/app/models/wallet.interface";
 import { toDataURL } from "qrcode";
 import { ActivatedRoute } from "@angular/router";
+import { StorageService } from "src/app/services/storage.service";
 
 @Component({
   selector: "app-wallet",
@@ -27,7 +28,8 @@ export class WalletComponent implements OnInit {
 
   private qrData = "";
 
-  constructor(private readonly route: ActivatedRoute) { }
+  constructor(private readonly route: ActivatedRoute,
+              private readonly storageService: StorageService) { }
 
   async ngOnInit() {
     try {
@@ -40,7 +42,7 @@ export class WalletComponent implements OnInit {
   }
 
   private onOwnProfile(): boolean {
-    return "@" + localStorage.getItem("username") === this.route.snapshot.paramMap.get("username");
+    return "@" + this.storageService.get("username") === this.route.snapshot.paramMap.get("username");
   }
 
   private moveUp() {

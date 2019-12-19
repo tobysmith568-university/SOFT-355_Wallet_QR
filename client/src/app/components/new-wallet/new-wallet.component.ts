@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { isNullOrUndefined } from "util";
 import { connect } from "socket.io-client";
@@ -6,6 +6,7 @@ import { ISetWallets } from "src/app/models/websocket-models/set-wallets.interfa
 import { UserApiService } from "src/app/services/api/user-api.service";
 import { IUser } from "src/app/models/user.interface";
 import { IError } from "src/app/services/api/error.interface";
+import { StorageService } from "src/app/services/storage.service";
 
 @Component({
   selector: "app-new-wallet",
@@ -30,7 +31,8 @@ export class NewWalletComponent implements OnInit {
   private editWalletsWebsocket: SocketIOClient.Socket;
 
   constructor(private readonly router: Router,
-              private readonly userApiService: UserApiService) {
+              private readonly userApiService: UserApiService,
+              private readonly storageService: StorageService) {
     this.editWalletsWebsocket = connect("ws://localhost:8000/editwallets");
   }
 
@@ -39,7 +41,7 @@ export class NewWalletComponent implements OnInit {
       this.router.navigate(["/"]);
     }
 
-    const user = await this.userApiService.getUser(localStorage.getItem("username"));
+    const user = await this.userApiService.getUser(this.storageService.get("username"));
 
     if (this.isError(user)) {
       return;
@@ -54,7 +56,7 @@ export class NewWalletComponent implements OnInit {
   }
 
   private isLoggedIn() {
-    const token = localStorage.getItem("token");
+    const token = this.storageService.get("token");
     return token !== null && token.length > 0;
   }
 
@@ -88,7 +90,7 @@ export class NewWalletComponent implements OnInit {
     this.formEnabled = false;
 
     this.editWalletsWebsocket.emit("add", {
-      token: localStorage.getItem("token"),
+      token: this.storageService.get("token"),
       wallets: [
         {
           name: this.name,
@@ -103,7 +105,7 @@ export class NewWalletComponent implements OnInit {
       return;
     }
 
-    this.router.navigate(["@" + localStorage.getItem("username")]);
+    this.router.navigate(["@" + this.storageService.get("username")]);
   }
 
   private isError(result: IUser | IError): result is IError {

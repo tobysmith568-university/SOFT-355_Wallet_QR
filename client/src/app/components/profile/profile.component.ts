@@ -7,6 +7,7 @@ import { IUser } from "src/app/models/user.interface";
 import { moveItemInArray } from "@angular/cdk/drag-drop";
 import { connect } from "socket.io-client";
 import { ISetWallets } from "src/app/models/websocket-models/set-wallets.interface";
+import { StorageService } from "src/app/services/storage.service";
 
 @Component({
   selector: "app-profile",
@@ -22,7 +23,8 @@ export class ProfileComponent implements OnInit {
 
   constructor(private readonly userService: UserApiService,
               private readonly route: ActivatedRoute,
-              private readonly router: Router) {
+              private readonly router: Router,
+              private readonly storageService: StorageService) {
     this.editWalletsWebsocket = connect("ws://localhost:8000/editwallets");
 
     this.editWalletsWebsocket.on("connect", () => {
@@ -91,7 +93,7 @@ export class ProfileComponent implements OnInit {
 
   private sendUpdate() {
     this.editWalletsWebsocket.emit("set", {
-      token: localStorage.getItem("token"),
+      token: this.storageService.get("token"),
       wallets: this.wallets
     } as ISetWallets);
   }

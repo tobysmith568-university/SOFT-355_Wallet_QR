@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { connect } from "socket.io-client";
 import { ISearchResult } from "src/app/models/websocket-models/search-result.interface";
+import { StorageService } from "src/app/services/storage.service";
 
 @Component({
   selector: "app-header",
@@ -18,7 +19,8 @@ export class HeaderComponent implements OnInit {
 
   private username: string;
 
-  constructor(private readonly router: Router) {
+  constructor(private readonly router: Router,
+              private readonly storageService: StorageService) {
     this.userSearchWebsocket = connect("ws://localhost:8000/searchusers");
 
     this.userSearchWebsocket.on("connect", () => {
@@ -27,13 +29,13 @@ export class HeaderComponent implements OnInit {
       });
     });
 
-    this.username = localStorage.getItem("username");
+    this.username = this.storageService.get("username");
   }
 
   async ngOnInit() {
     this.router.events.subscribe(() => {
       this.currentRoute = this.router.url;
-      this.username = localStorage.getItem("username");
+      this.username = this.storageService.get("username");
     });
   }
 
@@ -42,7 +44,7 @@ export class HeaderComponent implements OnInit {
   }
 
   private isLoggedIn() {
-    const token = localStorage.getItem("token");
+    const token = this.storageService.get("token");
     return token !== null && token.length > 0;
   }
 

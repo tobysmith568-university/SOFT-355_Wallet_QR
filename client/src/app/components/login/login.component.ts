@@ -3,6 +3,7 @@ import { SignInApiService } from "src/app/services/api/signin-api.service";
 import { IToken } from "src/app/models/token.interface";
 import { IError } from "src/app/services/api/error.interface";
 import { Router } from "@angular/router";
+import { StorageService } from "src/app/services/storage.service";
 
 @Component({
   selector: "app-login",
@@ -18,11 +19,12 @@ export class LoginComponent implements OnInit {
   formEnabled = true;
 
   constructor(private readonly signInService: SignInApiService,
-              private readonly router: Router) { }
+              private readonly router: Router,
+              private readonly storageService: StorageService) { }
 
   ngOnInit() {
-    const token = localStorage.getItem("token");
-    const username = localStorage.getItem("username");
+    const token = this.storageService.get("token");
+    const username = this.storageService.get("username");
 
     if (token && username) {
       this.router.navigate(["@" + username]);
