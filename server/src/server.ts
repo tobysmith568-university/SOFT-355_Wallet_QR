@@ -24,6 +24,8 @@ import { IEmailService } from "./services/email.service";
 import { NodemailerEmailService } from "./services/implementations/nodemailer-email.service";
 import { IFileService } from "./services/file.service.interface";
 import { FSFileService } from "./services/implementations/fs-file.service";
+import { VerifyRoute } from "./api/routes/verify.route";
+import { VerifyController } from "./contollers/verify.controller";
 
 export class Server {
 
@@ -111,12 +113,25 @@ export class Server {
       )
     );
 
+    const verifyRoute = new VerifyRoute(
+      Router(),
+      new VerifyController(
+        this.tokenService,
+        this.userRepository
+      )
+    );
+
     userRoute.setupRoutes();
     signinRoute.setupRoutes();
+    verifyRoute.setupRoutes();
 
     this.app.use("/api", [
       userRoute.getRouter(),
       signinRoute.getRouter()
+    ]);
+
+    this.app.use("/verify", [
+      verifyRoute.getRouter()
     ]);
   }
 

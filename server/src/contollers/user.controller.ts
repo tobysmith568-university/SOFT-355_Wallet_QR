@@ -110,7 +110,7 @@ export class UserController {
 
     const completeEmail = template(this.welcomeEmail, {
       name: result.displayName,
-      verifyURL: "http://localhost:4200/verify/" + tokenBase64
+      verifyURL: "http://localhost:8000/verify/" + tokenBase64
     });
 
     await this.emailService.sendHTMLEmail(result.email, "Welcome to WalletQR!", completeEmail);
