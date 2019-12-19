@@ -15,25 +15,25 @@ steps:
   inputs:
     version: "10.16.3"
 
-#- task: Npm@1
-#  inputs:
-#    command: "install"
-#    workingDir: "client"
-#  displayName: "npm install client"
-#
-#- task: CmdLine@2
-#  inputs:
-#    script: |
-#      npm run build
-#    workingDirectory: "client"
-#  displayName: "Building client"
+- task: Npm@1
+  inputs:
+    command: "install"
+    workingDir: "client"
+  displayName: "npm install client"
 
-#- task: CmdLine@2
-#  inputs:
-#    script: |
-#      npm run test
-#    workingDirectory: "client"
-#  displayName: "Testing client"
+- task: CmdLine@2
+  inputs:
+    script: |
+      npm run build
+    workingDirectory: "client"
+  displayName: "Building client"
+
+- task: CmdLine@2
+  inputs:
+    script: |
+      npm run coverage
+    workingDirectory: "client"
+  displayName: "Testing client"
 
 - task: Npm@1
   inputs:
@@ -52,9 +52,9 @@ steps:
     script: |
       npm run coverage
     workingDirectory: "server"
-  displayName: "Running coverage on server"
+  displayName: "Testing server"
 
 - task: PublishCodeCoverageResults@1
   inputs:
     codeCoverageTool: "Cobertura"
-    summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/*coverage.xml"
+    summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/cobertura-coverage.xml"
