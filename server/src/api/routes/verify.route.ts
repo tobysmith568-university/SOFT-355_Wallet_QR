@@ -8,10 +8,10 @@ export class VerifyRoute implements IRoute {
               private readonly controller: VerifyController) { }
   
   setupRoutes(): void {
-    throw new Error("Method not implemented.");
+    this.expressRouter.get("/:token", this.controller.verify);
   }
   
   getRouter(): Router {
-    throw new Error("Method not implemented.");
+    return this.expressRouter;
   }
 }
