@@ -1,0 +1,41 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+- develop
+
+pool:
+  vmImage: "ubuntu-latest"
+
+steps:
+- task: UseNode@1
+  inputs:
+    version: "10.16.3"
+
+- task: Npm@1
+  inputs:
+    command: "install"
+    workingDir: "client"
+  displayName: "npm install client"
+
+- task: CmdLine@2
+  inputs:
+    script: |
+      npm run build
+    workingDirectory: "client"
+  displayName: "Building client"
+
+- task: CmdLine@2
+  inputs:
+    script: |
+      npm run coverage
+    workingDirectory: "client"
+  displayName: "Testing client"
+
+- task: PublishCodeCoverageResults@1
+  inputs:
+    codeCoverageTool: "Cobertura"
+    summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/cobertura-coverage.xml"
