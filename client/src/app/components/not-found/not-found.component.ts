@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-not-found",
@@ -9,15 +9,12 @@ import { ActivatedRoute, Router } from "@angular/router";
 export class NotFoundComponent implements OnInit {
 
   path: string;
-  message: string;
 
   constructor(private readonly router: Router) {
-    const state = this.router.getCurrentNavigation().extras.state;
-
-    this.path = state ? state.username : "404";
   }
 
   ngOnInit() {
+    const state = this.router.getCurrentNavigation().extras.state;
+    this.path = state ? state.username : "404";
   }
-
 }
