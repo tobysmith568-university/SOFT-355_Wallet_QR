@@ -16,23 +16,15 @@ import { StorageService } from "src/app/services/storage.service";
 })
 export class ProfileComponent implements OnInit {
 
-  private loaded = false;
-  private name = "";
-  private wallets: IWallet[] = new Array();
-  private editWalletsWebsocket: SocketIOClient.Socket;
+  loaded = false;
+  name = "";
+  wallets: IWallet[] = new Array();
+  editWalletsWebsocket: SocketIOClient.Socket;
 
   constructor(private readonly userService: UserApiService,
               private readonly route: ActivatedRoute,
               private readonly router: Router,
               private readonly storageService: StorageService) {
-    this.editWalletsWebsocket = connect("ws://localhost:8000/editwallets");
-
-    this.editWalletsWebsocket.on("connect", () => {
-      this.editWalletsWebsocket.on("wallets", (data: string) => {
-        const result: ISetWallets = JSON.parse(data);
-        this.wallets = result.wallets;
-      });
-    });
   }
 
   async ngOnInit() {
@@ -70,28 +62,37 @@ export class ProfileComponent implements OnInit {
       this.name = result.displayName;
       this.wallets = result.wallets;
     });
+
+    this.editWalletsWebsocket = connect("ws://localhost:8000/editwallets");
+
+    this.editWalletsWebsocket.on("connect", () => {
+      this.editWalletsWebsocket.on("wallets", (data: string) => {
+        const result: ISetWallets = JSON.parse(data);
+        this.wallets = result.wallets;
+      });
+    });
   }
 
-  private isError(pet: IUser | IError): pet is IError {
-    return (pet as IError).error !== undefined;
+  isError(user: IUser | IError): user is IError {
+    return (user as IError).error !== undefined;
   }
 
-  private deleteWallet(index: number) {
+  deleteWallet(index: number) {
     this.wallets.splice(index, 1);
     this.sendUpdate();
   }
 
-  private moveWalletUp(index: number) {
+  moveWalletUp(index: number) {
     moveItemInArray(this.wallets, index, index + 1);
     this.sendUpdate();
   }
 
-  private moveWalletDown(index: number) {
+  moveWalletDown(index: number) {
     moveItemInArray(this.wallets, index, index - 1);
     this.sendUpdate();
   }
 
-  private sendUpdate() {
+  sendUpdate() {
     this.editWalletsWebsocket.emit("set", {
       token: this.storageService.get("token"),
       wallets: this.wallets

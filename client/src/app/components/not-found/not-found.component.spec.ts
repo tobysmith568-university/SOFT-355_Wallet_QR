@@ -1,10 +1,8 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { NotFoundComponent } from "./not-found.component";
 import { IMock, Mock } from "typemoq";
-import { Router, NavigationExtras, RouterModule, Navigation } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
+import { Router, NavigationExtras, Navigation } from "@angular/router";
 
-fdescribe("NotFoundComponent", () => {
+describe("NotFoundComponent", () => {
   let router: IMock<Router>;
 
   let subject: NotFoundComponent;
