@@ -15,22 +15,23 @@ import { PasswordAPIService } from "src/app/services/api/password-api.service";
 })
 export class SignupComponent implements OnInit {
 
-  private formEnabled = true;
-  private matchNames = false;
-  private checkingPassword = false;
-  private knowTheRisks = false;
+  formEnabled = true;
+  matchNames = false;
+  checkingPassword = false;
+  knowTheRisks = false;
 
-  private usernameError = "";
-  private nameError = "";
-  private emailError = "";
-  private passwordError = "";
-  private timesBreached = 0;
+  usernameError = "";
+  nameError = "";
+  emailError = "";
+  passwordError = "";
+  timesBreached = 0;
+  formError = "";
 
-  private username: string;
-  private name: string;
-  private email: string;
-  private password: string;
-  private confirmPassword: string;
+  username: string;
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
 
   constructor(private readonly userApiService: UserApiService,
               private readonly signInApiService: SignInApiService,
@@ -40,7 +41,7 @@ export class SignupComponent implements OnInit {
   ngOnInit() {
   }
 
-  private async usernameFocusOut() {
+  async usernameFocusOut() {
     if (isNullOrUndefined(this.username) || this.username.length === 0) {
       this.usernameError = "You need to enter a username";
       return;
@@ -59,7 +60,7 @@ export class SignupComponent implements OnInit {
     this.usernameError = "";
   }
 
-  private nameFocusOut() {
+  nameFocusOut() {
     if (!this.matchNames && (isNullOrUndefined(this.name) || this.name.length === 0)) {
       this.nameError = "You need to either enter a name or check 'Same as username'";
       return;
@@ -68,7 +69,7 @@ export class SignupComponent implements OnInit {
     this.nameError = "";
   }
 
-  private emailFocusOut() {
+  emailFocusOut() {
     if (isNullOrUndefined(this.email) || this.email.length === 0) {
       this.emailError = "You need to enter an email";
       return;
@@ -82,7 +83,7 @@ export class SignupComponent implements OnInit {
     this.emailError = "";
   }
 
-  private async passwordFocusOut() {
+  async passwordFocusOut() {
     if (isNullOrUndefined(this.password) || this.password.length === 0) {
       this.passwordError = "You need to enter a password";
       return;
@@ -109,7 +110,7 @@ export class SignupComponent implements OnInit {
     }
 
     if (!this.password.match(/^.*?[!"£€$%^&*()\-=_+[\]{};':@,.<>/?\\|#~¬`]+.*?$/)) {
-      this.passwordError = "You need at least 1 puncuation";
+      this.passwordError = "You need at least 1 punctuation";
       return;
     }
 
@@ -121,11 +122,11 @@ export class SignupComponent implements OnInit {
     this.passwordError = "";
   }
 
-  private matchingPasswords(): boolean {
+  matchingPasswords(): boolean {
     return this.password === this.confirmPassword;
   }
 
-  private async signup() {
+  async signup() {
     await this.usernameFocusOut();
     this.nameFocusOut();
     this.emailFocusOut();
@@ -144,7 +145,7 @@ export class SignupComponent implements OnInit {
     const createResult = await this.userApiService.createUser(this.username, this.name, this.email, this.password);
 
     if (this.isError(createResult)) {
-      // Show form error
+      this.formError = createResult.error;
       return;
     }
 
@@ -154,14 +155,14 @@ export class SignupComponent implements OnInit {
     });
 
     if (this.isError(signInResult)) {
-      // Show account error
+      this.formError = signInResult.error;
       return;
     }
 
     this.router.navigate(["@" + createResult.username]);
   }
 
-  private isError(result: IToken | ICreateUser | IError): result is IError {
+  isError(result: IToken | ICreateUser | IError): result is IError {
     return (result as IError).error !== undefined;
   }
 }

@@ -80,4 +80,8 @@
 	<button class="btn btn-primary"
 						[disabled]="!formEnabled"
 						(click)="signup()">Sign Up</button>
+
+	<div class="form-group" *ngIf="formError.length > 0">
+		<div class="form-error">{{ formError }}</div>
+	</div>
 </form>
