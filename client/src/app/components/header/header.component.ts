@@ -11,16 +11,23 @@ import { StorageService } from "src/app/services/storage.service";
 })
 export class HeaderComponent implements OnInit {
 
-  private currentRoute: string;
-  private searchTerm = "";
-  private searchResults: ISearchResult[] = [ ];
-  private userSearchWebsocket: SocketIOClient.Socket;
-  private focusedResult = -1;
+  currentRoute: string;
+  searchTerm = "";
+  searchResults: ISearchResult[] = [ ];
+  userSearchWebsocket: SocketIOClient.Socket;
+  focusedResult = -1;
 
-  private username: string;
+  username: string;
 
   constructor(private readonly router: Router,
-              private readonly storageService: StorageService) {
+              private readonly storageService: StorageService) { }
+
+  async ngOnInit() {
+    this.router.events.subscribe(() => {
+      this.currentRoute = this.router.url;
+      this.username = this.storageService.get("username");
+    });
+
     this.userSearchWebsocket = connect("ws://localhost:8000/searchusers");
 
     this.userSearchWebsocket.on("connect", () => {
@@ -32,23 +39,16 @@ export class HeaderComponent implements OnInit {
     this.username = this.storageService.get("username");
   }
 
-  async ngOnInit() {
-    this.router.events.subscribe(() => {
-      this.currentRoute = this.router.url;
-      this.username = this.storageService.get("username");
-    });
-  }
-
-  private isCurrent(route: string): boolean {
+  isCurrent(route: string): boolean {
     return this.currentRoute === route;
   }
 
-  private isLoggedIn() {
+  isLoggedIn() {
     const token = this.storageService.get("token");
     return token !== null && token.length > 0;
   }
 
-  private search() {
+  search() {
     if (this.searchTerm.length > 0) {
       this.userSearchWebsocket.emit("search", this.searchTerm);
     } else {
@@ -56,13 +56,13 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-  private searchBlur() {
+  searchBlur() {
     setTimeout(() => {
       this.searchResults = [];
     }, 100);
   }
 
-  private keypress(event: KeyboardEvent) {
+  keypress(event: KeyboardEvent) {
     if (event.code === "ArrowDown" && this.focusedResult < this.searchResults.length - 1) {
       this.focusedResult++;
       return;
@@ -73,7 +73,7 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-  private goToProfile(username: string) {
+  goToProfile(username: string) {
 
     if (username === undefined) {
       const result = this.searchResults[this.focusedResult];
