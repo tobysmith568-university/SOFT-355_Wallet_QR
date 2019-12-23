@@ -12,21 +12,21 @@ import { StorageService } from "src/app/services/storage.service";
 export class WalletComponent implements OnInit {
 
   @Input()
-  private wallet: IWallet;
+  wallet: IWallet;
 
   @Input()
-  private index: number;
+  index: number;
 
   @Output()
-  private moveDownEvent = new EventEmitter<number>();
+  moveDownEvent = new EventEmitter<number>();
 
   @Output()
-  private moveUpEvent = new EventEmitter<number>();
+  moveUpEvent = new EventEmitter<number>();
 
   @Output()
-  private deleteEvent = new EventEmitter<number>();
+  deleteEvent = new EventEmitter<number>();
 
-  private qrData = "";
+  qrData = "";
 
   constructor(private readonly route: ActivatedRoute,
               private readonly storageService: StorageService) { }
@@ -41,19 +41,19 @@ export class WalletComponent implements OnInit {
     }
   }
 
-  private onOwnProfile(): boolean {
+  onOwnProfile(): boolean {
     return "@" + this.storageService.get("username") === this.route.snapshot.paramMap.get("username");
   }
 
-  private moveUp() {
+  moveUp() {
     this.moveUpEvent.emit(this.index);
   }
 
-  private moveDown() {
+  moveDown() {
     this.moveDownEvent.emit(this.index);
   }
 
-  private delete() {
+  delete() {
     this.deleteEvent.emit(this.index);
   }
 }
