@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { UserApiService } from "src/app/services/api/user-api.service";
 import { IWallet } from "src/app/models/wallet.interface";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Router, ParamMap } from "@angular/router";
 import { IError } from "src/app/services/api/error.interface";
 import { IUser } from "src/app/models/user.interface";
 import { moveItemInArray } from "@angular/cdk/drag-drop";
@@ -28,40 +28,7 @@ export class ProfileComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.route.paramMap.subscribe(async params => {
-      const username = params.get("username");
-
-      if (username.length < 2 || username[0] !== "@") {
-        this.router.navigate(["/404"], {
-          skipLocationChange: true,
-          state: {
-            username
-          }
-        });
-        return;
-      }
-
-      this.loaded = false;
-      this.name = "";
-      this.wallets = [];
-
-      const usernameWithNoAt = username.substring(1);
-
-      const result = await this.userService.getUser(usernameWithNoAt);
-
-      if (this.isError(result)) {
-        this.name = result.error;
-        this.wallets = new Array();
-        this.loaded = true;
-        return;
-      }
-
-      this.editWalletsWebsocket.emit("profile", usernameWithNoAt);
-
-      this.loaded = true;
-      this.name = result.displayName;
-      this.wallets = result.wallets;
-    });
+    this.route.paramMap.subscribe(async params => this.loadProfile(params));
 
     this.editWalletsWebsocket = connect("ws://localhost:8000/editwallets");
 
@@ -71,6 +38,40 @@ export class ProfileComponent implements OnInit {
         this.wallets = result.wallets;
       });
     });
+  }
+
+  async loadProfile(params: ParamMap) {
+    const username = params.get("username");
+
+    if (username.length < 2 || username[0] !== "@") {
+      this.router.navigate(["/404"], {
+        skipLocationChange: true,
+        state: {
+          username
+        }
+      });
+      return;
+    }
+
+    this.loaded = false;
+    this.name = "";
+    this.wallets = [];
+
+    const usernameWithNoAt = username.substring(1);
+
+    const result = await this.userService.getUser(usernameWithNoAt);
+
+    if (this.isError(result)) {
+      this.name = result.error;
+      this.loaded = true;
+      return;
+    }
+
+    this.editWalletsWebsocket.emit("profile", usernameWithNoAt);
+
+    this.loaded = true;
+    this.name = result.displayName;
+    this.wallets = result.wallets;
   }
 
   isError(user: IUser | IError): user is IError {
