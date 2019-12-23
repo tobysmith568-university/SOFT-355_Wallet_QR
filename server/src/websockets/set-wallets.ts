@@ -30,7 +30,7 @@ export class SetWallets implements IWebsocket {
     socket.join(msg);
   }
 
-  private async set(socket: Socket, msg: any): Promise<void> {
+  async set(socket: Socket, msg: any): Promise<void> {
     const data = msg as ISetWallets;
     const payload = await this.tokenService.verify(data.token);
 
@@ -65,7 +65,7 @@ export class SetWallets implements IWebsocket {
     } as IUpdatedWallets));
   }
 
-  private async add(socket: Socket, msg: any): Promise<void> {
+  async add(socket: Socket, msg: any): Promise<void> {
     const data = msg as ISetWallets;
     const payload = await this.tokenService.verify(data.token);
 
@@ -90,7 +90,6 @@ export class SetWallets implements IWebsocket {
     if (!user.emailVerified) {
       return;
     }
-
     data.wallets.forEach((wallet) => {
       user.wallets.push({
         name: wallet.name,
@@ -100,6 +99,10 @@ export class SetWallets implements IWebsocket {
     });
 
     await user.save();
+    
+    socket.to(username).emit("wallets", JSON.stringify({
+      wallets: this.mapWallets(user.wallets)
+    } as IUpdatedWallets));
   }
 
   private mapWallets(wallets: IWallet[]): IWalletDbo[] {
