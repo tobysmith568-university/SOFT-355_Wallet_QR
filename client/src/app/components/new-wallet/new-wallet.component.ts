@@ -7,6 +7,7 @@ import { UserApiService } from "src/app/services/api/user-api.service";
 import { IUser } from "src/app/models/user.interface";
 import { IError } from "src/app/services/api/error.interface";
 import { StorageService } from "src/app/services/storage.service";
+import { LocationService } from "src/app/services/location.service";
 
 @Component({
   selector: "app-new-wallet",
@@ -15,20 +16,20 @@ import { StorageService } from "src/app/services/storage.service";
 })
 export class NewWalletComponent implements OnInit {
 
-  private formEnabled = false;
-  private emailUnverified = false;
+  formEnabled = false;
+  emailUnverified = false;
 
-  private currency: string;
-  private name: string;
-  private address: string;
+  currency: string;
+  name: string;
+  address: string;
 
-  private another: boolean;
-  private created: boolean;
+  another: boolean;
+  created: boolean;
 
-  private currencyError = "";
-  private addressError = "";
+  currencyError = "";
+  addressError = "";
 
-  private editWalletsWebsocket: SocketIOClient.Socket;
+  editWalletsWebsocket: SocketIOClient.Socket;
 
   constructor(private readonly router: Router,
               private readonly userApiService: UserApiService,
@@ -58,12 +59,7 @@ export class NewWalletComponent implements OnInit {
     }
   }
 
-  private isLoggedIn() {
-    const token = this.storageService.get("token");
-    return token !== null && token.length > 0;
-  }
-
-  private currencyFocusOut() {
+  currencyFocusOut() {
     if (isNullOrUndefined(this.currency) || this.currency.length === 0) {
       this.currencyError = "You need to enter a currency";
       return;
@@ -72,7 +68,7 @@ export class NewWalletComponent implements OnInit {
     this.currencyError = "";
   }
 
-  private addressFocusOut() {
+  addressFocusOut() {
     if (isNullOrUndefined(this.address) || this.address.length === 0) {
       this.addressError = "You need to enter an address";
       return;
@@ -81,7 +77,7 @@ export class NewWalletComponent implements OnInit {
     this.addressError = "";
   }
 
-  private create() {
+  create() {
     this.currencyFocusOut();
     this.addressFocusOut();
 
@@ -109,6 +105,11 @@ export class NewWalletComponent implements OnInit {
     }
 
     this.router.navigate(["@" + this.storageService.get("username")]);
+  }
+
+  private isLoggedIn() {
+    const token = this.storageService.get("token");
+    return token !== null && token.length > 0;
   }
 
   private isError(result: IUser | IError): result is IError {
