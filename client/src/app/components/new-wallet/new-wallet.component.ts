@@ -32,14 +32,17 @@ export class NewWalletComponent implements OnInit {
 
   constructor(private readonly router: Router,
               private readonly userApiService: UserApiService,
-              private readonly storageService: StorageService) {
-    this.editWalletsWebsocket = connect("ws://localhost:8000/editwallets");
+              private readonly storageService: StorageService,
+              private readonly locationService: LocationService) {
   }
 
   async ngOnInit() {
     if (!this.isLoggedIn()) {
       this.router.navigate(["/"]);
+      return;
     }
+
+    this.editWalletsWebsocket = connect("ws://localhost:8000/editwallets");
 
     const user = await this.userApiService.getUser(this.storageService.get("username"));
 
@@ -101,7 +104,7 @@ export class NewWalletComponent implements OnInit {
     } as ISetWallets);
 
     if (this.another) {
-      location.reload();
+      this.locationService.reload();
       return;
     }
 
