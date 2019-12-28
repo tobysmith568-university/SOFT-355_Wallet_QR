@@ -13,3 +13,5 @@
 ![Azure DevOps builds (branch)](https://img.shields.io/azure-devops/build/tobysmith568/WalletQR/10/develop?label=Client)
 ![Azure DevOps tests (branch)](https://img.shields.io/azure-devops/tests/tobysmith568/WalletQR/10/develop?label=Tests)
 ![Azure DevOps coverage (branch)](https://img.shields.io/azure-devops/coverage/tobysmith568/WalletQR/10/develop?label=Coverage)
+
+##### Pipelines: https://dev.azure.com/tobysmith568/WalletQR
