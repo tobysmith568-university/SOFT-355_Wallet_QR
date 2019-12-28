@@ -1,7 +1,7 @@
-import AbstractConfig from "./config.abstract";
+import { AbstractConfig } from "./config.abstract";
 import { ENV } from "./config";
 
-export default class TestConfig extends AbstractConfig {
+export class TestConfig extends AbstractConfig {
   constructor() {
     super();
     this.environment = ENV.test;

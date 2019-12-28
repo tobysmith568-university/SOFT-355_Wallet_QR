@@ -7,7 +7,7 @@ export class SearchUsers implements IWebsocket {
 
   private namespace: Namespace;
 
-  constructor(private readonly server: Server,
+  constructor(server: Server,
     private readonly userRepository: UserRepository) {
     this.namespace = server.of("/searchusers");
   }

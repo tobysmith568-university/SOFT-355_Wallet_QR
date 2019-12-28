@@ -1,7 +1,7 @@
-import dev from "./dev";
-import prod from "./prod";
-import test from "./test";
-import AbstractConfig from "./config.abstract";
+import { DevConfig as dev } from "./dev";
+import { ProdConfig as prod } from "./prod";
+import { TestConfig as test } from "./test";
+import { AbstractConfig } from "./config.abstract";
 
 export const ENV = {
   dev: "dev",
