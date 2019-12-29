@@ -6,7 +6,7 @@ import { StorageService } from "../storage.service";
 @Injectable({
   providedIn: "root"
 })
-export class ApiService {
+export abstract class ApiService {
 
   private readonly server = "http://localhost:8000/api";
 
