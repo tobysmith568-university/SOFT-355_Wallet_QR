@@ -1,0 +1,36 @@
+p {
+	text-align: center;
+}
+
+.subtitle {
+	min-height: 35px;
+}
+
+.qr-wrapper {
+	padding-top: 0px;
+	padding-left: 20px;
+	padding-bottom: 20px;
+	padding-right: 20px;
+}
+
+.qrcode {
+	width: 100%;
+	height: 100%;
+}
+
+.name {
+	margin: auto;
+}
+
+.card .wallet-buttons {
+  opacity: 0;
+  transition: 0.3s;
+}
+
+.card:hover .wallet-buttons {
+  opacity: 1;
+}
+
+.del-btn:hover {
+	background: #CF4647;
+}

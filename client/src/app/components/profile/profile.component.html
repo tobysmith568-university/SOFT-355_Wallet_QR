@@ -1,0 +1,18 @@
+<div class="jumbotron text-center full-width">
+	<div class="container">
+		<h1 class="jumbotron-heading">{{ name }}</h1>
+	</div>
+</div>
+<div class="wallet-container">
+	<div *ngIf="!loaded" class="spinner">
+		<app-loading-spinner></app-loading-spinner>
+	</div>
+	<div class="wallet" *ngFor="let wallet of wallets; let i = index">
+		<div class="example-box">
+			<app-wallet [wallet]=wallet [index]=i [walletsLength]=wallets.length
+								(deleteEvent)="deleteWallet($event)"
+								(moveUpEvent)="moveWalletUp($event)"
+								(moveDownEvent)="moveWalletDown($event)"></app-wallet>
+		</div>
+	</div>
+</div>

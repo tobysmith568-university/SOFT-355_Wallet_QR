@@ -1,0 +1,87 @@
+<form class="needs-validation" novalidate>
+	<div class="form-group">
+		<label for="username">Username</label>
+		<div class="input-group">
+			<div class="input-group-prepend">
+				<span class="input-group-text" id="inputGroupPrepend3">@</span>
+			</div>
+			<input name="username" id="username" type="text" class="form-control" aria-describedby="usernamehelp" placeholder="Username"
+							[disabled]="!formEnabled"
+							[class.is-invalid]="usernameError"
+							[(ngModel)]="username"
+							(focusout)="usernameFocusOut()">
+			<small class="invalid-feedback">{{ usernameError }}</small>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label for="name">Name</label>
+		<small class="text-muted"> or alias</small>
+		<div class="form-check">
+			<input name="matchNames" id="matchNames" type="checkbox" class="form-check-input"
+							[(ngModel)]="matchNames">
+			<label class="form-check-label" for="matchNames">Same as username</label>
+		</div>
+		<input name="name" id="name" type="text" class="form-control" placeholder="Name"
+							[disabled]="!formEnabled"
+							[readonly]="matchNames"
+							[class.is-invalid]="!matchNames && nameError"
+							[(ngModel)]="matchNames ? username : name"
+							(focusout)="nameFocusOut()">
+		<small class="invalid-feedback">{{ nameError }}</small>
+	</div>
+
+	<div class="form-group">
+		<label for="email">Email</label>
+		<input name="email" id="email" type="email" class="form-control" placeholder="you@someone.com"
+							[disabled]="!formEnabled"
+							[class.is-invalid]="emailError"
+							[(ngModel)]="email"
+							(focusout)="emailFocusOut()">
+		<small class="invalid-feedback">{{ emailError }}</small>
+	</div>
+	
+	<div class="form-group">
+		<label for="password">Password</label>
+		
+		<div class="input-group">
+			<input name="password" id="password" type="password" class="form-control" placeholder="Password"
+								[class.is-invalid]="passwordError"
+								[disabled]="!formEnabled"
+								[(ngModel)]="password"
+								(focusout)="passwordFocusOut()">
+			<div class="password-spinner" *ngIf="checkingPassword">
+				<app-loading-spinner></app-loading-spinner>
+			</div>
+			<small class="invalid-feedback">{{ passwordError }}</small>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label for="confirmPassword">Confirm Password</label>
+		<input name="confirmPassword" id="confirmPassword" type="password" class="form-control" placeholder="Password"
+							[class.is-invalid]="!matchingPasswords()"
+							[disabled]="!formEnabled"
+							[(ngModel)]="confirmPassword">
+		<div class="invalid-feedback">Passwords do not match</div>
+	</div>
+
+	<div class="form-group password-warning" *ngIf="timesBreached">
+			<label class="password-warning-text" for="knowTheRisks">This password has appeared in well-known password breaches {{ timesBreached }} times!</label>
+			<label class="password-warning-text" for="knowTheRisks">This makes it a poor password because hackers know to use it as a guess.</label>
+			<div class="form-check">
+				<input name="knowTheRisks" id="knowTheRisks" type="checkbox" class="form-check-input"
+									[class.is-invalid]="!knowTheRisks"
+									[(ngModel)]="knowTheRisks">
+				<label class="form-check-label" for="knowTheRisks">I understand the risks</label>
+			</div>
+	</div>
+
+	<button class="btn btn-primary"
+						[disabled]="!formEnabled"
+						(click)="signup()">Sign Up</button>
+
+	<div class="form-group" *ngIf="formError.length > 0">
+		<div class="form-error">{{ formError }}</div>
+	</div>
+</form>

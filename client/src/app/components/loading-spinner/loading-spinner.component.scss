@@ -1,0 +1,92 @@
+@import "node_modules/bootstrap/scss/bootstrap";
+
+/*
+
+	The CSS below was generated from loading.io using the following licence
+	and was then modified to use Bootstrap colours:
+
+	Loading.io Free License
+	With Loading.io Free license ( LD-FREE / FREE / Free License ), items are
+	dedicated to the public domain by waiving all our right worldwide under
+	copyright law. You can use items under LD-FREE freely for any purpose.
+	No attribution is required.
+
+*/
+
+@keyframes ldio-a3z8ne0kjbf {
+  0% {
+    transform: rotate(0)
+  }
+
+  100% {
+    transform: rotate(360deg)
+  }
+}
+
+.ldio-a3z8ne0kjbf div {
+  box-sizing: border-box !important
+}
+
+.ldio-a3z8ne0kjbf>div {
+  position: absolute;
+  width: 124.03px;
+  height: 124.03px;
+  top: 16.485px;
+  left: 16.485px;
+  border-radius: 50%;
+  border: 4.71px solid $dark;
+  border-color: $dark transparent $dark transparent;
+  animation: ldio-a3z8ne0kjbf 1.8518518518518516s linear infinite;
+}
+
+.ldio-a3z8ne0kjbf>div:nth-child(2) {
+  border-color: transparent
+}
+
+.ldio-a3z8ne0kjbf>div:nth-child(2) div {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform: rotate(45deg);
+}
+
+.ldio-a3z8ne0kjbf>div:nth-child(2) div:before,
+.ldio-a3z8ne0kjbf>div:nth-child(2) div:after {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 4.71px;
+  height: 4.71px;
+  top: -4.71px;
+  left: 54.95px;
+  background: $dark;
+  border-radius: 50%;
+  box-shadow: 0 119.32000000000001px 0 0 $dark;
+}
+
+.ldio-a3z8ne0kjbf>div:nth-child(2) div:after {
+  left: -4.71px;
+  top: 54.95px;
+  box-shadow: 119.32000000000001px 0 0 0 $dark;
+}
+
+.loadingio-spinner-dual-ring-nrabq604nx {
+  width: 157px;
+  height: 157px;
+  display: inline-block;
+  overflow: hidden;
+  background: none;
+}
+
+.ldio-a3z8ne0kjbf {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform: translateZ(0) scale(1);
+  backface-visibility: hidden;
+  transform-origin: 0 0;
+}
+
+.ldio-a3z8ne0kjbf div {
+  box-sizing: content-box;
+}

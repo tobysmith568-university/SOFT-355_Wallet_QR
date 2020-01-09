@@ -1,0 +1,51 @@
+<div class="alert-container" *ngIf="emailUnverified">
+	<div class="alert alert-danger" role="alert">
+		You cannot add a new wallet to your account until you verify your email!
+	</div>
+</div>
+
+<form class="needs-validation" autocomplete="off" novalidate *ngIf="!emailUnverified">
+		<div class="form-group">
+			<label for="currency">Currency</label>
+			<div class="input-group">
+				<input name="currency" id="currency" type="text" class="form-control" placeholder="Currency"
+									[disabled]="!formEnabled"
+									[class.is-invalid]="currencyError"
+									[(ngModel)]="currency"
+									(focusout)="currencyFocusOut()">
+				<small class="invalid-feedback">{{ currencyError }}</small>
+			</div>
+		</div>
+	
+		<div class="form-group">
+			<label for="name">Name</label>
+			<small class="text-muted"> (optional)</small>
+			<input name="name" id="name" type="text" class="form-control" placeholder="Name"
+								[disabled]="!formEnabled"
+								[(ngModel)]="name">
+		</div>
+	
+		<div class="form-group">
+			<label for="address">Address</label>
+			<input name="address" id="address" type="text" class="form-control" placeholder="Address"
+								[disabled]="!formEnabled"
+								[class.is-invalid]="addressError"
+								[(ngModel)]="address"
+								(focusout)="addressFocusOut()">
+			<small class="invalid-feedback">{{ addressError }}</small>
+		</div>
+	
+		<div class="form-group">
+			<div class="form-check">
+				<input name="another" id="another" type="checkbox" class="form-check-input"
+								[(ngModel)]="another">
+				<label class="form-check-label" for="another">Stay on this page</label>
+			</div>
+		</div>
+	
+		<div class="form-group">
+			<button class="btn btn-primary"
+								[disabled]="!formEnabled"
+								(click)="create()">Create</button>
+		</div>
+	</form>

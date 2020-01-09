@@ -1,0 +1,54 @@
+<div class="card box-shaddow">
+  <div class="card-body">
+		<p class="h4 currency">{{ wallet.currency }}</p>
+		<div class="subtitle">
+			<p class="card-subtitle mb-2 text-muted name">{{ wallet.name }}</p>
+		</div>
+		<div class="card-img qr-wrapper">
+			<img class="qrcode" src="{{ qrData }}" draggable="false"/>
+		</div>
+		<p class="address">{{ wallet.address }}</p>
+		<div *ngIf="onOwnProfile()" class="wallet-buttons">
+			<div class="d-flex justify-content-between align-items-center">
+				<div class="btn-group">
+					<button type="button" class="btn btn-sm btn-outline-secondary move-down"
+										*ngIf="index != 0"
+										(click)="moveDown()">
+						<mat-icon svgIcon="arrow-left-bold"></mat-icon>
+					</button>
+					<button type="button" class="btn btn-sm btn-outline-secondary move-up"
+										*ngIf="index != walletsLength - 1"
+										(click)="moveUp()">
+						<mat-icon svgIcon="arrow-right-bold"></mat-icon>
+					</button>
+				</div>
+				<div class="btn-group">
+					<button type="button" class="btn del-btn btn-sm btn-outline-secondary" data-toggle="modal" [attr.data-target]="'#deleteWallet' + index">
+						<mat-icon svgIcon="delete"></mat-icon>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" [id]="'deleteWallet' + index" tabindex="-1" role="dialog" aria-labelledby="deleteWalletModelTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteWalletModelTitle">Are you sure you want to delete {{ getWalletName() }}?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Once the wallet is deleted there is no way to get it back!
+      </div>
+      <div class="modal-footer">
+				<button type="button" class="btn btn-danger mr-auto" data-dismiss="modal"
+									(click)="delete()">Delete!</button>
+        <button type="button" class="btn btn-data" data-dismiss="modal">Cancel!</button>
+      </div>
+    </div>
+  </div>
+</div>

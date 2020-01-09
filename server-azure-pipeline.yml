@@ -18,29 +18,24 @@ steps:
 - task: Npm@1
   inputs:
     command: "install"
-    workingDir: "client"
-  displayName: "npm install client"
+    workingDir: "server"
+  displayName: "npm install server"
 
 - task: CmdLine@2
   inputs:
     script: |
       npm run build
-    workingDirectory: "client"
-  displayName: "Building client"
+    workingDirectory: "server"
+  displayName: "Building server"
 
 - task: CmdLine@2
   inputs:
     script: |
       npm run coverage
-    workingDirectory: "client"
-  displayName: "Testing client"
-
-- task: PublishTestResults@2
-  inputs:
-    testResultsFormat: 'JUnit'
-    testResultsFiles: '$(System.DefaultWorkingDirectory)/**/coverage/junit/TESTS-*.xml'
+    workingDirectory: "server"
+  displayName: "Testing server"
 
 - task: PublishCodeCoverageResults@1
   inputs:
     codeCoverageTool: "Cobertura"
-    summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/coverage/cobertura-coverage.xml"
+    summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/cobertura-coverage.xml"

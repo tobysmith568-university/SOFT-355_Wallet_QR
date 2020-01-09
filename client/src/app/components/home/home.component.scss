@@ -1,0 +1,45 @@
+:host {
+	width: 100%
+}
+
+h2 {
+	margin-bottom: 16px;
+}
+
+ul {
+	padding-left: 25px;
+	list-style-type: none;
+}
+
+button {
+	margin-bottom: 60px;
+}
+
+.jumbotron {
+	text-align: center;
+}
+
+.container {
+	margin-top: 60px;
+	display: flex;
+	flex-direction: row;
+}
+
+.child {
+	text-align: center;
+	margin: 0 auto;
+}
+
+.child ul {
+	padding-left: 0px;
+}
+
+.signup-form {
+  display: flex;
+  justify-content: center;
+	align-items: center;
+}
+
+.signup {
+	margin: auto;
+}

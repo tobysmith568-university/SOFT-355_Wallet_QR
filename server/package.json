@@ -1,0 +1,71 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "cls && npm run build:live",
+    "build": "node ./node_modules/typescript/lib/tsc && npm run copy:assets",
+    "build:live": "nodemon -e * --exec ./node_modules/.bin/ts-node -- index.ts",
+    "test": "mocha -r ts-node/register tests/**/*.spec.ts",
+    "coverage": "nyc --reporter=cobertura --reporter=html mocha --opts mocha.opts",
+    "copy:assets": "cpx src/assets/** dist/src/assets"
+  },
+  "nyc": {
+    "include": [
+      "src/**/*.ts"
+    ],
+    "extension": [
+      ".ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "reporter": [
+      "text-summary",
+      "html"
+    ],
+    "sourceMap": true,
+    "instrument": true
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/bcrypt": "^3.0.0",
+    "@types/body-parser": "^1.17.1",
+    "@types/chai": "^4.2.5",
+    "@types/cors": "^2.8.6",
+    "@types/express": "^4.17.2",
+    "@types/jsonwebtoken": "^8.3.5",
+    "@types/mocha": "^5.2.7",
+    "@types/mongoose": "^5.5.32",
+    "@types/node": "^8.0.20",
+    "@types/nodemailer": "^6.2.2",
+    "@types/socket.io": "^2.1.4",
+    "chai": "^4.2.0",
+    "mocha": "^6.2.2",
+    "mockdate": "^2.0.5",
+    "nodemon": "^2.0.1",
+    "nyc": "^14.1.1",
+    "source-map-support": "^0.5.16",
+    "ts-node": "^8.5.3",
+    "tslint": "^5.20.1",
+    "typemoq": "^2.1.0",
+    "typescript": "^3.7.2"
+  },
+  "dependencies": {
+    "bcrypt": "3.0.6",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "cpx": "^1.5.0",
+    "dotenv": "^8.2.0",
+    "es6-template-strings": "^2.0.1",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.7.12",
+    "mongoose-fuzzy-searching": "^1.1.8",
+    "nodemailer": "^6.4.2",
+    "socket.io": "^2.3.0"
+  }
+}
