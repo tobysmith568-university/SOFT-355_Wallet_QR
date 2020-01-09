@@ -140,9 +140,11 @@ export class SignupComponent implements OnInit {
      || this.checkingPassword
      || (this.timesBreached && !this.knowTheRisks)) {
        return;
-     }
+    }
 
-    const createResult = await this.userApiService.createUser(this.username, this.name, this.email, this.password);
+    const name = this.matchNames ? this.username : this.name;
+
+    const createResult = await this.userApiService.createUser(this.username, name, this.email, this.password);
 
     if (this.isError(createResult)) {
       this.formError = createResult.error;

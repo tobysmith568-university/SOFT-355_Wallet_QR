@@ -316,7 +316,7 @@ describe("SignupComponent", () => {
 
   describe("signup", async () => {
 
-    it ("should not create a user if the username is invalid", async () => {
+    it("should not create a user if the username is invalid", async () => {
       const username = "ThisIs NOT Valid";
       const name = "ThisIsValid";
       const email = "this@is.valid";
@@ -343,7 +343,7 @@ describe("SignupComponent", () => {
       expectNothing();
     });
 
-    it ("should not create a user if the name is invalid", async () => {
+    it("should not create a user if the name is invalid", async () => {
       const username = "ThisIsValid";
       const name = null;
       const email = "this@is.valid";
@@ -370,7 +370,7 @@ describe("SignupComponent", () => {
       expectNothing();
     });
 
-    it ("should not create a user if the email is invalid", async () => {
+    it("should not create a user if the email is invalid", async () => {
       const username = "ThisIsValid";
       const name = "this is valid";
       const email = "this..is@NOT.valid";
@@ -397,7 +397,7 @@ describe("SignupComponent", () => {
       expectNothing();
     });
 
-    it ("should not create a user if the password is invalid", async () => {
+    it("should not create a user if the password is invalid", async () => {
       const username = "ThisIsValid";
       const name = "this is valid";
       const email = "this@is.valid";
@@ -424,7 +424,7 @@ describe("SignupComponent", () => {
       expectNothing();
     });
 
-    it ("should not create a user if the passwords don't match", async () => {
+    it("should not create a user if the passwords don't match", async () => {
       const username = "ThisIsValid";
       const name = "this is valid";
       const email = "this@is.valid";
@@ -451,7 +451,7 @@ describe("SignupComponent", () => {
       expectNothing();
     });
 
-    it ("should not create a user if the password is breached and the user doesn't understand the risks", async () => {
+    it("should not create a user if the password is breached and the user doesn't understand the risks", async () => {
       const username = "ThisIsValid";
       const name = "this is valid";
       const email = "this@is.valid";
@@ -478,7 +478,7 @@ describe("SignupComponent", () => {
       expectNothing();
     });
 
-    it ("should create a user", async () => {
+    it("should create a user", async () => {
       const username = "ThisIsValid";
       const name = "this is valid";
       const email = "this@is.valid";
@@ -510,7 +510,75 @@ describe("SignupComponent", () => {
       expectNothing();
     });
 
-    it ("should set a form error if the userApiService returns one", async () => {
+    it("should create a user with the display name if names are not set to match", async () => {
+      const username = "ThisIsValid";
+      const name = "this is valid";
+      const email = "this@is.valid";
+      const password = "This1IsValid!";
+      const breaches = 0;
+      const matchingNames = false;
+
+      given_subject_username_equals(username);
+      given_subject_name_equals(name);
+      given_subject_email_equals(email);
+      given_subject_password_equals(password);
+      given_subject_confirmPassword_equals(password);
+      given_subject_matchNames_equals(matchingNames);
+
+      const createdUser = {
+        displayName: "This is some data"
+      } as ICreateUser;
+
+      const token = {
+        token: "This is a token"
+      } as IToken;
+
+      given_userApiService_userExists_returnsWhenGiven(false, username);
+      given_passwordApiService_checkPassword_returnsWhenGiven(breaches, password);
+      given_userApiService_createUser_returns(createdUser);
+      given_signInApiService_signin_returns(token);
+
+      await subject.signup();
+
+      userApiService.verify(u => u.createUser(It.isAny(), name, It.isAny(), It.isAny()), Times.once());
+      expectNothing();
+    });
+
+    it("should create a user with the username if names are set to match", async () => {
+      const username = "ThisIsValid";
+      const name = "this is valid";
+      const email = "this@is.valid";
+      const password = "This1IsValid!";
+      const breaches = 0;
+      const matchingNames = true;
+
+      given_subject_username_equals(username);
+      given_subject_name_equals(name);
+      given_subject_email_equals(email);
+      given_subject_password_equals(password);
+      given_subject_confirmPassword_equals(password);
+      given_subject_matchNames_equals(matchingNames);
+
+      const createdUser = {
+        displayName: "This is some data"
+      } as ICreateUser;
+
+      const token = {
+        token: "This is a token"
+      } as IToken;
+
+      given_userApiService_userExists_returnsWhenGiven(false, username);
+      given_passwordApiService_checkPassword_returnsWhenGiven(breaches, password);
+      given_userApiService_createUser_returns(createdUser);
+      given_signInApiService_signin_returns(token);
+
+      await subject.signup();
+
+      userApiService.verify(u => u.createUser(It.isAny(), username, It.isAny(), It.isAny()), Times.once());
+      expectNothing();
+    });
+
+    it("should set a form error if the userApiService returns one", async () => {
       const username = "ThisIsValid";
       const name = "this is valid";
       const email = "this@is.valid";
@@ -542,7 +610,7 @@ describe("SignupComponent", () => {
       expect(subject.formError).toBe(errorMessage);
     });
 
-    it ("should set a form error if the signinApiService returns one", async () => {
+    it("should set a form error if the signinApiService returns one", async () => {
       const username = "ThisIsValid";
       const name = "this is valid";
       const email = "this@is.valid";
