@@ -17,6 +17,9 @@ export class WalletComponent implements OnInit {
   @Input()
   index: number;
 
+  @Input()
+  walletsLength: number;
+
   @Output()
   moveDownEvent = new EventEmitter<number>();
 
