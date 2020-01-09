@@ -5,7 +5,7 @@
   </p>
 </div>
 <div class="container">
-  <div class="child" [class.center]="signedIn">
+  <div class="child">
     <h2>Centralised</h2>
     <ul>
       <li>Keep all your public wallets together</li>
@@ -22,7 +22,7 @@
       <li>Profiles are at easy to remember URLS</li>
     </ul>
   </div>
-  <div class="child center signup-form" *ngIf="!signedIn">
+  <div class="child signup-form" *ngIf="!signedIn">
     <div class="signup">
       <h2>Create an account</h2>
       <button class="btn btn-dark" routerLink="/signup">Sign up</button>
