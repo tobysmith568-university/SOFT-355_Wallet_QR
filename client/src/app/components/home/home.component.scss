@@ -1,3 +1,44 @@
 :host {
 	width: 100%
 }
+
+h2 {
+	margin-bottom: 16px;
+}
+
+ul {
+	padding-left: 25px;
+	list-style-type: none;
+}
+
+button {
+	margin-bottom: 60px;
+}
+
+.jumbotron {
+	text-align: center;
+}
+
+.container {
+	margin-top: 60px;
+	display: flex;
+	flex-direction: row;
+}
+
+.child {
+	margin: 0 auto;
+}
+
+.center {
+	text-align: center;
+}
+
+.signup-form {
+  display: flex;
+  justify-content: center;
+	align-items: center;
+}
+
+.signup {
+	margin: auto;
+}

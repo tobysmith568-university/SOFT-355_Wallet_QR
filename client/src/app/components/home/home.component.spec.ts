@@ -1,25 +1,56 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-
 import { HomeComponent } from "./home.component";
+import { IMock, Mock } from "typemoq";
+import { StorageService } from "src/app/services/storage.service";
 
 describe("HomeComponent", () => {
-  let component: HomeComponent;
-  let fixture: ComponentFixture<HomeComponent>;
+  let storageService: IMock<StorageService>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ HomeComponent ]
-    })
-    .compileComponents();
-  }));
+  let subject: HomeComponent;
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HomeComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    storageService = Mock.ofType<StorageService>();
+
+    subject = new HomeComponent(storageService.object);
   });
 
-  it("should create", () => {
-    expect(component).toBeTruthy();
+  describe("ngOnInit", () => {
+
+    it("should set signedIn to true if the stored username is valid", () => {
+      given_storageService_get_returnsWhenGiven("anything", "username");
+
+      subject.ngOnInit();
+
+      expect(subject.signedIn).toBeTruthy();
+    });
+
+    it("should set signedIn to false is the stored username is null", () => {
+      given_storageService_get_returnsWhenGiven(null, "username");
+
+      subject.ngOnInit();
+
+      expect(subject.signedIn).toBeFalsy();
+    });
+
+    it("should set signedIn to false is the stored username is undefined", () => {
+      given_storageService_get_returnsWhenGiven(undefined, "username");
+
+      subject.ngOnInit();
+
+      expect(subject.signedIn).toBeFalsy();
+    });
+
+    it("should set signedIn to false is the stored username is an empty string", () => {
+      given_storageService_get_returnsWhenGiven("", "username");
+
+      subject.ngOnInit();
+
+      expect(subject.signedIn).toBeFalsy();
+    });
   });
+
+  function given_storageService_get_returnsWhenGiven(returns: string, whenGiven: string) {
+    storageService
+      .setup(s => s.get(whenGiven))
+      .returns(() => returns);
+  }
 });

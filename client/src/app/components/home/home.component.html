@@ -1,6 +1,33 @@
-<div class="jumbotron" style="background-color: #fff; height: calc(95vh);">
-  <h1>Welcome to WalletQR</h1>
+<div class="jumbotron">
+  <h1>WalletQR</h1>
   <p class="lead">
-    This text will all get changed later - promise  
+    Share your cryptocurrency wallet addresses with others
   </p>
+</div>
+<div class="container">
+  <div class="child" [class.center]="signedIn">
+    <h2>Centralised</h2>
+    <ul>
+      <li>Keep all your public wallets together</li>
+      <li>Order and sort them to your liking</li>
+    </ul>
+    <h2>Memorable</h2>
+    <ul>
+      <li>Share your credentials through a single username</li>
+      <li>No need to copy/paste addresses everywhere</li>
+    </ul>
+    <h2>Quick</h2>
+    <ul>
+      <li>Search for users by username or name/alias</li>
+      <li>Profiles are at easy to remember URLS</li>
+    </ul>
+  </div>
+  <div class="child center signup-form" *ngIf="!signedIn">
+    <div class="signup">
+      <h2>Create an account</h2>
+      <button class="btn btn-dark" routerLink="/signup">Sign up</button>
+      <h2>Already with us?</h2>
+      <button class="btn btn-dark" routerLink="/login">Login</button>
+    </div>
+  </div>
 </div>
