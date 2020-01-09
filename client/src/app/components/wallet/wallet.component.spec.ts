@@ -112,6 +112,69 @@ describe("WalletComponent", () => {
     });
   });
 
+  describe("getWalletName", () => {
+
+    it("should return 'this wallet' when the wallets name is null", () => {
+      const currency = "currency";
+
+      given_subject_wallet_equals({
+        address: "anything",
+        currency,
+        name: null
+      });
+
+      const result = subject.getWalletName();
+
+      expect(result).toBe("this currency wallet");
+    });
+
+    it("should return 'this wallet' when the wallets name is undefined", () => {
+      const currency = "currency";
+
+      given_subject_wallet_equals({
+        address: "anything",
+        currency,
+        name: undefined
+      });
+
+      const result = subject.getWalletName();
+
+      expect(result).toBe("this currency wallet");
+    });
+
+    it("should return 'this wallet' when the wallets name is an empty string", () => {
+      const currency = "currency";
+
+      given_subject_wallet_equals({
+        address: "anything",
+        currency,
+        name: ""
+      });
+
+      const result = subject.getWalletName();
+
+      expect(result).toBe("this currency wallet");
+    });
+
+    [
+      "wallet name",
+      "a",
+      " "
+    ].forEach(walletName => it(`should return the wallet name and currency when it is '${walletName}'`, () => {
+      const currency = "currency";
+
+      given_subject_wallet_equals({
+        address: "anything",
+        currency,
+        name: walletName
+      });
+
+      const result = subject.getWalletName();
+
+      expect(result).toBe(`${walletName} (${currency})`);
+    }));
+  });
+
   function given_subject_wallet_equals(equals: IWallet) {
     subject.wallet = equals;
   }

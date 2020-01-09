@@ -167,7 +167,7 @@ describe("SignupComponent", () => {
     });
   });
 
-  describe("passwordFocusOut", async () => {
+  describe("passwordFocusOut", () => {
 
     it("should set a passwordError if the password is null", async () => {
       given_subject_password_equals(null);

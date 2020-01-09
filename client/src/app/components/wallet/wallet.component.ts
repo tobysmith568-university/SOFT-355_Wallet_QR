@@ -59,4 +59,14 @@ export class WalletComponent implements OnInit {
   delete() {
     this.deleteEvent.emit(this.index);
   }
+
+  getWalletName() {
+    const walletName = this.wallet.name;
+
+    if (walletName === null || walletName === undefined || walletName.length === 0) {
+      return `this ${this.wallet.currency} wallet`;
+    }
+
+    return `${walletName} (${this.wallet.currency})`;
+  }
 }
