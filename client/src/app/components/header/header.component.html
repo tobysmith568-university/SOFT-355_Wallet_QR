@@ -36,8 +36,8 @@
 											(blur)="searchBlur()"
 											(keyup.enter)="goToProfile()"
 											(keyup)="keypress($event)">
-						<div class="search-results" *ngIf="searchResults.length > 0">
-							<a class="dropdown-item search-result" routerLink="/@{{ result.userame }}" *ngFor="let result of searchResults; let i = index"
+						<div class="search-results" *ngIf="searchResults.length !== []">
+							<a class="dropdown-item search-result" routerLink="/@{{ result.username }}" *ngFor="let result of searchResults; let i = index"
 												[class.active]="i === focusedResult"
 												(click)="goToProfile(result.username)">{{ result.name }} (@{{ result.username }})</a>
 						</div>

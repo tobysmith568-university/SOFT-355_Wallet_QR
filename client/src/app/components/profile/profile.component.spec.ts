@@ -16,7 +16,6 @@ describe("ProfileComponent", () => {
   let router: IMock<Router>;
   let paramMap: IMock<Observable<ParamMap>>;
   let storageService: IMock<StorageService>;
-  let editWalletsWebsocket: IMock<SocketIOClient.Socket>;
 
   let subject: ProfileComponent;
 
@@ -26,7 +25,6 @@ describe("ProfileComponent", () => {
     router = Mock.ofType<Router>();
     paramMap = Mock.ofType<Observable<ParamMap>>();
     storageService = Mock.ofType<StorageService>();
-    editWalletsWebsocket = Mock.ofType<SocketIOClient.Socket>();
 
     subject = new ProfileComponent(userService.object, activatedRoute.object, router.object, storageService.object);
   }));
@@ -41,15 +39,6 @@ describe("ProfileComponent", () => {
 
       paramMap.verify(p => p.subscribe(It.isAny()), Times.once());
       expectNothing();
-    });
-
-    it("should create the editWalletsWebsocket", async () => {
-
-      given_activatedRoute_paramMap_returns(paramMap.object);
-
-      await subject.ngOnInit();
-
-      expect(subject.editWalletsWebsocket).toBeDefined();
     });
   });
 
@@ -185,201 +174,23 @@ describe("ProfileComponent", () => {
 
       expect(subject.loaded).toBeTruthy();
     });
-
-    it("should emit to profile on the editWalletsWebsocket", async () => {
-      const username = "@This is a username";
-      const usernameWithNoAt = "This is a username";
-      const params = Mock.ofType<ParamMap>();
-
-      const user = {
-        displayName: "This is a display name"
-      } as IUser;
-
-      params
-        .setup(p => p.get("username"))
-        .returns(() => username);
-
-      given_subject_editWalletsWebsocket_isMocked();
-      given_userService_getUser_returnsWhenGiven(user, usernameWithNoAt);
-
-      await subject.loadProfile(params.object);
-
-      editWalletsWebsocket.verify(e => e.emit("profile", It.isAny()), Times.once());
-      expectNothing();
-    });
-
-    it("should emit the username with no @ to the editWalletsWebsocket", async () => {
-      const username = "@This is a username";
-      const usernameWithNoAt = "This is a username";
-      const params = Mock.ofType<ParamMap>();
-
-      const user = {
-        displayName: "This is a display name"
-      } as IUser;
-
-      params
-        .setup(p => p.get("username"))
-        .returns(() => username);
-
-      given_subject_editWalletsWebsocket_isMocked();
-      given_userService_getUser_returnsWhenGiven(user, usernameWithNoAt);
-
-      await subject.loadProfile(params.object);
-
-      editWalletsWebsocket.verify(e => e.emit(It.isAny(), usernameWithNoAt), Times.once());
-      expectNothing();
-    });
-
-    it("should set loaded to true", async () => {
-      const username = "@This is a username";
-      const usernameWithNoAt = "This is a username";
-      const params = Mock.ofType<ParamMap>();
-
-      const user = {
-        displayName: "This is a display name"
-      } as IUser;
-
-      params
-        .setup(p => p.get("username"))
-        .returns(() => username);
-
-      given_subject_editWalletsWebsocket_isMocked();
-      given_userService_getUser_returnsWhenGiven(user, usernameWithNoAt);
-
-      await subject.loadProfile(params.object);
-
-      expect(subject.loaded).toBeTruthy();
-    });
-
-    it("should set name to the received display name", async () => {
-      const username = "@This is a username";
-      const usernameWithNoAt = "This is a username";
-      const params = Mock.ofType<ParamMap>();
-
-      const user = {
-        displayName: "This is a display name"
-      } as IUser;
-
-      params
-        .setup(p => p.get("username"))
-        .returns(() => username);
-
-      given_subject_editWalletsWebsocket_isMocked();
-      given_userService_getUser_returnsWhenGiven(user, usernameWithNoAt);
-
-      await subject.loadProfile(params.object);
-
-      expect(subject.name).toBe(user.displayName);
-    });
-
-    it("should set wallets to the received wallets", async () => {
-      const username = "@This is a username";
-      const usernameWithNoAt = "This is a username";
-      const params = Mock.ofType<ParamMap>();
-
-      const user = {
-        wallets: [
-          {
-            address: "This is an wallet address",
-            currency: "This is a wallet currency",
-            name: "This is a wallet name"
-          } as IWallet
-        ]
-      } as IUser;
-
-      params
-        .setup(p => p.get("username"))
-        .returns(() => username);
-
-      given_subject_editWalletsWebsocket_isMocked();
-      given_userService_getUser_returnsWhenGiven(user, usernameWithNoAt);
-
-      await subject.loadProfile(params.object);
-
-      expect(subject.wallets).toBe(user.wallets);
-    });
   });
 
   describe("deleteWallet", () => {
 
-    it ("should remove a wallet", () => {
-      const wallet1: IWallet = { address: "Address 1", currency: "Currency 1", name: "Name 1" };
-      const wallet2: IWallet = { address: "Address 2", currency: "Currency 2", name: "Name 2" };
-      const wallet3: IWallet = { address: "Address 3", currency: "Currency 3", name: "Name 3" };
-      const wallets: IWallet[] = [
-        wallet1,
-        wallet2,
-        wallet3
-      ];
-
-      given_subject_editWalletsWebsocket_isMocked();
-      given_subject_wallets_equals(wallets);
-
-      subject.deleteWallet(2);
-
-      expect(subject.wallets.length).toBe(2);
-      expect(subject.wallets).not.toContain(wallet3);
-    });
   });
 
   describe("moveWalletUp", () => {
 
-    it ("should move a wallet up an index", () => {
-      const wallet1: IWallet = { address: "Address 1", currency: "Currency 1", name: "Name 1" };
-      const wallet2: IWallet = { address: "Address 2", currency: "Currency 2", name: "Name 2" };
-      const wallet3: IWallet = { address: "Address 3", currency: "Currency 3", name: "Name 3" };
-      const wallets: IWallet[] = [
-        wallet1,
-        wallet2,
-        wallet3
-      ];
-
-      given_subject_editWalletsWebsocket_isMocked();
-      given_subject_wallets_equals(wallets);
-
-      subject.moveWalletUp(1);
-
-      expect(subject.wallets[2]).toBe(wallet2);
-    });
   });
 
   describe("moveWalletDown", () => {
 
-    it ("should move a wallet down an index", () => {
-      const wallet1: IWallet = { address: "Address 1", currency: "Currency 1", name: "Name 1" };
-      const wallet2: IWallet = { address: "Address 2", currency: "Currency 2", name: "Name 2" };
-      const wallet3: IWallet = { address: "Address 3", currency: "Currency 3", name: "Name 3" };
-      const wallets: IWallet[] = [
-        wallet1,
-        wallet2,
-        wallet3
-      ];
-
-      given_subject_editWalletsWebsocket_isMocked();
-      given_subject_wallets_equals(wallets);
-
-      subject.moveWalletDown(1);
-
-      expect(subject.wallets[0]).toBe(wallet2);
-    });
   });
 
   describe("sendUpdate", () => {
 
-    it ("should call emit on the editWalletsWebsocket", () => {
-
-      given_subject_editWalletsWebsocket_isMocked();
-
-      subject.sendUpdate();
-
-      editWalletsWebsocket.verify(e => e.emit("set", It.isAny()), Times.once());
-      expectNothing();
-    });
   });
-
-  function given_subject_editWalletsWebsocket_isMocked() {
-    subject.editWalletsWebsocket = editWalletsWebsocket.object;
-  }
 
   function given_subject_wallets_equals(equals: IWallet[]) {
     subject.wallets = equals;

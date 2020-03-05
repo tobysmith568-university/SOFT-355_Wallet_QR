@@ -41,21 +41,6 @@ describe("NewWalletComponent", () => {
       expectNothing();
     }));
 
-    it("should setup an edit wallet websocket connection", async () => {
-      const username = "This is a username";
-      const user: IUser = {
-        username: "This is a username"
-      } as IUser;
-
-      given_storageService_get_returnsWhenGiven(username, "username");
-      given_userService_getUser_returnsWhenGiven(user, username);
-      given_storageService_get_returnsWhenGiven("This is a token", "token");
-
-      await subject.ngOnInit();
-
-      expect(subject.editWalletsWebsocket).not.toBeNull();
-    });
-
     it("should keep the form disabled if the user service returns an error", async () => {
       const username = "This is a username";
       const error: IError = {
@@ -217,65 +202,6 @@ describe("NewWalletComponent", () => {
 
       expect(subject.formEnabled).toBeTruthy();
     });
-
-    it("should set formEnabled to false", () => {
-      const editWalletsWebsocket = Mock.ofType<SocketIOClient.Socket>();
-
-      given_subject_formEnabled_equals(true);
-      given_subject_currency_equals("anything");
-      given_subject_address_equals("anything");
-      given_subject_editWalletsWebsocket_equals(editWalletsWebsocket.object);
-
-      subject.create();
-
-      expect(subject.formEnabled).toBeFalsy();
-    });
-
-    it("should emit add on the edit wallets websocket", () => {
-      const editWalletsWebsocket = Mock.ofType<SocketIOClient.Socket>();
-
-      given_subject_formEnabled_equals(true);
-      given_subject_currency_equals("anything");
-      given_subject_address_equals("anything");
-      given_subject_editWalletsWebsocket_equals(editWalletsWebsocket.object);
-
-      subject.create();
-
-      editWalletsWebsocket.verify(e => e.emit("add", It.isAny()), Times.once());
-      expectNothing();
-    });
-
-    it("should reload the page if another is true", () => {
-      const editWalletsWebsocket = Mock.ofType<SocketIOClient.Socket>();
-
-      given_subject_formEnabled_equals(true);
-      given_subject_currency_equals("anything");
-      given_subject_address_equals("anything");
-      given_subject_editWalletsWebsocket_equals(editWalletsWebsocket.object);
-      given_subject_another_equals(true);
-
-      subject.create();
-
-      locationService.verify(l => l.reload(), Times.once());
-      expectNothing();
-    });
-
-    it("should navigate to the current username if another is false", () => {
-      const username = "This is a username";
-      const editWalletsWebsocket = Mock.ofType<SocketIOClient.Socket>();
-
-      given_storageService_get_returnsWhenGiven(username, "username");
-      given_subject_formEnabled_equals(true);
-      given_subject_currency_equals("anything");
-      given_subject_address_equals("anything");
-      given_subject_editWalletsWebsocket_equals(editWalletsWebsocket.object);
-      given_subject_another_equals(false);
-
-      subject.create();
-
-      router.verify(r => r.navigate(["@" + username]), Times.once());
-      expectNothing();
-    });
   });
 
   function given_subject_currency_equals(equals: string) {
@@ -288,14 +214,6 @@ describe("NewWalletComponent", () => {
 
   function given_subject_formEnabled_equals(equals: boolean) {
     subject.formEnabled = equals;
-  }
-
-  function given_subject_editWalletsWebsocket_equals(equals: SocketIOClient.Socket) {
-    subject.editWalletsWebsocket = equals;
-  }
-
-  function given_subject_another_equals(equals: boolean) {
-    subject.another = equals;
   }
 
   function given_storageService_get_returnsWhenGiven(returns: string, whenGiven: string) {

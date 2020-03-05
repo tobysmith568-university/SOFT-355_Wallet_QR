@@ -38,6 +38,20 @@ export abstract class ApiService {
     return await this.httpClient.post<T | IError>(this.server + path, body).toPromise();
   }
 
+  public async patch<T>(path: string, body: any): Promise<T | IError> {
+    let headers = new HttpHeaders();
+
+    const token = this.storageService.get("token");
+
+    if (token) {
+      headers = headers.set("Authorization", "Bearer " + token);
+    }
+
+    return await this.httpClient.patch<T | IError>(this.server + path, body, {
+      headers
+    }).toPromise();
+  }
+
   public async head(path: string): Promise<boolean> {
     try {
       const result = await this.httpClient.head(this.server + path, {

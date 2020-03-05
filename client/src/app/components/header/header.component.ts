@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { connect } from "socket.io-client";
-import { ISearchResult } from "src/app/models/websocket-models/search-result.interface";
 import { StorageService } from "src/app/services/storage.service";
+import { ISearchResult } from "src/app/models/search-result.interface";
+import { UserApiService } from "src/app/services/api/user-api.service";
 
 @Component({
   selector: "app-header",
@@ -13,27 +13,19 @@ export class HeaderComponent implements OnInit {
 
   currentRoute: string;
   searchTerm = "";
-  searchResults: ISearchResult[] = [ ];
-  userSearchWebsocket: SocketIOClient.Socket;
+  searchResults: ISearchResult[] = [];
   focusedResult = -1;
 
   username: string;
 
   constructor(private readonly router: Router,
-              private readonly storageService: StorageService) { }
+              private readonly storageService: StorageService,
+              private readonly userAPIService: UserApiService) { }
 
   async ngOnInit() {
     this.router.events.subscribe(() => {
       this.currentRoute = this.router.url;
       this.username = this.storageService.get("username");
-    });
-
-    this.userSearchWebsocket = connect("ws://localhost:8000/searchusers");
-
-    this.userSearchWebsocket.on("connect", () => {
-      this.userSearchWebsocket.on("results", (data: ISearchResult[]) => {
-        this.searchResults = data;
-      });
     });
 
     this.username = this.storageService.get("username");
@@ -48,12 +40,14 @@ export class HeaderComponent implements OnInit {
     return token !== null && token.length > 0;
   }
 
-  search() {
+  async search() {
     if (this.searchTerm.length > 0) {
-      this.userSearchWebsocket.emit("search", this.searchTerm);
+      this.searchResults = await this.userAPIService.search(this.searchTerm);
     } else {
       this.searchResults = [];
     }
+
+    console.log(this.searchResults);
   }
 
   searchBlur() {

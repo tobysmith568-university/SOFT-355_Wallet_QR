@@ -1,6 +1,5 @@
 import * as express from "express";
 import * as cors from "cors";
-import * as socketio from "socket.io";
 import { Config } from "./config/config";
 import { ENV } from "./config/config";
 import { join } from "path";
@@ -18,21 +17,20 @@ import { JWTTokenService } from "./services/implementations/jwt-token.service";
 import { TokenAuthenticator } from "./middlewares/token-authenticator";
 import { IPasswordService } from "./services/password.service.interface";
 import { ITokenService } from "./services/token.service.interface";
-import { SetWallets } from "./websockets/set-wallets";
-import { SearchUsers } from "./websockets/search-users";
 import { IEmailService } from "./services/email.service";
 import { NodemailerEmailService } from "./services/implementations/nodemailer-email.service";
 import { IFileService } from "./services/file.service.interface";
 import { FSFileService } from "./services/implementations/fs-file.service";
 import { VerifyRoute } from "./api/routes/verify.route";
 import { VerifyController } from "./contollers/verify.controller";
+import { SearchRoute } from "./api/routes/search.route";
+import { SearchController } from "./contollers/search.controller";
 
 export class Server {
 
   private config: Config;
   private app: Express;
   private httpServer: HTTPServer;
-  private io: socketio.Server;
 
   private userRepository: UserRepository;
   private passwordService: IPasswordService;
@@ -47,7 +45,6 @@ export class Server {
     this.config = new Config();
     this.app = express();
     this.httpServer = new HTTPServer(this.app);
-    this.io = socketio(this.httpServer);
 
     this.userRepository = new UserRepository();
     this.passwordService = new BcryptPasswordService();
@@ -121,23 +118,27 @@ export class Server {
       )
     );
 
+    const searchRoute = new SearchRoute(
+      Router(),
+      new SearchController(
+        this.userRepository
+      )
+    );
+
     userRoute.setupRoutes();
     signinRoute.setupRoutes();
     verifyRoute.setupRoutes();
+    searchRoute.setupRoutes();
 
     this.app.use("/api", [
       userRoute.getRouter(),
-      signinRoute.getRouter()
+      signinRoute.getRouter(),
+      searchRoute.getRouter()
     ]);
 
     this.app.use("/verify", [
       verifyRoute.getRouter()
     ]);
-  }
-
-  public initializeWebsockets() {
-    new SetWallets(this.io, this.tokenService, this.userRepository).setup();
-    new SearchUsers(this.io, this.userRepository).setup();
   }
 
   public listen(): void {

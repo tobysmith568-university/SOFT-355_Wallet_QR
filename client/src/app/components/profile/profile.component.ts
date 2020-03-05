@@ -5,8 +5,6 @@ import { ActivatedRoute, Router, ParamMap } from "@angular/router";
 import { IError } from "src/app/services/api/error.interface";
 import { IUser } from "src/app/models/user.interface";
 import { moveItemInArray } from "@angular/cdk/drag-drop";
-import { connect } from "socket.io-client";
-import { ISetWallets } from "src/app/models/websocket-models/set-wallets.interface";
 import { StorageService } from "src/app/services/storage.service";
 
 @Component({
@@ -19,7 +17,6 @@ export class ProfileComponent implements OnInit {
   loaded = false;
   name = "";
   wallets: IWallet[] = new Array();
-  editWalletsWebsocket: SocketIOClient.Socket;
 
   constructor(private readonly userService: UserApiService,
               private readonly route: ActivatedRoute,
@@ -29,15 +26,6 @@ export class ProfileComponent implements OnInit {
 
   async ngOnInit() {
     this.route.paramMap.subscribe(async params => this.loadProfile(params));
-
-    this.editWalletsWebsocket = connect("ws://localhost:8000/editwallets");
-
-    this.editWalletsWebsocket.on("connect", () => {
-      this.editWalletsWebsocket.on("wallets", (data: string) => {
-        const result: ISetWallets = JSON.parse(data);
-        this.wallets = result.wallets;
-      });
-    });
   }
 
   async loadProfile(params: ParamMap) {
@@ -67,8 +55,6 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
-    this.editWalletsWebsocket.emit("profile", usernameWithNoAt);
-
     this.loaded = true;
     this.name = result.displayName;
     this.wallets = result.wallets;
@@ -93,10 +79,9 @@ export class ProfileComponent implements OnInit {
     this.sendUpdate();
   }
 
-  sendUpdate() {
-    this.editWalletsWebsocket.emit("set", {
-      token: this.storageService.get("token"),
+  async sendUpdate() {
+    await this.userService.updateUser(this.storageService.get("username"), {
       wallets: this.wallets
-    } as ISetWallets);
+    });
   }
 }

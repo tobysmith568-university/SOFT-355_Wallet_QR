@@ -1,4 +1,4 @@
 export interface ISearchResult {
-  displayName: string;
+  name: string;
   username: string;
 }

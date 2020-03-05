@@ -5,7 +5,7 @@ import { StorageService } from "src/app/services/storage.service";
 import { Observable } from "rxjs";
 import { Event } from "@angular/router";
 import { expectNothing } from "test-utils/expect-nothing";
-import { ISearchResult } from "src/app/models/websocket-models/search-result.interface";
+import { ISearchResult } from "src/app/models/search-result.interface";
 
 describe("HeaderComponent", () => {
   let router: IMock<Router>;
@@ -106,21 +106,7 @@ describe("HeaderComponent", () => {
       expect(subject.searchResults.length).toBe(0);
     });
 
-    it("should emit a search if the searchTerm is not empty", () => {
-      const searchTerm = "This is a search term";
-      const userSearchWebsocket = Mock.ofType<SocketIOClient.Socket>();
-
-      userSearchWebsocket
-        .setup(u => u.emit(It.isAny(), It.isAny()));
-
-      given_subject_searchTerm_equals(searchTerm);
-      given_subject_userSearchWebsocket_equals(userSearchWebsocket.object);
-
-      subject.search();
-
-      userSearchWebsocket.verify(u => u.emit("search", searchTerm), Times.once());
-      expectNothing();
-    });
+    // TODO Tests for search
   });
 
   describe("searchBlur", () => {
@@ -287,10 +273,6 @@ describe("HeaderComponent", () => {
 
   function given_subject_searchTerm_equals(equals: string) {
     subject.searchTerm = equals;
-  }
-
-  function given_subject_userSearchWebsocket_equals(equals: SocketIOClient.Socket) {
-    subject.userSearchWebsocket = equals;
   }
 
   function given_subject_searchResults_equal(equal: ISearchResult[]) {

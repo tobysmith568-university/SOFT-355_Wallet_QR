@@ -7,5 +7,4 @@ const server = new Server();
 server.initializeMiddlewares();
 server.setUpDatabaseConnection();
 server.initializeControllers();
-server.initializeWebsockets();
 server.listen();
