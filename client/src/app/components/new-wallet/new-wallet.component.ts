@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ElementRef, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import { isNullOrUndefined } from "util";
 import { UserApiService } from "src/app/services/api/user-api.service";
@@ -27,6 +27,9 @@ export class NewWalletComponent implements OnInit {
   currencyError = "";
   addressError = "";
 
+  @ViewChild("currencyInput", { static: false })
+  private currencyTextBox: ElementRef;
+
   constructor(private readonly router: Router,
               private readonly userApiService: UserApiService,
               private readonly storageService: StorageService,
@@ -51,6 +54,10 @@ export class NewWalletComponent implements OnInit {
     } else {
       this.emailUnverified = true;
     }
+
+    setTimeout(() => {
+      this.currencyTextBox.nativeElement.focus();
+    }, 0);
   }
 
   currencyFocusOut() {
@@ -71,7 +78,7 @@ export class NewWalletComponent implements OnInit {
     this.addressError = "";
   }
 
-  create() {
+  async create() {
     this.currencyFocusOut();
     this.addressFocusOut();
 
@@ -82,7 +89,11 @@ export class NewWalletComponent implements OnInit {
 
     this.formEnabled = false;
 
-    // TODO Send creation
+    await this.userApiService.addWallet({
+      address: this.address,
+      currency: this.currency,
+      name: this.name
+    });
 
     if (this.another) {
       this.locationService.reload();

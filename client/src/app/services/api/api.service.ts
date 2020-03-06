@@ -35,7 +35,15 @@ export abstract class ApiService {
   }
 
   public async post<T>(path: string, body: any): Promise<T | IError> {
-    return await this.httpClient.post<T | IError>(this.server + path, body).toPromise();
+    let headers = new HttpHeaders();
+
+    const token = this.storageService.get("token");
+
+    if (token) {
+      headers = headers.set("Authorization", "Bearer " + token);
+    }
+
+    return await this.httpClient.post<T | IError>(this.server + path, body, { headers }).toPromise();
   }
 
   public async patch<T>(path: string, body: any): Promise<T | IError> {
@@ -47,9 +55,7 @@ export abstract class ApiService {
       headers = headers.set("Authorization", "Bearer " + token);
     }
 
-    return await this.httpClient.patch<T | IError>(this.server + path, body, {
-      headers
-    }).toPromise();
+    return await this.httpClient.patch<T | IError>(this.server + path, body, { headers }).toPromise();
   }
 
   public async head(path: string): Promise<boolean> {

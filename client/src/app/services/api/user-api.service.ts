@@ -4,6 +4,7 @@ import { ApiService } from "./api.service";
 import { IError } from "./error.interface";
 import { ICreateUser } from "src/app/models/createuser.interface";
 import { ISearchResult } from "src/app/models/search-result.interface";
+import { IWallet } from "src/app/models/wallet.interface";
 
 @Injectable({
   providedIn: "root"
@@ -43,6 +44,10 @@ export class UserApiService {
     }
 
     return result.results;
+  }
+
+  public async addWallet(wallet: IWallet): Promise<void> {
+    await this.apiService.post("/wallet", wallet);
   }
 
   private isError(result: { results: ISearchResult[] } | IError): result is IError {

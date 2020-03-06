@@ -8,7 +8,7 @@
 		<div class="form-group">
 			<label for="currency">Currency</label>
 			<div class="input-group">
-				<input name="currency" id="currency" type="text" class="form-control" placeholder="Currency"
+				<input name="currency" id="currency" type="text" class="form-control" placeholder="Currency" #currencyInput
 									[disabled]="!formEnabled"
 									[class.is-invalid]="currencyError"
 									[(ngModel)]="currency"

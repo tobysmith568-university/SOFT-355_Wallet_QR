@@ -25,6 +25,8 @@ import { VerifyRoute } from "./api/routes/verify.route";
 import { VerifyController } from "./contollers/verify.controller";
 import { SearchRoute } from "./api/routes/search.route";
 import { SearchController } from "./contollers/search.controller";
+import { WalletRoute } from "./api/routes/wallet.route";
+import { WalletController } from "./contollers/wallet.controller";
 
 export class Server {
 
@@ -125,15 +127,25 @@ export class Server {
       )
     );
 
+    const walletRoute = new WalletRoute(
+      Router(),
+      new WalletController(
+        this.userRepository
+      ),
+      this.tokenMiddleware
+    );
+
     userRoute.setupRoutes();
     signinRoute.setupRoutes();
     verifyRoute.setupRoutes();
     searchRoute.setupRoutes();
+    walletRoute.setupRoutes();
 
     this.app.use("/api", [
       userRoute.getRouter(),
       signinRoute.getRouter(),
-      searchRoute.getRouter()
+      searchRoute.getRouter(),
+      walletRoute.getRouter()
     ]);
 
     this.app.use("/verify", [
