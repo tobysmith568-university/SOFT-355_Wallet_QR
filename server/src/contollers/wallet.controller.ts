@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { UserRepository } from "../database/repositories/user.repository";
-import { IWallet } from "../api/models/wallet.interface";
 import { IWalletDbo } from "../database/models/wallet.dbo.interface";
 
 export class WalletController {
@@ -15,6 +14,18 @@ export class WalletController {
       return;
     }
 
+    if (!req.body.address) {
+      res.json({ error: "Wallet address was not given" });
+      res.statusCode = 401;
+      return;
+    }
+
+    if (!req.body.currency) {
+      res.json({ error: "Wallet currency was not given" });
+      res.statusCode = 401;
+      return;
+    }
+
     const users = await this.userRepository.find({ username: req.username });
 
     if (users.length !== 1) {
@@ -24,18 +35,6 @@ export class WalletController {
     }
 
     const user = users[0];
-
-    if (!req.body.address) {
-      res.json({ error: "Wallet address was not given." });
-      res.statusCode = 401;
-      return;
-    }
-
-    if (!req.body.currency) {
-      res.json({ error: "Wallet currency was not given." });
-      res.statusCode = 401;
-      return;
-    }
     
     user.wallets.push({
       address: req.body.address,
