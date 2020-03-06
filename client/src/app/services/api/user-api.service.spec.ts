@@ -6,6 +6,8 @@ import { expectNothing } from "test-utils/expect-nothing";
 import { ICreateUser } from "src/app/models/createuser.interface";
 import { IError } from "./error.interface";
 import { IUser } from "src/app/models/user.interface";
+import { ISearchResult } from "src/app/models/search-result.interface";
+import { IWallet } from "src/app/models/wallet.interface";
 
 describe("UserApiService", () => {
   let apiService: IMock<ApiService>;
@@ -91,7 +93,7 @@ describe("UserApiService", () => {
         displayName: "This is some response data"
       } as ICreateUser;
 
-      given_apiService_post_returnswhenGiven(response, body);
+      given_apiService_post_returnswhenGivenForPath(response, body, "/user");
 
       const result = await subject.createUser(username, displayName, email, password);
 
@@ -126,11 +128,43 @@ describe("UserApiService", () => {
         displayName: "This is some response data"
       } as IUser;
 
-      given_apiService_get_returnsWhenGiven(response, "/user/" + username);
+      given_apiService_get_returnsWhenGiven<IUser>(response, "/user/" + username);
 
       const result = await subject.getUser(username);
 
       expect(result).toBe(response);
+    });
+  });
+
+  describe("updateUser", async () => {
+
+    it("should make a patch request to the api service", async () => {
+      const username = "This is a username";
+
+      await subject.updateUser(username, {});
+
+      apiService.verify(a => a.patch(It.isAny(), It.isAny()), Times.once());
+      expectNothing();
+    });
+
+    it("should patch to '/user/' + a given username", async () => {
+      const username = "This is a username";
+
+      await subject.updateUser(username, {});
+
+      apiService.verify(a => a.patch("/user/" + username, It.isAny()), Times.once());
+      expectNothing();
+    });
+
+    it("should patch the given partial user", async () => {
+      const user: Partial<IUser> = {
+        email: "This is an email address"
+      };
+
+      await subject.updateUser("anything", user);
+
+      apiService.verify(a => a.patch(It.isAny(), user), Times.once());
+      expectNothing();
     });
   });
 
@@ -167,13 +201,73 @@ describe("UserApiService", () => {
     });
   });
 
-  function given_apiService_post_returnswhenGiven(returns: ICreateUser | IError, whenGiven: ICreateUser) {
+  describe("search", async () => {
+
+    it("should get search results from the api service at /search/:term", async () => {
+      const term = "anything";
+
+      given_apiService_get_returnsWhenGiven([], "/search/" + term);
+
+      await subject.search(term);
+
+      apiService.verify(a => a.get("/search/" + term), Times.once());
+      expectNothing();
+    });
+
+    it("should return an empty array on error", async () => {
+      const term = "anything";
+
+      given_apiService_get_returnsWhenGiven<IError>({
+        error: "This is an error message"
+      }, "/search/" + term);
+
+      const result = await subject.search(term);
+
+      expect(result.length).toBe(0);
+    });
+
+    it("should return successful results", async () => {
+      const term = "anything";
+      const results: ISearchResult[] = [
+        {
+          name: "This is a name",
+          username: "This is a username"
+        }
+      ];
+
+      given_apiService_get_returnsWhenGiven<ISearchResult[]>(results, "/search/" + term);
+
+      const result = await subject.search(term);
+
+      expect(result).toBe(results);
+    });
+  });
+
+  describe("addWallet", async () => {
+
+    it("should post to /wallet", async () => {
+      const wallet: IWallet = {
+        address: "This is an address",
+        currency: "This is a currency",
+        name: "This is a name"
+      };
+
+      given_apiService_post_returnswhenGivenForPath<any, IWallet>({}, wallet, "/wallet");
+
+      await subject.addWallet(wallet);
+
+      apiService.verify(a => a.post("/wallet", wallet), Times.once());
+      expectNothing();
+    });
+  });
+
+  function given_apiService_post_returnswhenGivenForPath<T, S>(returns: T | IError, whenGiven: S, forPath: string) {
     apiService
-      .setup(a => a.post(It.isAny(), whenGiven))
+      .setup(a => a.post(forPath, whenGiven))
       .returns(async () => returns);
   }
 
-  function given_apiService_get_returnsWhenGiven(returns: IUser, whenGiven: string) {
+  function given_apiService_get_returnsWhenGiven<T>(returns: T, whenGiven: string) {
     apiService
       .setup(a => a.get(whenGiven))
       .returns(async () => returns);

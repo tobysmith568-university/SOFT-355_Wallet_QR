@@ -7,6 +7,7 @@ import { expectNothing } from "test-utils/expect-nothing";
 import { IUser } from "src/app/models/user.interface";
 import { IError } from "src/app/services/api/error.interface";
 import { LocationService } from "src/app/services/location.service";
+import { IWallet } from "src/app/models/wallet.interface";
 
 describe("NewWalletComponent", () => {
 
@@ -185,22 +186,88 @@ describe("NewWalletComponent", () => {
 
   describe("create", () => {
 
-    it("should do nothing if there is a currency error", () => {
+    it("should do nothing if there is a currency error", async () => {
       given_subject_formEnabled_equals(true);
       given_subject_address_equals("anything");
 
-      subject.create();
+      await subject.create();
 
       expect(subject.formEnabled).toBeTruthy();
     });
 
-    it("should do nothing if there is an address error", () => {
+    it("should do nothing if there is an address error", async () => {
       given_subject_formEnabled_equals(true);
       given_subject_currency_equals("anything");
 
-      subject.create();
+      await subject.create();
 
       expect(subject.formEnabled).toBeTruthy();
+    });
+
+    it("should call addWallet on the userAPIService with the correct address", async () => {
+      const address = "this is an address";
+
+      given_subject_formEnabled_equals(true);
+      given_subject_address_equals(address);
+      given_subject_currency_equals("anything");
+
+      await subject.create();
+
+      userApiService.verify(u => u.addWallet(It.is<IWallet>(w => w.address === address)), Times.once());
+      expectNothing();
+    });
+
+    it("should call addWallet on the userAPIService with the correct currency", async () => {
+      const currency = "this is a currency";
+
+      given_subject_formEnabled_equals(true);
+      given_subject_address_equals("anything");
+      given_subject_currency_equals(currency);
+
+      await subject.create();
+
+      userApiService.verify(u => u.addWallet(It.is<IWallet>(w => w.currency === currency)), Times.once());
+      expectNothing();
+    });
+
+    it("should call addWallet on the userAPIService with the correct name", async () => {
+      const name = "this is a name";
+
+      given_subject_formEnabled_equals(true);
+      given_subject_address_equals("anything");
+      given_subject_currency_equals("anything");
+      given_subject_name_equals(name);
+
+      await subject.create();
+
+      userApiService.verify(u => u.addWallet(It.is<IWallet>(w => w.name === name)), Times.once());
+      expectNothing();
+    });
+
+    it("should reload the page if the 'stay on this page' checkbox is checked", async () => {
+      given_subject_formEnabled_equals(true);
+      given_subject_address_equals("anything");
+      given_subject_currency_equals("anything");
+      given_subject_name_equals("anything");
+      given_subject_another_equals(true);
+
+      await subject.create();
+
+      locationService.verify(l => l.reload(), Times.once());
+      expectNothing();
+    });
+
+    it("should not reload the page if the 'stay on this page' checkbox is not checked", async () => {
+      given_subject_formEnabled_equals(true);
+      given_subject_address_equals("anything");
+      given_subject_currency_equals("anything");
+      given_subject_name_equals("anything");
+      given_subject_another_equals(false);
+
+      await subject.create();
+
+      locationService.verify(l => l.reload(), Times.never());
+      expectNothing();
     });
   });
 
@@ -210,6 +277,14 @@ describe("NewWalletComponent", () => {
 
   function given_subject_address_equals(equals: string) {
     subject.address = equals;
+  }
+
+  function given_subject_name_equals(equals: string) {
+    subject.name = equals;
+  }
+
+  function given_subject_another_equals(equals: boolean) {
+    subject.another = equals;
   }
 
   function given_subject_formEnabled_equals(equals: boolean) {

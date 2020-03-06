@@ -26,7 +26,7 @@ export class SearchController {
       });
     }
 
-    res.json({ results });
+    res.json(results);
     res.send();
   }
 }

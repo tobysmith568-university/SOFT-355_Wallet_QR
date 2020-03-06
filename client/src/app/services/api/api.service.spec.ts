@@ -139,7 +139,7 @@ describe("ApiService", () => {
 
       await subject.post(path, body);
 
-      httpClient.verify(h => h.post(It.is((value) => value.endsWith(path)), It.isAny()), Times.once());
+      httpClient.verify(h => h.post(It.is((value) => value.endsWith(path)), It.isAny(), It.isAny()), Times.once());
       expectNothing();
     });
 
@@ -151,7 +151,7 @@ describe("ApiService", () => {
 
       await subject.post(path, body);
 
-      httpClient.verify(h => h.post(It.is((value) => value.length > path.length), It.isAny()), Times.once());
+      httpClient.verify(h => h.post(It.is((value) => value.length > path.length), It.isAny(), It.isAny()), Times.once());
       expectNothing();
     });
 
@@ -163,7 +163,7 @@ describe("ApiService", () => {
 
       await subject.post(path, body);
 
-      httpClient.verify(h => h.post(It.isAny(), body), Times.once());
+      httpClient.verify(h => h.post(It.isAny(), body, It.isAny()), Times.once());
       expectNothing();
     });
 
@@ -188,7 +188,7 @@ describe("ApiService", () => {
 
   function given_httpClient_post_returns(returns: any) {
     httpClient
-      .setup(h => h.post(It.isAny(), It.isAny()))
+      .setup(h => h.post(It.isAny(), It.isAny(), It.isAny()))
       .returns(() => of(returns));
   }
 

@@ -55,9 +55,11 @@ export class NewWalletComponent implements OnInit {
       this.emailUnverified = true;
     }
 
-    setTimeout(() => {
-      this.currencyTextBox.nativeElement.focus();
-    }, 0);
+    if (this.currencyTextBox) {
+      setTimeout(() => {
+        this.currencyTextBox.nativeElement.focus();
+      }, 0);
+    }
   }
 
   currencyFocusOut() {

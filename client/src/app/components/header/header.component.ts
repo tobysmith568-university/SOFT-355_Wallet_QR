@@ -46,8 +46,6 @@ export class HeaderComponent implements OnInit {
     } else {
       this.searchResults = [];
     }
-
-    console.log(this.searchResults);
   }
 
   searchBlur() {

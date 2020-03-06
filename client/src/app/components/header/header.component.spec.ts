@@ -6,18 +6,21 @@ import { Observable } from "rxjs";
 import { Event } from "@angular/router";
 import { expectNothing } from "test-utils/expect-nothing";
 import { ISearchResult } from "src/app/models/search-result.interface";
+import { UserApiService } from "src/app/services/api/user-api.service";
 
 describe("HeaderComponent", () => {
   let router: IMock<Router>;
   let storageService: IMock<StorageService>;
+  let userAPIService: IMock<UserApiService>;
 
   let subject: HeaderComponent;
 
   beforeEach(() => {
     router = Mock.ofType<Router>();
     storageService = Mock.ofType<StorageService>();
+    userAPIService = Mock.ofType<UserApiService>();
 
-    subject = new HeaderComponent(router.object, storageService.object);
+    subject = new HeaderComponent(router.object, storageService.object, userAPIService.object);
   });
 
   describe("ngOnInit", async () => {
@@ -98,22 +101,37 @@ describe("HeaderComponent", () => {
 
   describe("search", () => {
 
-    it("should empty the search results if the searchTerm is empty", () => {
+    it("should empty the search results if the searchTerm is empty", async () => {
       given_subject_searchTerm_equals("");
 
-      subject.search();
+      await subject.search();
 
       expect(subject.searchResults.length).toBe(0);
     });
 
-    // TODO Tests for search
+    it("should populate the search results if the searchTerm is not empty", async () => {
+      const searchTerm = "something";
+      const results: ISearchResult[] = [
+        {
+          name: "Result name",
+          username: "Result username"
+        }
+      ];
+
+      given_subject_searchTerm_equals(searchTerm);
+      given_userAPIService_search_returnsWhenGiven(results, searchTerm);
+
+      await subject.search();
+
+      expect(subject.searchResults).toEqual(results);
+    });
   });
 
   describe("searchBlur", () => {
 
     it("should empty the search results after 100ms", () => {
 
-      given_subject_searchResults_equal([{ displayName: "This is some data", username: "This is some data" }]);
+      given_subject_searchResults_equal([{ name: "This is some data", username: "This is some data" }]);
 
       subject.searchBlur();
 
@@ -228,9 +246,9 @@ describe("HeaderComponent", () => {
 
     it("should navigate to the focused search result if the given username is undefined", () => {
       const searchResults: ISearchResult[] = [
-        { displayName: "This is #1", username: "This is #1" },
-        { displayName: "This is #2", username: "This is #2" },
-        { displayName: "This is #3", username: "This is #3" }
+        { name: "This is #1", username: "This is #1" },
+        { name: "This is #2", username: "This is #2" },
+        { name: "This is #3", username: "This is #3" }
       ];
 
       given_subject_searchResults_equal(searchResults);
@@ -293,5 +311,11 @@ describe("HeaderComponent", () => {
     storageService
       .setup(s => s.get(whenGiven))
       .returns(() => returns);
+  }
+
+  function given_userAPIService_search_returnsWhenGiven(returns: ISearchResult[], whenGiven: string) {
+    userAPIService
+      .setup(u => u.search(whenGiven))
+      .returns(async () => returns);
   }
 });

@@ -35,22 +35,20 @@ export class UserApiService {
   }
 
   public async search(term: string): Promise<ISearchResult[]> {
-    const result = await this.apiService.get<{
-      results: ISearchResult[]
-    }>("/search/" + term);
+    const results = await this.apiService.get<ISearchResult[]>("/search/" + term);
 
-    if (this.isError(result)) {
+    if (this.isError(results)) {
       return [];
     }
 
-    return result.results;
+    return results;
   }
 
   public async addWallet(wallet: IWallet): Promise<void> {
     await this.apiService.post("/wallet", wallet);
   }
 
-  private isError(result: { results: ISearchResult[] } | IError): result is IError {
+  private isError(result: ISearchResult[] | IError): result is IError {
     return (result as IError).error !== undefined;
   }
 }
