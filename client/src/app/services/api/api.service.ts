@@ -2,13 +2,14 @@ import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { IError } from "./error.interface";
 import { StorageService } from "../storage.service";
+import { environment } from "../../../environments/environment";
 
 @Injectable({
   providedIn: "root"
 })
 export abstract class ApiService {
 
-  private readonly server = "http://localhost:8000/api";
+  private readonly server = environment.serverURL;
 
   constructor(private readonly httpClient: HttpClient,
               private readonly storageService: StorageService) { }

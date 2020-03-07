@@ -1,23 +1,4 @@
-import { DevConfig as dev } from "./dev";
-import { ProdConfig as prod } from "./prod";
-import { TestConfig as test } from "./test";
-import { AbstractConfig } from "./config.abstract";
-
-export const ENV = {
-  dev: "dev",
-  prod: "prod",
-  test: "test"
-};
-
 export class Config {
-
-  private configs: { [id: string]: AbstractConfig; } = {
-    dev: new dev(),
-    prod: new prod(),
-    test: new test()
-  };
-
-  private environment: string;
   private port: number;
   private connectionString: string;
   private tokenSecret: string;
@@ -27,23 +8,21 @@ export class Config {
   private emailUser: string;
   private emailPass: string;
 
+  private clientLocation: string;
+  private serverLocation: string;
+
   constructor() {
-    this.environment = process.env.NODE_ENV || ENV.dev;
-    
-    const env = this.configs[this.environment];
-    
-    this.port = this.getOrThrow(env.port);
-    this.connectionString = this.getOrThrow(env.connectionString);
-    this.tokenSecret = this.getOrThrow(env.tokenSecret);
+    this.port = Number(this.getOrThrow(process.env.PORT || "3000"));
+    this.connectionString = this.getOrThrow(process.env.DB_STRING);
+    this.tokenSecret = this.getOrThrow(process.env.TOKEN_SECRET);
 
-    this.emailHost = this.getOrThrow(env.emailHost);
-    this.emailPort = this.getOrThrow(env.emailPort);
-    this.emailUser = this.getOrThrow(env.emailUser);
-    this.emailPass = this.getOrThrow(env.emailPass);
-  }
+    this.emailHost = this.getOrThrow(process.env.EMAIL_HOST);
+    this.emailPort = Number(this.getOrThrow(process.env.EMAIL_PORT));
+    this.emailUser = this.getOrThrow(process.env.EMAIL_USER);
+    this.emailPass = this.getOrThrow(process.env.EMAIL_PASS);
 
-  public getEnvironment(): string {
-    return this.environment;
+    this.clientLocation = this.getOrThrow(process.env.CLIENT_LOCATION);
+    this.serverLocation = this.getOrThrow(process.env.SERVER_LOCATION);
   }
 
   public getPort(): number {
@@ -72,6 +51,14 @@ export class Config {
 
   public getEmailPass(): string {
     return this.emailPass;
+  }
+
+  public getClientLocation(): string {
+    return this.clientLocation;
+  }
+
+  public getServerLocation(): string {
+    return this.serverLocation;
   }
 
   private getOrThrow<T>(data: T | null | undefined): T {

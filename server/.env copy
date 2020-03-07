@@ -1,0 +1,11 @@
+DB_STRING=mongodb+srv://production:1wLkrWekV2f5Yfva@cluster0-gk3d8.mongodb.net/production?retryWrites=true&w=majority
+
+TOKEN_SECRET=SVzYtdFL5MHuQBKzKYncSF9t4j59Khdp5jxQRHteazHZ3FKpyLRJaT2YV3q4cDJmedHAUQVbKBtSPq7sevwkW8mWLPsWVvh95QM2usVsZsHxsNumHqDxcpeH
+
+EMAIL_HOST=mail.walletqr.co.uk
+EMAIL_PORT=465
+EMAIL_USER=noreply@walletqr.co.uk
+EMAIL_PASS=?00xsQS9ue-a~.;J+c
+
+CLIENT_LOCATION=https://walletqr.co.uk
+SERVER_LOCATION=https://api.walletqr.co.uk

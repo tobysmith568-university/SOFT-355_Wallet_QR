@@ -9,6 +9,8 @@ import { IEmailService } from "../services/email.service";
 import { ITokenService } from "../services/token.service.interface";
 import template = require("es6-template-strings");
 import { IFileService } from "../services/file.service.interface";
+import { Config } from "../config/config";
+import * as path from "path";
 
 export class UserController {
 
@@ -21,9 +23,10 @@ export class UserController {
               private readonly passwordService: IPasswordService,
               private readonly emailService: IEmailService,
               private readonly tokenService: ITokenService,
+              private readonly config: Config,
               fileService: IFileService) {
 
-    this.welcomeEmail = fileService.readFile("./src/assets/emails/welcome-email.html");
+    this.welcomeEmail = fileService.readFile(path.resolve(__dirname, "../assets/emails/welcome-email.html"));
   }
 
   public getById = async (req: Request, res: Response) => {
@@ -110,7 +113,7 @@ export class UserController {
 
     const completeEmail = template(this.welcomeEmail, {
       name: result.displayName,
-      verifyURL: "http://localhost:8000/verify/" + tokenBase64
+      verifyURL: this.config.getServerLocation() + "/verify/" + tokenBase64
     });
 
     await this.emailService.sendHTMLEmail(result.email, "Welcome to WalletQR!", completeEmail);

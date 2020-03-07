@@ -6,11 +6,13 @@ import { VerifyController } from "../../src/contollers/verify.controller";
 import { assert } from "chai";
 import { ParamsDictionary } from "express-serve-static-core";
 import { IUserDbo } from "../../src/database/models/user.dbo.interface";
+import { Config } from "../../src/config/config";
 
 describe("In the verify controller", () => {
 
   let tokenService: IMock<ITokenService>;
   let userRepository: IMock<UserRepository>;
+  let config: IMock<Config>;
 
   let subject: VerifyController;
 
@@ -20,8 +22,9 @@ describe("In the verify controller", () => {
   beforeEach(() => {
     tokenService = Mock.ofType<ITokenService>();
     userRepository = Mock.ofType<UserRepository>();
+    config = Mock.ofType<Config>();
 
-    subject = new VerifyController(tokenService.object, userRepository.object);
+    subject = new VerifyController(tokenService.object, userRepository.object, config.object);
 
     req = Mock.ofType<Request>();
     res = Mock.ofType<Response>();

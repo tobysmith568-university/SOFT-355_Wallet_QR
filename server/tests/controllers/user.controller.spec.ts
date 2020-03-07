@@ -13,6 +13,7 @@ import { IWalletDbo } from "../../src/database/models/wallet.dbo.interface";
 import { IEmailService } from "../../src/services/email.service";
 import { IFileService } from "../../src/services/file.service.interface";
 import { ITokenService } from "../../src/services/token.service.interface";
+import { Config } from "../../src/config/config";
 
 describe("In the user controller", () => {
   
@@ -21,6 +22,7 @@ describe("In the user controller", () => {
   let emailService: IMock<IEmailService>;
   let tokenService: IMock<ITokenService>;
   let fileService: IMock<IFileService>;
+  let config: IMock<Config>;
 
   let subject: UserController;
 
@@ -33,8 +35,9 @@ describe("In the user controller", () => {
     emailService = Mock.ofType<IEmailService>();
     tokenService = Mock.ofType<ITokenService>();
     fileService = Mock.ofType<IFileService>();
+    config = Mock.ofType<Config>();
 
-    subject = new UserController(userRepository.object, passwordService.object, emailService.object, tokenService.object, fileService.object);
+    subject = new UserController(userRepository.object, passwordService.object, emailService.object, tokenService.object, config.object, fileService.object);
 
     req = Mock.ofType<Request>();
     res = Mock.ofType<Response>();
@@ -413,7 +416,7 @@ describe("In the user controller", () => {
       given_tokenService_create_returns("token");
       given_fileService_readFile_returns(fileContent);
 
-      subject = new UserController(userRepository.object, passwordService.object, emailService.object, tokenService.object, fileService.object);
+      subject = new UserController(userRepository.object, passwordService.object, emailService.object, tokenService.object, config.object, fileService.object);
 
       await subject.create(req.object, res.object);
 
@@ -443,7 +446,7 @@ describe("In the user controller", () => {
       given_tokenService_create_returns("token");
       given_fileService_readFile_returns(fileContent);
 
-      subject = new UserController(userRepository.object, passwordService.object, emailService.object, tokenService.object, fileService.object);
+      subject = new UserController(userRepository.object, passwordService.object, emailService.object, tokenService.object, config.object, fileService.object);
 
       await subject.create(req.object, res.object);
 

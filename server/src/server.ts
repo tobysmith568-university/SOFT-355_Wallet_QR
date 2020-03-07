@@ -1,8 +1,6 @@
 import * as express from "express";
 import * as cors from "cors";
 import { Config } from "./config/config";
-import { ENV } from "./config/config";
-import { join } from "path";
 import { connect } from "mongoose";
 import { Express, Router } from "express";
 import { Server as HTTPServer } from "http";
@@ -55,23 +53,17 @@ export class Server {
     this.fileService = new FSFileService();
 
     this.tokenMiddleware = new TokenAuthenticator(this.tokenService);
-
-    if (this.config.getEnvironment() === ENV.prod) {
-      this.app.use(express.static(join(__dirname, "../../../../client/dist")));
-    }
   }
 
   public initializeMiddlewares() {
     this.app.use(express.json());
 
-    if (this.config.getEnvironment() !== ENV.prod) {
-      this.app.use(cors({
-        allowedHeaders: [
-          "Authorization",
-          "Content-Type"
-        ]
-      }));
-    }
+    this.app.use(cors({
+      allowedHeaders: [
+        "Authorization",
+        "Content-Type"
+      ]
+    }));
   }
 
   public setUpDatabaseConnection() {
@@ -98,6 +90,7 @@ export class Server {
         this.passwordService,
         this.emailService,
         this.tokenService,
+        this.config,
         this.fileService
       ),
       this.tokenMiddleware
@@ -116,7 +109,8 @@ export class Server {
       Router(),
       new VerifyController(
         this.tokenService,
-        this.userRepository
+        this.userRepository,
+        this.config
       )
     );
 
@@ -141,14 +135,11 @@ export class Server {
     searchRoute.setupRoutes();
     walletRoute.setupRoutes();
 
-    this.app.use("/api", [
+    this.app.use("/v1", [
       userRoute.getRouter(),
       signinRoute.getRouter(),
       searchRoute.getRouter(),
-      walletRoute.getRouter()
-    ]);
-
-    this.app.use("/verify", [
+      walletRoute.getRouter(),
       verifyRoute.getRouter()
     ]);
   }

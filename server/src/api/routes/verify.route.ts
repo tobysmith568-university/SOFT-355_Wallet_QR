@@ -8,7 +8,7 @@ export class VerifyRoute implements IRoute {
               private readonly controller: VerifyController) { }
   
   setupRoutes(): void {
-    this.expressRouter.get("/:token", this.controller.verify);
+    this.expressRouter.get("/verify/:token", this.controller.verify);
   }
   
   getRouter(): Router {

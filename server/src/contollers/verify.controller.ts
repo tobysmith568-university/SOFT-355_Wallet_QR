@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { ITokenService } from "../services/token.service.interface";
 import { UserRepository } from "../database/repositories/user.repository";
+import { Config } from "../config/config";
 
 export class VerifyController {
 
@@ -8,7 +9,8 @@ export class VerifyController {
   private static readonly ASCII: string = "ascii";
 
   constructor(private readonly tokenService: ITokenService,
-              private readonly userRepository: UserRepository) { }
+              private readonly userRepository: UserRepository,
+              private readonly config: Config) { }
 
   public verify = async (req: Request, res: Response) => {
 
@@ -65,6 +67,6 @@ export class VerifyController {
 
     await user.save();
 
-    res.redirect("http://localhost:4200/@" + username);
+    res.redirect(this.config.getClientLocation() + "/@" + username);
   }
 }

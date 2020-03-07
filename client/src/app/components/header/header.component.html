@@ -34,9 +34,9 @@
 											(input)="search()"
 											(focus)="search()"
 											(blur)="searchBlur()"
-											(keyup.enter)="goToProfile()"
+											(keyup.enter)="goToProfile(undefined)"
 											(keyup)="keypress($event)">
-						<div class="search-results" *ngIf="searchResults.length !== []">
+						<div class="search-results" *ngIf="searchResults !== []">
 							<a class="dropdown-item search-result" routerLink="/@{{ result.username }}" *ngFor="let result of searchResults; let i = index"
 												[class.active]="i === focusedResult"
 												(click)="goToProfile(result.username)">{{ result.name }} (@{{ result.username }})</a>
@@ -44,7 +44,7 @@
 						<div class="input-group-append">
 							<button class="btn btn-secondary" type="button"
 												[disabled]="searchTerm.length === 0"
-												(click)="goToProfile()">Goto</button>
+												(click)="goToProfile(undefined)">Goto</button>
 						</div>
 					</div>
 				</form>
